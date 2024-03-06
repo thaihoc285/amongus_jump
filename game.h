@@ -1,9 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "character.h"
-#include "enemy.h"
-
+#include "Character.h"
+#include "Enemy.h"
+#include "SDL_ttf.h"
 class Game {
 public:
     Game();
@@ -15,11 +15,6 @@ private:
     SDL_Window* window;
     SDL_Renderer* renderer;
 
-    GameState gameState;
-    Uint32 startTime;
-    Uint32 lastPlayTime;
-    int numLives;
-
     Character player;
     Character player2;
     Enemy enemy1;
@@ -27,17 +22,27 @@ private:
     Enemy enemy3;
     Enemy enemy4;
 
-    int menuWidth, menuHeight;
-
+    Uint32 startTime;
+    Uint32 lastPlayTime;
+    int numLives;
     TTF_Font* font;
     SDL_Texture* heartTexture;
 
-    void logSDLError(std::ostream& os, const std::string& msg, bool fatal);
+    int menuWidth, menuHeight;
+    GameState gameState;
+
     void initSDL();
+    void logSDLError(std::ostream& os, const std::string &msg, bool fatal);
     void drawMenu();
     void drawGameover();
+    void handleMenuInput(SDL_Event& e);
+    void handlePlayingInput(SDL_Event& e);
+    void handleGameoverInput(SDL_Event& e);
+    void update();
+    void render();
     void quitSDL();
     Uint32 getElapsedTime();
+    void waitUntilKeyPressed();
     void initElement();
 };
 
