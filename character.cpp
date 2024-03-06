@@ -1,5 +1,7 @@
 #include "Character.h"
-
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+const int SQUARE_SIZE = 50;
 Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_Color startColor)
     : x(startX),
       y(startY),

@@ -1,5 +1,7 @@
 #include "Enemy.h"
-
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+const int SQUARE_SIZE = 50;
 Enemy::Enemy(int startX, int startY, int startVelX, int startVelY)
     : x(startX),
       y(startY),

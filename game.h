@@ -1,9 +1,17 @@
 #ifndef GAME_H
 #define GAME_H
-
+#include<iostream>
 #include "Character.h"
 #include "Enemy.h"
 #include "SDL_ttf.h"
+using namespace std;
+enum GameState {
+        MENU,
+        PLAYING,
+        GAMEOVER
+        // Add more states if needed
+    };
+
 class Game {
 public:
     Game();

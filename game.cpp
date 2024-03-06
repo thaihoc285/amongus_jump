@@ -1,4 +1,18 @@
 #include "Game.h"
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+const int SQUARE_SIZE = 50;
+const string WINDOW_TITLE = "SDL Example";
+Uint32 enemy1StartTime = 14000;
+Uint32 enemy2StartTime = 8000;
+Uint32 enemy3StartTime = 3000;
+Uint32 enemy4StartTime = 20000;
+bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2) {
+        return (rect1.x < rect2.x + rect2.w &&
+                rect1.x + rect1.w > rect2.x &&
+                rect1.y < rect2.y + rect2.h &&
+                rect1.y + rect1.h > rect2.y);
+    }
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
@@ -351,7 +365,7 @@ void Game::render() {
         }
 
         player.render(renderer);
-        player2.render2(renderer);
+        player2.render(renderer);
 
         // Render the timer
         SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
@@ -401,38 +415,38 @@ void Game::initElement() {
     numLives = 1;
     gameState = MENU;
 
-    // Reset player and enemy positions
-    player.x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2;
-    player.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
-    player.vx = 0;
-    player.vy = 0;
-    player.isJumping = false;
-    player.isKeyPressed.fill(false);
-
-    player2.x = SCREEN_WIDTH / 2 + SQUARE_SIZE / 2;
-    player2.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
-    player2.vx = 0;
-    player2.vy = 0;
-    player2.isJumping2 = false;
-    player2.isKeyPressed.fill(false);
-
-    enemy1.x = SCREEN_WIDTH - SQUARE_SIZE;
-    enemy1.y = SCREEN_HEIGHT - SQUARE_SIZE;
-    enemy1.vx = 5;
-    enemy1.vy = 5;
-
-    enemy2.x = SCREEN_WIDTH - SQUARE_SIZE;
-    enemy2.y = SCREEN_HEIGHT - SQUARE_SIZE;
-    enemy2.vx = 3;
-    enemy2.vy = 3;
-
-    enemy3.x = 0;
-    enemy3.y = SCREEN_HEIGHT - SQUARE_SIZE;
-    enemy3.vx = 3;
-    enemy3.vy = 3;
-
-    enemy4.x = 0;
-    enemy4.y = 0;
-    enemy4.vx = 3;
-    enemy4.vy = 3;
+//    // Reset player and enemy positions
+//    player.x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2;
+//    player.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
+//    player.velX = 0;
+//    player.velY = 0;
+//    player.isJumping = false;
+//    player.isKeyPressed.fill(false);
+//
+//    player2.x = SCREEN_WIDTH / 2 + SQUARE_SIZE / 2;
+//    player2.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
+//    player2.velX = 0;
+//    player2.velY = 0;
+//    player2.isJumping2 = false;
+//    player2.isKeyPressed.fill(false);
+//
+//    enemy1.x = SCREEN_WIDTH - SQUARE_SIZE;
+//    enemy1.y = SCREEN_HEIGHT - SQUARE_SIZE;
+//    enemy1.velX = 5;
+//    enemy1.velY = 5;
+//
+//    enemy2.x = SCREEN_WIDTH - SQUARE_SIZE;
+//    enemy2.y = SCREEN_HEIGHT - SQUARE_SIZE;
+//    enemy2.velX = 3;
+//    enemy2.velY = 3;
+//
+//    enemy3.x = 0;
+//    enemy3.y = SCREEN_HEIGHT - SQUARE_SIZE;
+//    enemy3.velX = 3;
+//    enemy3.velY = 3;
+//
+//    enemy4.x = 0;
+//    enemy4.y = 0;
+//    enemy4.velX = 3;
+//    enemy4.velY = 3;
 }
