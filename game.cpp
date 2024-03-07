@@ -39,13 +39,13 @@ Game::~Game() {
 
 void Game::run() {
     SDL_Event e;
-
-    while (true) {
+    bool quit = false;
+    while (!quit) {
         if (gameState == MENU) {
             drawMenu();
             while (SDL_PollEvent(&e) != 0) {
                 if (e.type == SDL_QUIT) {
-                    return;
+                    quit = true;
                 } else if (e.type == SDL_MOUSEBUTTONDOWN) {
                     int mouseX, mouseY;
                     SDL_GetMouseState(&mouseX, &mouseY);
@@ -58,11 +58,11 @@ void Game::run() {
                     }
                 }
             }
-        } else if (gameState == PLAYING) {
+        } else if (gameState == PLAYING && !quit) {
             Uint32 elapsedTime = getElapsedTime();
             while (SDL_PollEvent(&e) != 0) {
                 if (e.type == SDL_QUIT) {
-                    return;
+                    quit = true;
                 } else if (e.type == SDL_KEYDOWN) {
                     player.isKeyPressed[e.key.keysym.scancode] = {true};
                     player2.isKeyPressed[e.key.keysym.scancode] = {true};
@@ -79,7 +79,7 @@ void Game::run() {
             render();
 
             SDL_Delay(10);
-        } else if (gameState == GAMEOVER) {
+        } else if (gameState == GAMEOVER&& !quit) {
             numLives = 1;
             drawGameover();
             while (SDL_PollEvent(&e) != 0) {
@@ -328,7 +328,7 @@ void Game::update() {
 
 void Game::render() {
     SDL_Color textColor = {255, 255, 255, 255}; // White color
-    std::string timerText = "" + std::to_string(lastPlayTime / 1000) + ":" + to_string(lastPlayTime % 1000); // Convert milliseconds to seconds
+    std::string timerText = "" + std::to_string(getElapsedTime() / 1000) + ":" + to_string(getElapsedTime() % 1000); // Convert milliseconds to seconds
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, timerText.c_str(), textColor);
 
     if (!textSurface) {
@@ -410,43 +410,43 @@ void Game::waitUntilKeyPressed() {
 }
 
 void Game::initElement() {
-    startTime = 0;
+    startTime = SDL_GetTicks();
     lastPlayTime = 0;
     numLives = 1;
-    gameState = MENU;
 
-//    // Reset player and enemy positions
-//    player.x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2;
-//    player.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
-//    player.velX = 0;
-//    player.velY = 0;
-//    player.isJumping = false;
-//    player.isKeyPressed.fill(false);
-//
-//    player2.x = SCREEN_WIDTH / 2 + SQUARE_SIZE / 2;
-//    player2.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
-//    player2.velX = 0;
-//    player2.velY = 0;
-//    player2.isJumping2 = false;
-//    player2.isKeyPressed.fill(false);
-//
-//    enemy1.x = SCREEN_WIDTH - SQUARE_SIZE;
-//    enemy1.y = SCREEN_HEIGHT - SQUARE_SIZE;
-//    enemy1.velX = 5;
-//    enemy1.velY = 5;
-//
-//    enemy2.x = SCREEN_WIDTH - SQUARE_SIZE;
-//    enemy2.y = SCREEN_HEIGHT - SQUARE_SIZE;
-//    enemy2.velX = 3;
-//    enemy2.velY = 3;
-//
-//    enemy3.x = 0;
-//    enemy3.y = SCREEN_HEIGHT - SQUARE_SIZE;
-//    enemy3.velX = 3;
-//    enemy3.velY = 3;
-//
-//    enemy4.x = 0;
-//    enemy4.y = 0;
-//    enemy4.velX = 3;
-//    enemy4.velY = 3;
+    // Khởi tạo lại các thành viên của đối tượng player và player2
+    player.x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2;
+    player.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
+    player.velX = 0;
+    player.velY = 0;
+    player.isJumping = false;
+    fill(begin(player.isKeyPressed),end(player.isKeyPressed), false);
+
+    player2.x = SCREEN_WIDTH / 2 + SQUARE_SIZE / 2;
+    player2.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
+    player2.velX = 0;
+    player2.velY = 0;
+    player2.isJumping2 = false;
+    fill(begin(player2.isKeyPressed),end(player2.isKeyPressed), false);
+
+    // Khởi tạo lại các thành viên của đối tượng enemy1, enemy2, enemy3, và enemy4
+    enemy1.x = SCREEN_WIDTH - SQUARE_SIZE;
+    enemy1.y = SCREEN_HEIGHT - SQUARE_SIZE;
+    enemy1.velX = 5;
+    enemy1.velY = 5;
+
+    enemy2.x = SCREEN_WIDTH - SQUARE_SIZE;
+    enemy2.y = SCREEN_HEIGHT - SQUARE_SIZE;
+    enemy2.velX = 3;
+    enemy2.velY = 3;
+
+    enemy3.x = 0;
+    enemy3.y = SCREEN_HEIGHT - SQUARE_SIZE;
+    enemy3.velX = 3;
+    enemy3.velY = 3;
+
+    enemy4.x = 0;
+    enemy4.y = 0;
+    enemy4.velX = 3;
+    enemy4.velY = 3;
 }
