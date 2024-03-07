@@ -2,17 +2,11 @@
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 const int SQUARE_SIZE = 50;
-const string WINDOW_TITLE = "SDL Example";
+const string WINDOW_TITLE = "Block Game";
 Uint32 enemy1StartTime = 14000;
 Uint32 enemy2StartTime = 8000;
 Uint32 enemy3StartTime = 3000;
 Uint32 enemy4StartTime = 20000;
-bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2) {
-        return (rect1.x < rect2.x + rect2.w &&
-                rect1.x + rect1.w > rect2.x &&
-                rect1.y < rect2.y + rect2.h &&
-                rect1.y + rect1.h > rect2.y);
-    }
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
@@ -414,7 +408,6 @@ void Game::waitUntilKeyPressed() {
         }
     }
 }
-
 void Game::initElement() {
     startTime = SDL_GetTicks();
     lastPlayTime = 0;
@@ -456,3 +449,4 @@ void Game::initElement() {
     enemy4.velX = 3;
     enemy4.velY = 3;
 }
+
