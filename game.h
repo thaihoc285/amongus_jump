@@ -53,6 +53,8 @@ private:
     void waitUntilKeyPressed();
     void initElement();
     bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2);
+    bool ismulti;
+    void singerplayer();
 };
 
 #endif // GAME_H

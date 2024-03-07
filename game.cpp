@@ -23,6 +23,7 @@ Game::Game()
       heartTexture(nullptr),
       menuWidth(0),
       menuHeight(0),
+      ismulti(true),
       gameState(MENU) {
     initSDL();
 }
@@ -44,13 +45,21 @@ void Game::run() {
                     int mouseX, mouseY;
                     SDL_GetMouseState(&mouseX, &mouseY);
                     SDL_Rect multiButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
+                    SDL_Rect singerButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
                     if (mouseX >= multiButtonRect.x &&
                         mouseX <= multiButtonRect.x + multiButtonRect.w &&
                         mouseY >= multiButtonRect.y &&
                         mouseY <= multiButtonRect.y + multiButtonRect.h) {
                         gameState = PLAYING;
                         startTime = SDL_GetTicks();
-                    }
+                    }else if(mouseX >= singerButtonRect.x &&
+                            mouseX <= singerButtonRect.x + singerButtonRect.w &&
+                            mouseY >= singerButtonRect.y &&
+                            mouseY <= singerButtonRect.y + singerButtonRect.h) {
+                            singerplayer();
+                            gameState = PLAYING;
+                            startTime = SDL_GetTicks();
+                            }
                 }
             }
         } else if (gameState == PLAYING && !quit) {
@@ -291,11 +300,13 @@ void Game::update() {
         player.VelocityCalculation();
         player.PositionCalculation();
         player.handleInput();
+        if(ismulti){
+            player2.GravityCalculation();
+            player2.VelocityCalculation();
+            player2.PositionCalculation();
+            player2.handleInput2();
+        }
 
-        player2.GravityCalculation();
-        player2.VelocityCalculation();
-        player2.PositionCalculation();
-        player2.handleInput2();
 
         SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
         SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
@@ -409,12 +420,19 @@ void Game::waitUntilKeyPressed() {
         }
     }
 }
+
+void Game::singerplayer() {
+    player2.x = SCREEN_WIDTH + SQUARE_SIZE*2 ;
+    player2.y = SCREEN_HEIGHT + SQUARE_SIZE*2 ;
+
+    ismulti = false;
+}
+
 void Game::initElement() {
     startTime = SDL_GetTicks();
     lastPlayTime = 0;
     numLives = 1;
 
-    // Khởi tạo lại các thành viên của đối tượng player và player2
     player.x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2;
     player.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
     player.velX = 0;
@@ -422,14 +440,15 @@ void Game::initElement() {
     player.isJumping = false;
     fill(begin(player.isKeyPressed),end(player.isKeyPressed), false);
 
-    player2.x = SCREEN_WIDTH / 2 + SQUARE_SIZE / 2;
-    player2.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
-    player2.velX = 0;
-    player2.velY = 0;
-    player2.isJumping2 = false;
-    fill(begin(player2.isKeyPressed),end(player2.isKeyPressed), false);
+    if(ismulti){
+        player2.x = SCREEN_WIDTH / 2 + SQUARE_SIZE / 2;
+        player2.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
+        player2.velX = 0;
+        player2.velY = 0;
+        player2.isJumping2 = false;
+        fill(begin(player2.isKeyPressed),end(player2.isKeyPressed), false);
+    }
 
-    // Khởi tạo lại các thành viên của đối tượng enemy1, enemy2, enemy3, và enemy4
     enemy1.x = SCREEN_WIDTH - SQUARE_SIZE;
     enemy1.y = SCREEN_HEIGHT - SQUARE_SIZE;
     enemy1.velX = 5;
