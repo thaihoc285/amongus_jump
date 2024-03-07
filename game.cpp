@@ -43,10 +43,11 @@ void Game::run() {
                 } else if (e.type == SDL_MOUSEBUTTONDOWN) {
                     int mouseX, mouseY;
                     SDL_GetMouseState(&mouseX, &mouseY);
-                    if (mouseX >= (SCREEN_WIDTH - menuWidth) / 2 &&
-                        mouseX <= (SCREEN_WIDTH + menuWidth) / 2 &&
-                        mouseY >= (SCREEN_HEIGHT - menuHeight) / 2 &&
-                        mouseY <= (SCREEN_HEIGHT + menuHeight) / 2) {
+                    SDL_Rect multiButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
+                    if (mouseX >= multiButtonRect.x &&
+                        mouseX <= multiButtonRect.x + multiButtonRect.w &&
+                        mouseY >= multiButtonRect.y &&
+                        mouseY <= multiButtonRect.y + multiButtonRect.h) {
                         gameState = PLAYING;
                         startTime = SDL_GetTicks();
                     }
@@ -142,27 +143,27 @@ void Game::drawMenu() {
         logSDLError(std::cout, "TTF_OpenFont", true);
     }
 
-    std::string startText = "Start";
-    SDL_Surface* textSurface = TTF_RenderText_Solid(menuFont, startText.c_str(), textColor);
-    if (!textSurface) {
-        logSDLError(std::cout, "TTF_RenderText_Solid", true);
-    }
+    std::string multistart = "Multiplayer";
+    SDL_Surface* multiSurface = TTF_RenderText_Solid(menuFont, multistart.c_str(), textColor);
+    SDL_Texture* multiTexture = SDL_CreateTextureFromSurface(renderer, multiSurface);
+    SDL_QueryTexture(multiTexture, NULL, NULL, &menuWidth, &menuHeight);
+    SDL_Rect multiRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
+    SDL_RenderCopy(renderer, multiTexture, NULL, &multiRect);
 
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    if (!textTexture) {
-        logSDLError(std::cout, "SDL_CreateTextureFromSurface", true);
-    }
-
-    SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
-    SDL_Rect textRect = {(SCREEN_WIDTH - menuWidth) / 2, (SCREEN_HEIGHT - menuHeight) / 2, menuWidth, menuHeight};
-
-    SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+    std::string singerstart = "Singerplayer";
+    SDL_Surface* singerSurface = TTF_RenderText_Solid(menuFont, singerstart.c_str(), textColor);
+    SDL_Texture* singerTexture = SDL_CreateTextureFromSurface(renderer, singerSurface);
+    SDL_QueryTexture(singerTexture, NULL, NULL, &menuWidth, &menuHeight);
+    SDL_Rect singerRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
+    SDL_RenderCopy(renderer, singerTexture, NULL, &singerRect);
 
     // Release resources
     TTF_CloseFont(menuFont);
-    SDL_FreeSurface(textSurface);
-    SDL_DestroyTexture(textTexture);
+    SDL_FreeSurface(multiSurface);
+    SDL_DestroyTexture(multiTexture);
 
+    SDL_FreeSurface(singerSurface);
+    SDL_DestroyTexture(singerTexture);
     // Present the renderer
     SDL_RenderPresent(renderer);
 }
