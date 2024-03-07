@@ -52,6 +52,7 @@ private:
     Uint32 getElapsedTime();
     void waitUntilKeyPressed();
     void initElement();
+    bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2);
 };
 
 #endif // GAME_H
