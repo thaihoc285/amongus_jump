@@ -23,6 +23,8 @@ Game::Game()
       heartTexture(nullptr),
       menuWidth(0),
       menuHeight(0),
+      submenuWidth(0),
+      submenuHeight(0),
       ismulti(true),
       gameState(MENU) {
     initSDL();
@@ -92,14 +94,23 @@ void Game::run() {
                 } else if (e.type == SDL_MOUSEBUTTONDOWN) {
                     int mouseX, mouseY;
                     SDL_GetMouseState(&mouseX, &mouseY);
-                    SDL_Rect restartButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
+                    SDL_Rect restartButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 3 / 5, menuWidth, menuHeight};
+                    SDL_Rect backmenuButtonRect = {(SCREEN_WIDTH - submenuWidth) / 2, SCREEN_HEIGHT * 3 / 4, submenuWidth, submenuHeight};
                     if (mouseX >= restartButtonRect.x &&
                         mouseX <= restartButtonRect.x + restartButtonRect.w &&
                         mouseY >= restartButtonRect.y &&
                         mouseY <= restartButtonRect.y + restartButtonRect.h) {
                         initElement();
                         gameState = PLAYING;
-                    }
+                    }else if (mouseX >= backmenuButtonRect.x &&
+                        mouseX <= backmenuButtonRect.x + backmenuButtonRect.w &&
+                        mouseY >= backmenuButtonRect.y &&
+                        mouseY <= backmenuButtonRect.y + backmenuButtonRect.h) {
+                        ismulti = true;
+                        initElement();
+                        drawMenu();
+                        gameState = MENU;
+                        }
                 }
             }
         }
@@ -185,6 +196,7 @@ void Game::drawGameover() {
     // Draw "Start" button in the center
     SDL_Color textColor = {255, 255, 255, 255};  // White color
     TTF_Font* menuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 36);
+    TTF_Font* backmenuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 28);
     if (!menuFont) {
         logSDLError(std::cout, "TTF_OpenFont", true);
     }
@@ -202,16 +214,26 @@ void Game::drawGameover() {
     SDL_Texture* rtextTexture = SDL_CreateTextureFromSurface(renderer, rtextSurface);
 
     SDL_QueryTexture(rtextTexture, NULL, NULL, &menuWidth, &menuHeight);
-    SDL_Rect rtextRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
+    SDL_Rect rtextRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 3 / 5, menuWidth, menuHeight};
     SDL_RenderCopy(renderer, rtextTexture, NULL, &rtextRect);
+
+    std::string backmenu = "Menu";
+    SDL_Surface* bmenuSurface = TTF_RenderText_Solid(backmenuFont, backmenu.c_str(), textColor);
+    SDL_Texture* bmenuTexture = SDL_CreateTextureFromSurface(renderer, bmenuSurface);
+
+    SDL_QueryTexture(bmenuTexture, NULL, NULL, &submenuWidth, &submenuHeight);
+    SDL_Rect bmenuRect = {(SCREEN_WIDTH - submenuWidth) / 2, SCREEN_HEIGHT * 3 / 4, submenuWidth, submenuHeight};
+    SDL_RenderCopy(renderer, bmenuTexture, NULL, &bmenuRect);
 
     // Release resources
     TTF_CloseFont(menuFont);
+    TTF_CloseFont(backmenuFont);
     SDL_FreeSurface(toSurface);
     SDL_DestroyTexture(toTexture);
     SDL_FreeSurface(rtextSurface);
     SDL_DestroyTexture(rtextTexture);
-
+    SDL_FreeSurface(bmenuSurface);
+    SDL_DestroyTexture(bmenuTexture);
     // Present the renderer
     SDL_RenderPresent(renderer);
 }
@@ -469,4 +491,3 @@ void Game::initElement() {
     enemy4.velX = 3;
     enemy4.velY = 3;
 }
-

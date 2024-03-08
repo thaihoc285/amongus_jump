@@ -36,7 +36,7 @@ private:
     TTF_Font* font;
     SDL_Texture* heartTexture;
 
-    int menuWidth, menuHeight;
+    int menuWidth, menuHeight,submenuWidth,submenuHeight;
     GameState gameState;
 
     void initSDL();
