@@ -1,9 +1,10 @@
 #include "Character.h"
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1000;
+const int SCREEN_HEIGHT = 650;
 const int SQUARE_SIZE = 50;
-Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_Color startColor)
-    : x(startX),
+Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_Color startColor,string left,string right)
+    : chTexture(nullptr),
+      x(startX),
       y(startY),
       velX(startVelX),
       velY(startVelY),
@@ -11,7 +12,10 @@ Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_C
       aceY(0),
       isJumping(false),
       isJumping2(false),
-      startColor(startColor) {}
+      pathleft(left),
+      pathright(right),
+      path(right),
+      startColor(startColor){}
 
 void Character::handleInput() {
     if (isKeyPressed[SDL_SCANCODE_UP] && !isJumping) {
@@ -22,8 +26,10 @@ void Character::handleInput() {
     }
     if (isKeyPressed[SDL_SCANCODE_LEFT]) {
         velX = -5;
+        path = pathleft;
     } else if (isKeyPressed[SDL_SCANCODE_RIGHT]) {
         velX = 5;
+        path = pathright;
     } else {
         velX = 0;
     }
@@ -38,8 +44,10 @@ void Character::handleInput2() {
     }
     if (isKeyPressed[SDL_SCANCODE_A]) {
         velX = -5;
+        path = pathleft;
     } else if (isKeyPressed[SDL_SCANCODE_D]) {
         velX = 5;
+        path = pathright;
     } else {
         velX = 0;
     }
@@ -72,8 +80,20 @@ void Character::PositionCalculation() {
     }
 }
 
+//void Character::addtexture(string path ,SDL_Renderer* renderer){
+//	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+//
+//        chTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
+//		SDL_FreeSurface( loadedSurface );
+//};
+
 void Character::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, startColor.r, startColor.g, startColor.b, startColor.a);
+    SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+    chTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
+    SDL_FreeSurface( loadedSurface );
+
+//    SDL_SetRenderDrawColor(renderer, startColor.r, startColor.g, startColor.b, startColor.a);
     SDL_Rect characterRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
-    SDL_RenderFillRect(renderer, &characterRect);
+//    SDL_RenderFillRect(renderer, &characterRect);
+    SDL_RenderCopy(renderer, chTexture, NULL, &characterRect);
 }

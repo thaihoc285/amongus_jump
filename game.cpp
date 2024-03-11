@@ -1,17 +1,19 @@
 #include "Game.h"
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1000;
+const int SCREEN_HEIGHT = 650;
 const int SQUARE_SIZE = 50;
 const string WINDOW_TITLE = "Block Game";
 Uint32 enemy1StartTime = 14000;
 Uint32 enemy2StartTime = 8000;
 Uint32 enemy3StartTime = 3000;
 Uint32 enemy4StartTime = 20000;
+const int FPS = 60;
+const float FrameDelay = (float)1000 / FPS;
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
-      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {50, 50, 50, 0}),
-      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {250, 250, 250, 100}),
+      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png"),
+      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {250, 250, 250, 100},"image/captainleft.png","image/captainright.png"),
       enemy1(SCREEN_WIDTH - SQUARE_SIZE, SCREEN_HEIGHT - SQUARE_SIZE, 5, 5),
       enemy2(SCREEN_WIDTH - SQUARE_SIZE, SCREEN_HEIGHT - SQUARE_SIZE, 3, 3),
       enemy3(0, SCREEN_HEIGHT - SQUARE_SIZE, 3, 3),
@@ -26,6 +28,8 @@ Game::Game()
       submenuWidth(0),
       submenuHeight(0),
       ismulti(true),
+      frameStart(0),
+      frameTime(0),
       gameState(MENU) {
     initSDL();
 }
@@ -38,6 +42,7 @@ void Game::run() {
     SDL_Event e;
     bool quit = false;
     while (!quit) {
+            frameStart = SDL_GetTicks();
         if (gameState == MENU) {
             drawMenu();
             while (SDL_PollEvent(&e) != 0) {
@@ -83,8 +88,10 @@ void Game::run() {
             update();
 
             render();
-
-            SDL_Delay(10);
+            frameTime = SDL_GetTicks() - frameStart;
+            if (FrameDelay > frameTime) {
+                SDL_Delay(FrameDelay - frameTime);
+            }
         } else if (gameState == GAMEOVER&& !quit) {
             numLives = 1;
             drawGameover();
@@ -391,6 +398,7 @@ void Game::render() {
         if (getElapsedTime() >= enemy4StartTime) {
             enemy4.render(renderer);
         }
+//        player.addtexture("images.png",renderer);
 
         player.render(renderer);
         player2.render(renderer);

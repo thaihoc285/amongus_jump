@@ -55,6 +55,8 @@ private:
     bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2);
     bool ismulti;
     void singerplayer();
+    Uint32 frameStart;
+    float frameTime;
 };
 
 #endif // GAME_H
