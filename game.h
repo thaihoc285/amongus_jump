@@ -1,9 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 #include<iostream>
+#include<vector>
 #include "Character.h"
 #include "Enemy.h"
 #include "SDL_ttf.h"
+
 using namespace std;
 enum GameState {
         MENU,
@@ -49,6 +51,7 @@ private:
     void update();
     void render();
     void quitSDL();
+    void spawnEnemy();
     Uint32 getElapsedTime();
     void waitUntilKeyPressed();
     void initElement();
@@ -56,6 +59,9 @@ private:
     bool ismulti;
     void singerplayer();
     Uint32 frameStart;
+    Uint32 ENEMY_SPAWN_INTERVAL;
+    Uint32 lastEnemySpawnTime;
+    bool checkPlayerEnemyCollision(const Character& player, const Enemy& enemy);
     float frameTime;
 };
 

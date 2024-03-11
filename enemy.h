@@ -12,7 +12,7 @@ public:
 
     void move();
     void move2();
-    void render(SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer)const;
 };
 
 #endif // ENEMY_H

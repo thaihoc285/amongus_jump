@@ -1,12 +1,10 @@
 #include "Game.h"
+#include "enemy.h"
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 650;
 const int SQUARE_SIZE = 50;
 const string WINDOW_TITLE = "Block Game";
-Uint32 enemy1StartTime = 14000;
-Uint32 enemy2StartTime = 8000;
-Uint32 enemy3StartTime = 3000;
-Uint32 enemy4StartTime = 20000;
+vector<Enemy> enemies;
 const int FPS = 60;
 const float FrameDelay = (float)1000 / FPS;
 Game::Game()
@@ -22,11 +20,12 @@ Game::Game()
       lastPlayTime(0),
       numLives(1),
       font(nullptr),
-      heartTexture(nullptr),
+      ENEMY_SPAWN_INTERVAL(5000),
       menuWidth(0),
       menuHeight(0),
       submenuWidth(0),
       submenuHeight(0),
+      lastEnemySpawnTime(0),
       ismulti(true),
       frameStart(0),
       frameTime(0),
@@ -306,23 +305,13 @@ void Game::update() {
     Uint32 elapsedTime = getElapsedTime();
 
     if (gameState == PLAYING) {
-        // Game logic update code
-        // ...
-
-        if (elapsedTime >= enemy3StartTime) {
-            enemy3.move2();
+        if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL) {
+            spawnEnemy();
+            lastEnemySpawnTime = elapsedTime;
         }
 
-        if (elapsedTime >= enemy2StartTime) {
-            enemy2.move();
-        }
-
-        if (elapsedTime >= enemy1StartTime) {
-            enemy1.move();
-        }
-
-        if (elapsedTime >= enemy4StartTime) {
-            enemy4.move2();
+        for (auto& enemy : enemies) {
+            enemy.move();
         }
 
         player.GravityCalculation();
@@ -335,27 +324,17 @@ void Game::update() {
             player2.PositionCalculation();
             player2.handleInput2();
         }
-
-
         SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
         SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
         SDL_Rect enemy1Rect = {enemy1.x, enemy1.y, SQUARE_SIZE, SQUARE_SIZE};
-        SDL_Rect enemy2Rect = {enemy2.x, enemy2.y, SQUARE_SIZE, SQUARE_SIZE};
-        SDL_Rect enemy3Rect = {enemy3.x, enemy3.y, SQUARE_SIZE, SQUARE_SIZE};
-        SDL_Rect enemy4Rect = {enemy4.x, enemy4.y, SQUARE_SIZE, SQUARE_SIZE};
 
-        if (isCollision(playerRect, enemy1Rect) && elapsedTime >= enemy1StartTime ||
-            isCollision(playerRect, enemy2Rect) && elapsedTime >= enemy2StartTime ||
-            isCollision(playerRect, enemy3Rect) && elapsedTime >= enemy3StartTime ||
-            isCollision(playerRect, enemy4Rect) && elapsedTime >= enemy4StartTime ||
-            isCollision(player2Rect, enemy1Rect) && elapsedTime >= enemy1StartTime ||
-            isCollision(player2Rect, enemy2Rect) && elapsedTime >= enemy2StartTime ||
-            isCollision(player2Rect, enemy3Rect) && elapsedTime >= enemy3StartTime ||
-            isCollision(player2Rect, enemy4Rect) && elapsedTime >= enemy4StartTime) {
-            numLives--;
-            if (numLives == 0) {
-                gameState = GAMEOVER;
-                lastPlayTime = elapsedTime;
+        for (const auto& enemy : enemies) {
+            if (checkPlayerEnemyCollision(player, enemy) || (ismulti && checkPlayerEnemyCollision(player2, enemy))) {
+                numLives--;
+                if (numLives == 0) {
+                    gameState = GAMEOVER;
+                    lastPlayTime = elapsedTime;
+                }
             }
         }
     }
@@ -383,20 +362,8 @@ void Game::render() {
     SDL_RenderClear(renderer);
 
     if (gameState == PLAYING) {
-        if (getElapsedTime() >= enemy3StartTime) {
-            enemy3.render(renderer);
-        }
-
-        if (getElapsedTime() >= enemy2StartTime) {
-            enemy2.render(renderer);
-        }
-
-        if (getElapsedTime() >= enemy1StartTime) {
-            enemy1.render(renderer);
-        }
-
-        if (getElapsedTime() >= enemy4StartTime) {
-            enemy4.render(renderer);
+        for (const auto& enemy : enemies) {
+            enemy.render(renderer);
         }
 //        player.addtexture("images.png",renderer);
 
@@ -442,6 +409,12 @@ bool Game::isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2) {
                 rect1.y < rect2.y + rect2.h &&
                 rect1.y + rect1.h > rect2.y);
     }
+bool Game::checkPlayerEnemyCollision(const Character& player, const Enemy& enemy) {
+    SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
+    SDL_Rect enemyRect = {enemy.x, enemy.y, SQUARE_SIZE, SQUARE_SIZE};
+
+    return isCollision(playerRect, enemyRect);
+}
 void Game::waitUntilKeyPressed() {
     SDL_Event e;
     while (true) {
@@ -462,7 +435,7 @@ void Game::initElement() {
     startTime = SDL_GetTicks();
     lastPlayTime = 0;
     numLives = 1;
-
+    lastEnemySpawnTime = 0;
     player.x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2;
     player.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
     player.velX = 0;
@@ -478,24 +451,32 @@ void Game::initElement() {
         player2.isJumping2 = false;
         fill(begin(player2.isKeyPressed),end(player2.isKeyPressed), false);
     }
+    enemies.clear();
+}
 
-    enemy1.x = SCREEN_WIDTH - SQUARE_SIZE;
-    enemy1.y = SCREEN_HEIGHT - SQUARE_SIZE;
-    enemy1.velX = 5;
-    enemy1.velY = 5;
+void Game::spawnEnemy() {
+    int spawnX, spawnY;
+    int corner = rand() % 3;
+    switch (corner) {
+        case 0:  // Top-left corner
+            spawnX = SCREEN_WIDTH - SQUARE_SIZE;
+            spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
+            break;
+        case 1:  // Bottom-left corner
+            spawnX = 0;
+            spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
+            break;
+        case 2:  // Bottom-right corner
+            spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
+            spawnY = 0;
+            break;
+        default:
+            break;
+    }
 
-    enemy2.x = SCREEN_WIDTH - SQUARE_SIZE;
-    enemy2.y = SCREEN_HEIGHT - SQUARE_SIZE;
-    enemy2.velX = 3;
-    enemy2.velY = 3;
+    int spawnVelX = rand() % 5 + 1;
+    int spawnVelY = rand() % 5 + 1;
 
-    enemy3.x = 0;
-    enemy3.y = SCREEN_HEIGHT - SQUARE_SIZE;
-    enemy3.velX = 3;
-    enemy3.velY = 3;
-
-    enemy4.x = 0;
-    enemy4.y = 0;
-    enemy4.velX = 3;
-    enemy4.velY = 3;
+    Enemy newEnemy(spawnX, spawnY, spawnVelX, spawnVelY);
+    enemies.push_back(newEnemy);
 }

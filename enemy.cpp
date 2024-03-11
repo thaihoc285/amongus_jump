@@ -27,7 +27,7 @@ void Enemy::move2() {
     }
 }
 
-void Enemy::render(SDL_Renderer* renderer) {
+void Enemy::render(SDL_Renderer* renderer) const {
     SDL_SetRenderDrawColor(renderer, 250, 0, 0, 0);
     SDL_Rect enemyRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
     SDL_RenderFillRect(renderer, &enemyRect);
