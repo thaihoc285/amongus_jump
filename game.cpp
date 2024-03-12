@@ -12,10 +12,6 @@ Game::Game()
       renderer(nullptr),
       player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png"),
       player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {250, 250, 250, 100},"image/captainleft.png","image/captainright.png"),
-      enemy1(SCREEN_WIDTH - SQUARE_SIZE, SCREEN_HEIGHT - SQUARE_SIZE, 5, 5),
-      enemy2(SCREEN_WIDTH - SQUARE_SIZE, SCREEN_HEIGHT - SQUARE_SIZE, 3, 3),
-      enemy3(0, SCREEN_HEIGHT - SQUARE_SIZE, 3, 3),
-      enemy4(0, 0, 3, 3),
       startTime(0),
       lastPlayTime(0),
       numLives(1),
@@ -30,7 +26,7 @@ Game::Game()
       frameStart(0),
       frameTime(0),
       gameState(MENU) {
-    initSDL();
+        initSDL();
 }
 
 Game::~Game() {
@@ -158,9 +154,12 @@ void Game::logSDLError(std::ostream& os, const std::string& msg, bool fatal) {
     }
 }
 void Game::drawMenu() {
-    // Clear the renderer
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
+    string path = "image/amongusbg1.jpg";
+    SDL_Surface* menuSurface = IMG_Load( path.c_str());
+    SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
+    SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
 
     // Draw "Start" button in the center
     SDL_Color textColor = {255, 255, 255, 255};  // White color
@@ -187,17 +186,21 @@ void Game::drawMenu() {
     TTF_CloseFont(menuFont);
     SDL_FreeSurface(multiSurface);
     SDL_DestroyTexture(multiTexture);
-
     SDL_FreeSurface(singerSurface);
+    SDL_FreeSurface( menuSurface );
     SDL_DestroyTexture(singerTexture);
+    SDL_DestroyTexture(menuTexture);
     // Present the renderer
     SDL_RenderPresent(renderer);
 }
 
 void Game::drawGameover() {
-    // Clear the renderer
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
+    string path = "image/gameoveramongus1.png";
+    SDL_Surface* gameoverSurface = IMG_Load( path.c_str());
+    SDL_Texture* gameoverTexture = SDL_CreateTextureFromSurface( renderer, gameoverSurface );
+    SDL_Rect gameoverRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_RenderCopy(renderer, gameoverTexture, NULL, &gameoverRect);
 
     // Draw "Start" button in the center
     SDL_Color textColor = {255, 255, 255, 255};  // White color
@@ -239,7 +242,9 @@ void Game::drawGameover() {
     SDL_FreeSurface(rtextSurface);
     SDL_DestroyTexture(rtextTexture);
     SDL_FreeSurface(bmenuSurface);
+    SDL_FreeSurface( gameoverSurface );
     SDL_DestroyTexture(bmenuTexture);
+    SDL_DestroyTexture(gameoverTexture);
     // Present the renderer
     SDL_RenderPresent(renderer);
 }
@@ -326,7 +331,6 @@ void Game::update() {
         }
         SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
         SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
-        SDL_Rect enemy1Rect = {enemy1.x, enemy1.y, SQUARE_SIZE, SQUARE_SIZE};
 
         for (const auto& enemy : enemies) {
             if (checkPlayerEnemyCollision(player, enemy) || (ismulti && checkPlayerEnemyCollision(player2, enemy))) {
@@ -341,6 +345,14 @@ void Game::update() {
 }
 
 void Game::render() {
+
+    SDL_RenderClear(renderer);
+    string path = "image/playingbg2.png";
+    SDL_Surface* gameSurface = IMG_Load( path.c_str());
+    SDL_Texture* gameTexture = SDL_CreateTextureFromSurface( renderer, gameSurface );
+    SDL_Rect gameRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_RenderCopy(renderer, gameTexture, NULL, &gameRect);
+
     SDL_Color textColor = {255, 255, 255, 255}; // White color
     std::string timerText = "" + std::to_string(getElapsedTime() / 1000) + ":" + to_string(getElapsedTime() % 1000); // Convert milliseconds to seconds
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, timerText.c_str(), textColor);
@@ -357,9 +369,6 @@ void Game::render() {
 
     SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect textRect = {(SCREEN_WIDTH - menuWidth) / 2, 10, menuWidth, menuHeight};
-
-    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 0);
-    SDL_RenderClear(renderer);
 
     if (gameState == PLAYING) {
         for (const auto& enemy : enemies) {
@@ -381,7 +390,8 @@ void Game::render() {
     }
 
     SDL_RenderPresent(renderer);
-
+    SDL_FreeSurface( gameSurface );
+    SDL_DestroyTexture(gameTexture);
     SDL_DestroyTexture(textTexture);
     SDL_FreeSurface(textSurface);
 }

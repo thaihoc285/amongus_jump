@@ -27,10 +27,6 @@ private:
 
     Character player;
     Character player2;
-    Enemy enemy1;
-    Enemy enemy2;
-    Enemy enemy3;
-    Enemy enemy4;
 
     Uint32 startTime;
     Uint32 lastPlayTime;
