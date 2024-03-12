@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1710246846 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
+1710261635 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
 	"Character.h"
 
 1710169691 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
@@ -7,11 +7,13 @@
 	<string>
 	<SDL_image.h>
 
-1710173046 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.cpp
+1710265815 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.cpp
 	"Enemy.h"
 
-1710173046 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.h
+1710263196 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.h
 	<SDL.h>
+	<string>
+	<SDL_image.h>
 
 1709733236 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\main.cpp
 	"Game.h"
@@ -23,7 +25,7 @@
 	"Enemy.h"
 	"SDL_ttf.h"
 
-1710248919 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
+1710264344 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
 	"Game.h"
 	"enemy.h"
 

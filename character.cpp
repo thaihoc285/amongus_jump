@@ -14,8 +14,7 @@ Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_C
       isJumping2(false),
       pathleft(left),
       pathright(right),
-      path(right),
-      startColor(startColor){}
+      path(right){}
 
 void Character::handleInput() {
     if (isKeyPressed[SDL_SCANCODE_UP] && !isJumping) {
@@ -91,9 +90,6 @@ void Character::render(SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load( path.c_str());
     chTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
     SDL_FreeSurface( loadedSurface );
-
-//    SDL_SetRenderDrawColor(renderer, startColor.r, startColor.g, startColor.b, startColor.a);
     SDL_Rect characterRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
-//    SDL_RenderFillRect(renderer, &characterRect);
     SDL_RenderCopy(renderer, chTexture, NULL, &characterRect);
 }

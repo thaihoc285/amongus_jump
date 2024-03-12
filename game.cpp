@@ -465,28 +465,50 @@ void Game::initElement() {
 }
 
 void Game::spawnEnemy() {
-    int spawnX, spawnY;
-    int corner = rand() % 3;
+    int spawnX, spawnY,spawnVelX,spawnVelY;
+    string color;
+    int corner = rand() % 5;
     switch (corner) {
         case 0:  // Top-left corner
             spawnX = SCREEN_WIDTH - SQUARE_SIZE;
             spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
+            color = "image/emerarball.png";
+            spawnVelX = 2;
+            spawnVelY = 3;
             break;
         case 1:  // Bottom-left corner
             spawnX = 0;
             spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
+            color = "image/grayball.png";
+            spawnVelX = 3;
+            spawnVelY = 4;
             break;
         case 2:  // Bottom-right corner
             spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
             spawnY = 0;
+            color = "image/redball.png";
+            spawnVelX = 5;
+            spawnVelY = 5;
+            break;
+        case 3:
+            spawnX = 0;
+            spawnY = SCREEN_HEIGHT - SQUARE_SIZE;
+            color = "image/greenball.png";;
+            spawnVelX = 2;
+            spawnVelY = 0;
+            break;
+        case 4:
+            spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
+            spawnY = 0;
+            color = "image/orangeball.png";
+            spawnVelX = 2;
+            spawnVelY = 1;
             break;
         default:
             break;
     }
 
-    int spawnVelX = rand() % 5 + 1;
-    int spawnVelY = rand() % 5 + 1;
 
-    Enemy newEnemy(spawnX, spawnY, spawnVelX, spawnVelY);
+    Enemy newEnemy(spawnX, spawnY, spawnVelX, spawnVelY , color);
     enemies.push_back(newEnemy);
 }

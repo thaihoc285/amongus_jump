@@ -2,11 +2,12 @@
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 650;
 const int SQUARE_SIZE = 50;
-Enemy::Enemy(int startX, int startY, int startVelX, int startVelY)
+Enemy::Enemy(int startX, int startY, int startVelX, int startVelY,string pathenemy)
     : x(startX),
       y(startY),
       velX(startVelX),
-      velY(startVelY) {}
+      velY(startVelY),
+      path(pathenemy) {}
 
 void Enemy::move() {
     x += velX;
@@ -20,16 +21,15 @@ void Enemy::move() {
     }
 }
 
-void Enemy::move2() {
-    x += velX;
-    if (x < 0 || x + SQUARE_SIZE > SCREEN_WIDTH) {
-        velX = -velX;
-    }
-}
-
 void Enemy::render(SDL_Renderer* renderer) const {
-    SDL_SetRenderDrawColor(renderer, 250, 0, 0, 0);
-    SDL_Rect enemyRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
-    SDL_RenderFillRect(renderer, &enemyRect);
+    SDL_Surface* loadedSurface = IMG_Load( path.c_str());
+    SDL_Texture* eTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
+    SDL_FreeSurface( loadedSurface );
+    SDL_Rect characterRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
+    Uint32 ticks = SDL_GetTicks();
+    Uint32 seconds = ticks / 1000;
+    Uint32 sprite = seconds % 5;
+    SDL_Rect srcrect = { 0, sprite * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE };
+    SDL_RenderCopy(renderer, eTexture, &srcrect, &characterRect);
 }
 
