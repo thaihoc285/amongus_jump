@@ -15,6 +15,8 @@ public:
     void move();
     void move2();
     void render(SDL_Renderer* renderer)const;
+    void init(SDL_Renderer* renderer);
+    SDL_Texture* eTexture;
 };
 
 #endif // ENEMY_H

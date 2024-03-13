@@ -7,7 +7,8 @@ Enemy::Enemy(int startX, int startY, int startVelX, int startVelY,string pathene
       y(startY),
       velX(startVelX),
       velY(startVelY),
-      path(pathenemy) {}
+      path(pathenemy),
+      eTexture(NULL) {}
 
 void Enemy::move() {
     x += velX;
@@ -20,15 +21,16 @@ void Enemy::move() {
         velY = -velY;
     }
 }
-
-void Enemy::render(SDL_Renderer* renderer) const {
+void Enemy::init(SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load( path.c_str());
-    SDL_Texture* eTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
-    SDL_FreeSurface( loadedSurface );
+    eTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
+    SDL_FreeSurface(loadedSurface);
+}
+void Enemy::render(SDL_Renderer* renderer) const {
     Uint32 sprite = SDL_GetTicks()/ 1000 % 5;
     SDL_Rect characterRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
     SDL_Rect srcrect = { 0, sprite * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE };
     SDL_RenderCopy(renderer, eTexture, &srcrect, &characterRect);
-    SDL_DestroyTexture(eTexture);
+//    SDL_DestroyTexture(eTexture);
 }
 

@@ -330,7 +330,7 @@ void Game::update() {
     Uint32 elapsedTime = getElapsedTime();
 
     if (gameState == PLAYING) {
-        if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL && enemies.size()<=15  ) {
+        if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL ) {
             spawnEnemy();
             lastEnemySpawnTime = elapsedTime;
         }
@@ -433,7 +433,6 @@ bool Game::isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2) {
 bool Game::checkPlayerEnemyCollision(const Character& player, const Enemy& enemy) {
     SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
     SDL_Rect enemyRect = {enemy.x, enemy.y, SQUARE_SIZE, SQUARE_SIZE};
-
     return isCollision(playerRect, enemyRect);
 }
 void Game::waitUntilKeyPressed() {
@@ -528,5 +527,6 @@ void Game::spawnEnemy() {
             break;
     }
     Enemy newEnemy(spawnX, spawnY, spawnVelX, spawnVelY , color);
+    newEnemy.init(renderer);
     enemies.push_back(newEnemy);
 }

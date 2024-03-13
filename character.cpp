@@ -21,7 +21,7 @@ void Character::handleInput() {
         velY = -9;
         isJumping = true;
     } else if (isKeyPressed[SDL_SCANCODE_DOWN]) {
-        velY = 21;
+        velY = 20;
     }
     if (isKeyPressed[SDL_SCANCODE_LEFT]) {
         velX = -5;
@@ -39,7 +39,7 @@ void Character::handleInput2() {
         velY = -9;
         isJumping2 = true;
     } else if (isKeyPressed[SDL_SCANCODE_S]) {
-        velY = 21;
+        velY = 20;
     }
     if (isKeyPressed[SDL_SCANCODE_A]) {
         velX = -5;
