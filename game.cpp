@@ -327,15 +327,15 @@ void Game::update() {
         SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
         SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
 
-//        for (const auto& enemy : enemies) {
-//            if (checkPlayerEnemyCollision(player, enemy) || (ismulti && checkPlayerEnemyCollision(player2, enemy))) {
-//                numLives--;
-//                if (numLives == 0) {
-//                    gameState = GAMEOVER;
-//                    lastPlayTime = elapsedTime;
-//                }
-//            }
-//        }
+        for (const auto& enemy : enemies) {
+            if (checkPlayerEnemyCollision(player, enemy) || (ismulti && checkPlayerEnemyCollision(player2, enemy))) {
+                numLives--;
+                if (numLives == 0) {
+                    gameState = GAMEOVER;
+                    lastPlayTime = elapsedTime;
+                }
+            }
+        }
     }
 }
 
