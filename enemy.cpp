@@ -31,5 +31,6 @@ void Enemy::render(SDL_Renderer* renderer) const {
     Uint32 sprite = seconds % 5;
     SDL_Rect srcrect = { 0, sprite * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE };
     SDL_RenderCopy(renderer, eTexture, &srcrect, &characterRect);
+    SDL_DestroyTexture(eTexture);
 }
 

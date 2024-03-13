@@ -4,7 +4,6 @@ const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 650;
 const int SQUARE_SIZE = 50;
 const string WINDOW_TITLE = "Block Game";
-vector<Enemy> enemies;
 const int FPS = 60;
 const float FrameDelay = (float)1000 / FPS;
 Game::Game()
@@ -141,10 +140,6 @@ void Game::initSDL() {
     }
 
     font = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 24);
-    if (!font) {
-        logSDLError(std::cout, "TTF_OpenFont", true);
-    }
-    // Load other resources and initialize variables as needed
 }
 void Game::logSDLError(std::ostream& os, const std::string& msg, bool fatal) {
     os << msg << " error: " << SDL_GetError() << std::endl;
@@ -310,7 +305,7 @@ void Game::update() {
     Uint32 elapsedTime = getElapsedTime();
 
     if (gameState == PLAYING) {
-        if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL) {
+        if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL && enemies.size() <=13 ) {
             spawnEnemy();
             lastEnemySpawnTime = elapsedTime;
         }
@@ -332,15 +327,15 @@ void Game::update() {
         SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
         SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
 
-        for (const auto& enemy : enemies) {
-            if (checkPlayerEnemyCollision(player, enemy) || (ismulti && checkPlayerEnemyCollision(player2, enemy))) {
-                numLives--;
-                if (numLives == 0) {
-                    gameState = GAMEOVER;
-                    lastPlayTime = elapsedTime;
-                }
-            }
-        }
+//        for (const auto& enemy : enemies) {
+//            if (checkPlayerEnemyCollision(player, enemy) || (ismulti && checkPlayerEnemyCollision(player2, enemy))) {
+//                numLives--;
+//                if (numLives == 0) {
+//                    gameState = GAMEOVER;
+//                    lastPlayTime = elapsedTime;
+//                }
+//            }
+//        }
     }
 }
 
@@ -388,12 +383,11 @@ void Game::render() {
         // Render the gameover screen
         drawGameover();
     }
-
-    SDL_RenderPresent(renderer);
     SDL_FreeSurface( gameSurface );
     SDL_DestroyTexture(gameTexture);
     SDL_DestroyTexture(textTexture);
     SDL_FreeSurface(textSurface);
+    SDL_RenderPresent(renderer);
 }
 
 void Game::quitSDL() {
@@ -491,11 +485,20 @@ void Game::spawnEnemy() {
             spawnVelY = 5;
             break;
         case 3:
+            if(rand() % 2){
             spawnX = 0;
             spawnY = SCREEN_HEIGHT - SQUARE_SIZE;
             color = "image/greenball.png";;
             spawnVelX = 2;
             spawnVelY = 0;
+            }
+            else {
+            spawnX = SCREEN_WIDTH - SQUARE_SIZE;
+            spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
+            color = "image/emerarball.png";
+            spawnVelX = 2;
+            spawnVelY = 3;
+            }
             break;
         case 4:
             spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
@@ -507,8 +510,6 @@ void Game::spawnEnemy() {
         default:
             break;
     }
-
-
     Enemy newEnemy(spawnX, spawnY, spawnVelX, spawnVelY , color);
     enemies.push_back(newEnemy);
 }

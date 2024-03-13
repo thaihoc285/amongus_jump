@@ -92,4 +92,5 @@ void Character::render(SDL_Renderer* renderer) {
     SDL_FreeSurface( loadedSurface );
     SDL_Rect characterRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
     SDL_RenderCopy(renderer, chTexture, NULL, &characterRect);
+    SDL_DestroyTexture(chTexture);
 }

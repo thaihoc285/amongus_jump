@@ -27,7 +27,7 @@ private:
 
     Character player;
     Character player2;
-
+    vector<Enemy> enemies;
     Uint32 startTime;
     Uint32 lastPlayTime;
     int numLives;
