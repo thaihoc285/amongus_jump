@@ -22,6 +22,7 @@ Game::Game()
       submenuHeight(0),
       lastEnemySpawnTime(0),
       ismulti(true),
+      player1lose(false),
       frameStart(0),
       frameTime(0),
       gameState(MENU) {
@@ -191,11 +192,14 @@ void Game::drawMenu() {
 
 void Game::drawGameover() {
     SDL_RenderClear(renderer);
+    int timeposition = SCREEN_HEIGHT * 1/3;
     string path = "image/gameoveramongus1.png";
     SDL_Surface* gameoverSurface = IMG_Load( path.c_str());
     SDL_Texture* gameoverTexture = SDL_CreateTextureFromSurface( renderer, gameoverSurface );
     SDL_Rect gameoverRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, gameoverTexture, NULL, &gameoverRect);
+
+
 
     // Draw "Start" button in the center
     SDL_Color textColor = {255, 255, 255, 255};  // White color
@@ -204,19 +208,40 @@ void Game::drawGameover() {
     if (!menuFont) {
         logSDLError(std::cout, "TTF_OpenFont", true);
     }
+    if(ismulti){
+        timeposition=SCREEN_HEIGHT * 1/10;
+        std::string restartText = "Winner";
+        SDL_Surface* winnerSurface = TTF_RenderText_Solid(menuFont, restartText.c_str(), textColor);
+        SDL_Texture* winnerTexture = SDL_CreateTextureFromSurface(renderer, winnerSurface);
+        SDL_QueryTexture(winnerTexture, NULL, NULL, &menuWidth, &menuHeight);
+        SDL_Rect winnerRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT *1/4, menuWidth, menuHeight};
+        SDL_RenderCopy(renderer, winnerTexture, NULL, &winnerRect);
+        string path ;
+        if(player1lose){
+        path = "image/captainright.png";
+        }else path = "image/spiderright.png";
+        SDL_Surface* playerwinSurface = IMG_Load( path.c_str());
+        SDL_Texture* playerwinTexture = SDL_CreateTextureFromSurface( renderer, playerwinSurface );
+        SDL_Rect playerwinRect = {(SCREEN_WIDTH - 170) / 2, SCREEN_HEIGHT *7/20, 150, 150};
+        SDL_RenderCopy(renderer, playerwinTexture, NULL, &playerwinRect);
+        SDL_FreeSurface( playerwinSurface );
+        SDL_DestroyTexture(playerwinTexture);
+        SDL_FreeSurface( winnerSurface);
+        SDL_DestroyTexture(winnerTexture);
+    }
+
 
     std::string timerOver = "Time Over: " + std::to_string(lastPlayTime / 1000) + ":" + std::to_string(lastPlayTime % 1000);  // Convert milliseconds to seconds
     SDL_Surface* toSurface = TTF_RenderText_Solid(font, timerOver.c_str(), textColor);
     SDL_Texture* toTexture = SDL_CreateTextureFromSurface(renderer, toSurface);
     int toWidth, toHeight;
     SDL_QueryTexture(toTexture, NULL, NULL, &toWidth, &toHeight);
-    SDL_Rect toRect = {(SCREEN_WIDTH - toWidth) / 2, SCREEN_HEIGHT * 1 / 3, toWidth, toHeight};
+    SDL_Rect toRect = {(SCREEN_WIDTH - toWidth) / 2, timeposition, toWidth, toHeight};
     SDL_RenderCopy(renderer, toTexture, NULL, &toRect);
 
     std::string restartText = "Restart";
     SDL_Surface* rtextSurface = TTF_RenderText_Solid(menuFont, restartText.c_str(), textColor);
     SDL_Texture* rtextTexture = SDL_CreateTextureFromSurface(renderer, rtextSurface);
-
     SDL_QueryTexture(rtextTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect rtextRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 3 / 5, menuWidth, menuHeight};
     SDL_RenderCopy(renderer, rtextTexture, NULL, &rtextRect);
@@ -305,7 +330,7 @@ void Game::update() {
     Uint32 elapsedTime = getElapsedTime();
 
     if (gameState == PLAYING) {
-        if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL && enemies.size() <=13 ) {
+        if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL && enemies.size()<=15  ) {
             spawnEnemy();
             lastEnemySpawnTime = elapsedTime;
         }
@@ -328,12 +353,15 @@ void Game::update() {
         SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
 
         for (const auto& enemy : enemies) {
-            if (checkPlayerEnemyCollision(player, enemy) || (ismulti && checkPlayerEnemyCollision(player2, enemy))) {
+            if(checkPlayerEnemyCollision(player, enemy)){
+                player1lose = true;
                 numLives--;
-                if (numLives == 0) {
+            }else if(checkPlayerEnemyCollision(player2, enemy)&&ismulti){
+                numLives--;
+            }
+            if (numLives == 0) {
                     gameState = GAMEOVER;
                     lastPlayTime = elapsedTime;
-                }
             }
         }
     }
@@ -364,25 +392,14 @@ void Game::render() {
 
     SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect textRect = {(SCREEN_WIDTH - menuWidth) / 2, 10, menuWidth, menuHeight};
-
-    if (gameState == PLAYING) {
         for (const auto& enemy : enemies) {
             enemy.render(renderer);
         }
-//        player.addtexture("images.png",renderer);
-
         player.render(renderer);
         player2.render(renderer);
 
         // Render the timer
         SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
-    } else if (gameState == MENU) {
-        // Render the menu
-        drawMenu();
-    } else if (gameState == GAMEOVER) {
-        // Render the gameover screen
-        drawGameover();
-    }
     SDL_FreeSurface( gameSurface );
     SDL_DestroyTexture(gameTexture);
     SDL_DestroyTexture(textTexture);
@@ -431,7 +448,6 @@ void Game::waitUntilKeyPressed() {
 void Game::singerplayer() {
     player2.x = SCREEN_WIDTH + SQUARE_SIZE*2 ;
     player2.y = SCREEN_HEIGHT + SQUARE_SIZE*2 ;
-
     ismulti = false;
 }
 
@@ -439,6 +455,7 @@ void Game::initElement() {
     startTime = SDL_GetTicks();
     lastPlayTime = 0;
     numLives = 1;
+    player1lose = false;
     lastEnemySpawnTime = 0;
     player.x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2;
     player.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;

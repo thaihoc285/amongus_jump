@@ -25,10 +25,8 @@ void Enemy::render(SDL_Renderer* renderer) const {
     SDL_Surface* loadedSurface = IMG_Load( path.c_str());
     SDL_Texture* eTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
     SDL_FreeSurface( loadedSurface );
+    Uint32 sprite = SDL_GetTicks()/ 1000 % 5;
     SDL_Rect characterRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
-    Uint32 ticks = SDL_GetTicks();
-    Uint32 seconds = ticks / 1000;
-    Uint32 sprite = seconds % 5;
     SDL_Rect srcrect = { 0, sprite * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE };
     SDL_RenderCopy(renderer, eTexture, &srcrect, &characterRect);
     SDL_DestroyTexture(eTexture);

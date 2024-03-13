@@ -79,13 +79,6 @@ void Character::PositionCalculation() {
     }
 }
 
-//void Character::addtexture(string path ,SDL_Renderer* renderer){
-//	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-//
-//        chTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
-//		SDL_FreeSurface( loadedSurface );
-//};
-
 void Character::render(SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load( path.c_str());
     chTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );

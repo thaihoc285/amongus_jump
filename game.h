@@ -52,7 +52,7 @@ private:
     void waitUntilKeyPressed();
     void initElement();
     bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2);
-    bool ismulti;
+    bool ismulti,player1lose;
     void singerplayer();
     Uint32 frameStart;
     Uint32 ENEMY_SPAWN_INTERVAL;
