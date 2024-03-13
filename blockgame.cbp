@@ -40,6 +40,8 @@
 		<Unit filename="init.cpp" />
 		<Unit filename="init.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="skill.cpp" />
+		<Unit filename="skill.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
