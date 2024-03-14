@@ -4,6 +4,7 @@
 #include<vector>
 #include "Character.h"
 #include "Enemy.h"
+#include "Skill.h"
 #include "SDL_ttf.h"
 
 using namespace std;
@@ -28,6 +29,7 @@ private:
     Character player;
     Character player2;
     vector<Enemy> enemies;
+    vector<Skill> skills;
     Uint32 startTime;
     Uint32 lastPlayTime;
     int numLives;
@@ -48,6 +50,7 @@ private:
     void render();
     void quitSDL();
     void spawnEnemy();
+    void spawnItem();
     Uint32 getElapsedTime();
     void waitUntilKeyPressed();
     void initElement();
@@ -56,7 +59,9 @@ private:
     void singerplayer();
     Uint32 frameStart;
     Uint32 ENEMY_SPAWN_INTERVAL;
+    Uint32 ITEM_SPAWN_INTERVAL;
     Uint32 lastEnemySpawnTime;
+    Uint32 lastItemSpawnTime;
     bool checkPlayerEnemyCollision(const Character& player, const Enemy& enemy);
     float frameTime;
 };

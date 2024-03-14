@@ -1,8 +1,10 @@
 #include "Game.h"
 #include "enemy.h"
+#include "skill.h"
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 650;
 const int SQUARE_SIZE = 50;
+const int ITEM_SIZE = 40;
 const string WINDOW_TITLE = "Block Game";
 const int FPS = 60;
 const float FrameDelay = (float)1000 / FPS;
@@ -16,11 +18,13 @@ Game::Game()
       numLives(1),
       font(nullptr),
       ENEMY_SPAWN_INTERVAL(5000),
+      ITEM_SPAWN_INTERVAL(8000),
       menuWidth(0),
       menuHeight(0),
       submenuWidth(0),
       submenuHeight(0),
       lastEnemySpawnTime(0),
+      lastItemSpawnTime(0),
       ismulti(true),
       player1lose(false),
       frameStart(0),
@@ -199,9 +203,6 @@ void Game::drawGameover() {
     SDL_Rect gameoverRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, gameoverTexture, NULL, &gameoverRect);
 
-
-
-    // Draw "Start" button in the center
     SDL_Color textColor = {255, 255, 255, 255};  // White color
     TTF_Font* menuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 36);
     TTF_Font* backmenuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 28);
@@ -229,7 +230,6 @@ void Game::drawGameover() {
         SDL_FreeSurface( winnerSurface);
         SDL_DestroyTexture(winnerTexture);
     }
-
 
     std::string timerOver = "Time Over: " + std::to_string(lastPlayTime / 1000) + ":" + std::to_string(lastPlayTime % 1000);  // Convert milliseconds to seconds
     SDL_Surface* toSurface = TTF_RenderText_Solid(font, timerOver.c_str(), textColor);
@@ -288,7 +288,6 @@ void Game::handleMenuInput(SDL_Event& e) {
     }
 }
 
-
 void Game::handlePlayingInput(SDL_Event& e) {
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
@@ -329,12 +328,14 @@ void Game::handleGameoverInput(SDL_Event& e) {
 void Game::update() {
     Uint32 elapsedTime = getElapsedTime();
 
-    if (gameState == PLAYING) {
         if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL ) {
             spawnEnemy();
             lastEnemySpawnTime = elapsedTime;
         }
-
+        if (elapsedTime - lastItemSpawnTime >= ITEM_SPAWN_INTERVAL ) {
+            spawnItem();
+            lastItemSpawnTime = elapsedTime;
+        }
         for (auto& enemy : enemies) {
             enemy.move();
         }
@@ -364,7 +365,6 @@ void Game::update() {
                     lastPlayTime = elapsedTime;
             }
         }
-    }
 }
 
 void Game::render() {
@@ -379,27 +379,20 @@ void Game::render() {
     SDL_Color textColor = {255, 255, 255, 255}; // White color
     std::string timerText = "" + std::to_string(getElapsedTime() / 1000) + ":" + to_string(getElapsedTime() % 1000); // Convert milliseconds to seconds
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, timerText.c_str(), textColor);
-
-    if (!textSurface) {
-        logSDLError(std::cout, "TTF_RenderText_Solid", true);
-    }
-
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-
-    if (!textTexture) {
-        logSDLError(std::cout, "SDL_CreateTextureFromSurface", true);
-    }
-
     SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect textRect = {(SCREEN_WIDTH - menuWidth) / 2, 10, menuWidth, menuHeight};
-        for (const auto& enemy : enemies) {
-            enemy.render(renderer);
-        }
-        player.render(renderer);
-        player2.render(renderer);
 
+    for (const auto& skill : skills) {
+        skill.render(renderer);
+    }
+    for (const auto& enemy : enemies) {
+        enemy.render(renderer);
+    }
+    player.render(renderer);
+    player2.render(renderer);
         // Render the timer
-        SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
+    SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
     SDL_FreeSurface( gameSurface );
     SDL_DestroyTexture(gameTexture);
     SDL_DestroyTexture(textTexture);
@@ -435,14 +428,6 @@ bool Game::checkPlayerEnemyCollision(const Character& player, const Enemy& enemy
     SDL_Rect enemyRect = {enemy.x, enemy.y, SQUARE_SIZE, SQUARE_SIZE};
     return isCollision(playerRect, enemyRect);
 }
-void Game::waitUntilKeyPressed() {
-    SDL_Event e;
-    while (true) {
-        if (SDL_WaitEvent(&e) != 0 && (e.type == SDL_KEYDOWN || e.type == SDL_QUIT)) {
-            return;
-        }
-    }
-}
 
 void Game::singerplayer() {
     player2.x = SCREEN_WIDTH + SQUARE_SIZE*2 ;
@@ -456,6 +441,7 @@ void Game::initElement() {
     numLives = 1;
     player1lose = false;
     lastEnemySpawnTime = 0;
+    lastItemSpawnTime = 0;
     player.x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2;
     player.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
     player.velX = 0;
@@ -472,6 +458,19 @@ void Game::initElement() {
         fill(begin(player2.isKeyPressed),end(player2.isKeyPressed), false);
     }
     enemies.clear();
+    skills.clear();
+}
+
+void Game::spawnItem() {
+    int spawnX, spawnY;
+    string itempic;
+    itempic = "image/itemblast.png";
+    spawnX = rand() % (SCREEN_WIDTH - ITEM_SIZE);
+    spawnY = rand() % (SCREEN_HEIGHT - ITEM_SIZE);
+
+    Skill newSkill(spawnX, spawnY, itempic);
+    newSkill.init(renderer);
+    skills.push_back(newSkill);
 }
 
 void Game::spawnEnemy() {
