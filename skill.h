@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include "Character.h"
 #include "Enemy.h"
-
+#include<vector>
 class Skill {
 public:
     Skill();
@@ -14,11 +14,14 @@ public:
     void init(SDL_Renderer* renderer);
     SDL_Texture* skillTexture;
     string path;
+    void power(vector<Enemy> &enemies);
+    bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2);
+    bool checkEnemySkillCollision(const Enemy& enemy, const Skill& skill);
 //    int skillX, skillY;
 //    bool active;
 //    int power;
 
-    void handleCollision(Character& player);
+//    void handleCollision(Character& player);
 };
 
 #endif // SKILL_H

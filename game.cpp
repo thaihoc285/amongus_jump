@@ -353,6 +353,17 @@ void Game::update() {
         SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
         SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
 
+for (auto it = skills.begin(); it != skills.end();) {
+
+    if (isCollision(playerRect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})) {
+        it->power(enemies);
+        skills.erase(it); // Xóa skill khỏi vector
+    }else {
+         ++it;
+    }
+}
+
+
         for (const auto& enemy : enemies) {
             if(checkPlayerEnemyCollision(player, enemy)){
                 player1lose = true;
@@ -427,6 +438,12 @@ bool Game::checkPlayerEnemyCollision(const Character& player, const Enemy& enemy
     SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
     SDL_Rect enemyRect = {enemy.x, enemy.y, SQUARE_SIZE, SQUARE_SIZE};
     return isCollision(playerRect, enemyRect);
+}
+
+bool Game::checkPlayerSkillCollision(const Character& player, const Skill& skill) {
+    SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
+    SDL_Rect skillRect = {skill.x, skill.y, ITEM_SIZE, ITEM_SIZE};
+    return isCollision(playerRect, skillRect);
 }
 
 void Game::singerplayer() {
