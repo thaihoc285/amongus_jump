@@ -27,7 +27,8 @@ void Enemy::init(SDL_Renderer* renderer) {
     SDL_FreeSurface(loadedSurface);
 }
 void Enemy::render(SDL_Renderer* renderer) const {
-    Uint32 sprite = SDL_GetTicks()/ 1000 % 5;
+    Uint32 sprite = SDL_GetTicks()/ 150 % 25;
+    if(sprite >4)sprite = 0;
     SDL_Rect characterRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
     SDL_Rect srcrect = { 0, sprite * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE };
     SDL_RenderCopy(renderer, eTexture, &srcrect, &characterRect);
