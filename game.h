@@ -43,9 +43,9 @@ private:
     void logSDLError(std::ostream& os, const std::string &msg, bool fatal);
     void drawMenu();
     void drawGameover();
-    void handleMenuInput(SDL_Event& e);
-    void handlePlayingInput(SDL_Event& e);
-    void handleGameoverInput(SDL_Event& e);
+    void handleMenuInput(SDL_Event& e,bool& quit);
+    void handlePlayingInput(SDL_Event& e,bool& quit);
+    void handleGameoverInput(SDL_Event& e,bool& quit);
     void update();
     void render();
     void quitSDL();

@@ -5,7 +5,7 @@ const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 650;
 const int SQUARE_SIZE = 50;
 const int ITEM_SIZE = 40;
-const string WINDOW_TITLE = "Block Game";
+const string WINDOW_TITLE = "Among us";
 const int FPS = 60;
 const float FrameDelay = (float)1000 / FPS;
 Game::Game()
@@ -44,81 +44,13 @@ void Game::run() {
             frameStart = SDL_GetTicks();
         if (gameState == MENU) {
             drawMenu();
-            while (SDL_PollEvent(&e) != 0) {
-                if (e.type == SDL_QUIT) {
-                    quit = true;
-                } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-                    int mouseX, mouseY;
-                    SDL_GetMouseState(&mouseX, &mouseY);
-                    SDL_Rect multiButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
-                    SDL_Rect singerButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
-                    if (mouseX >= multiButtonRect.x &&
-                        mouseX <= multiButtonRect.x + multiButtonRect.w &&
-                        mouseY >= multiButtonRect.y &&
-                        mouseY <= multiButtonRect.y + multiButtonRect.h) {
-                        gameState = PLAYING;
-                        startTime = SDL_GetTicks();
-                    }else if(mouseX >= singerButtonRect.x &&
-                            mouseX <= singerButtonRect.x + singerButtonRect.w &&
-                            mouseY >= singerButtonRect.y &&
-                            mouseY <= singerButtonRect.y + singerButtonRect.h) {
-                            singerplayer();
-                            gameState = PLAYING;
-                            startTime = SDL_GetTicks();
-                            }
-                }
-            }
+            handleMenuInput(e,quit);
         } else if (gameState == PLAYING && !quit) {
-            Uint32 elapsedTime = getElapsedTime();
-            while (SDL_PollEvent(&e) != 0) {
-                if (e.type == SDL_QUIT) {
-                    quit = true;
-                } else if (e.type == SDL_KEYDOWN) {
-                    player.isKeyPressed[e.key.keysym.scancode] = {true};
-                    player2.isKeyPressed[e.key.keysym.scancode] = {true};
-                } else if (e.type == SDL_KEYUP) {
-                    player.isKeyPressed[e.key.keysym.scancode] = {false};
-                    player2.isKeyPressed[e.key.keysym.scancode] = {false};
-                    player.isJumping = false;
-                    player2.isJumping2 = false;
-                }
-            }
-
-            update();
-
-            render();
-            frameTime = SDL_GetTicks() - frameStart;
-            if (FrameDelay > frameTime) {
-                SDL_Delay(FrameDelay - frameTime);
-            }
+            handlePlayingInput(e,quit);
         } else if (gameState == GAMEOVER&& !quit) {
             numLives = 1;
             drawGameover();
-            while (SDL_PollEvent(&e) != 0) {
-                if (e.type == SDL_QUIT) {
-                    return;
-                } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-                    int mouseX, mouseY;
-                    SDL_GetMouseState(&mouseX, &mouseY);
-                    SDL_Rect restartButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 3 / 5, menuWidth, menuHeight};
-                    SDL_Rect backmenuButtonRect = {(SCREEN_WIDTH - submenuWidth) / 2, SCREEN_HEIGHT * 3 / 4, submenuWidth, submenuHeight};
-                    if (mouseX >= restartButtonRect.x &&
-                        mouseX <= restartButtonRect.x + restartButtonRect.w &&
-                        mouseY >= restartButtonRect.y &&
-                        mouseY <= restartButtonRect.y + restartButtonRect.h) {
-                        initElement();
-                        gameState = PLAYING;
-                    }else if (mouseX >= backmenuButtonRect.x &&
-                        mouseX <= backmenuButtonRect.x + backmenuButtonRect.w &&
-                        mouseY >= backmenuButtonRect.y &&
-                        mouseY <= backmenuButtonRect.y + backmenuButtonRect.h) {
-                        ismulti = true;
-                        initElement();
-                        drawMenu();
-                        gameState = MENU;
-                        }
-                }
-            }
+            handleGameoverInput(e,quit);
         }
     }
 }
@@ -126,24 +58,19 @@ void Game::initSDL() {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         logSDLError(std::cout, "SDL_Init", true);
     }
-
     window = SDL_CreateWindow(WINDOW_TITLE.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         logSDLError(std::cout, "CreateWindow", true);
     }
-
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (renderer == nullptr) {
         logSDLError(std::cout, "CreateRenderer", true);
     }
-
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-
     if (TTF_Init() == -1) {
         logSDLError(std::cout, "TTF_Init", true);
     }
-
     font = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 24);
 }
 void Game::logSDLError(std::ostream& os, const std::string& msg, bool fatal) {
@@ -160,28 +87,24 @@ void Game::drawMenu() {
     SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
-
     // Draw "Start" button in the center
     SDL_Color textColor = {255, 255, 255, 255};  // White color
     TTF_Font* menuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 36);
     if (!menuFont) {
         logSDLError(std::cout, "TTF_OpenFont", true);
     }
-
     std::string multistart = "Multiplayer";
     SDL_Surface* multiSurface = TTF_RenderText_Solid(menuFont, multistart.c_str(), textColor);
     SDL_Texture* multiTexture = SDL_CreateTextureFromSurface(renderer, multiSurface);
     SDL_QueryTexture(multiTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect multiRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
     SDL_RenderCopy(renderer, multiTexture, NULL, &multiRect);
-
     std::string singerstart = "Singerplayer";
     SDL_Surface* singerSurface = TTF_RenderText_Solid(menuFont, singerstart.c_str(), textColor);
     SDL_Texture* singerTexture = SDL_CreateTextureFromSurface(renderer, singerSurface);
     SDL_QueryTexture(singerTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect singerRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
     SDL_RenderCopy(renderer, singerTexture, NULL, &singerRect);
-
     // Release resources
     TTF_CloseFont(menuFont);
     SDL_FreeSurface(multiSurface);
@@ -230,7 +153,6 @@ void Game::drawGameover() {
         SDL_FreeSurface( winnerSurface);
         SDL_DestroyTexture(winnerTexture);
     }
-
     std::string timerOver = "Time Over: " + std::to_string(lastPlayTime / 1000) + ":" + std::to_string(lastPlayTime % 1000);  // Convert milliseconds to seconds
     SDL_Surface* toSurface = TTF_RenderText_Solid(font, timerOver.c_str(), textColor);
     SDL_Texture* toTexture = SDL_CreateTextureFromSurface(renderer, toSurface);
@@ -238,22 +160,18 @@ void Game::drawGameover() {
     SDL_QueryTexture(toTexture, NULL, NULL, &toWidth, &toHeight);
     SDL_Rect toRect = {(SCREEN_WIDTH - toWidth) / 2, timeposition, toWidth, toHeight};
     SDL_RenderCopy(renderer, toTexture, NULL, &toRect);
-
     std::string restartText = "Restart";
     SDL_Surface* rtextSurface = TTF_RenderText_Solid(menuFont, restartText.c_str(), textColor);
     SDL_Texture* rtextTexture = SDL_CreateTextureFromSurface(renderer, rtextSurface);
     SDL_QueryTexture(rtextTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect rtextRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 3 / 5, menuWidth, menuHeight};
     SDL_RenderCopy(renderer, rtextTexture, NULL, &rtextRect);
-
     std::string backmenu = "Menu";
     SDL_Surface* bmenuSurface = TTF_RenderText_Solid(backmenuFont, backmenu.c_str(), textColor);
     SDL_Texture* bmenuTexture = SDL_CreateTextureFromSurface(renderer, bmenuSurface);
-
     SDL_QueryTexture(bmenuTexture, NULL, NULL, &submenuWidth, &submenuHeight);
     SDL_Rect bmenuRect = {(SCREEN_WIDTH - submenuWidth) / 2, SCREEN_HEIGHT * 3 / 4, submenuWidth, submenuHeight};
     SDL_RenderCopy(renderer, bmenuTexture, NULL, &bmenuRect);
-
     // Release resources
     TTF_CloseFont(menuFont);
     TTF_CloseFont(backmenuFont);
@@ -269,58 +187,80 @@ void Game::drawGameover() {
     SDL_RenderPresent(renderer);
 }
 
-void Game::handleMenuInput(SDL_Event& e) {
-    while (SDL_PollEvent(&e) != 0) {
-        if (e.type == SDL_QUIT) {
-            quitSDL();
-            exit(0);
-        } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-            int mouseX, mouseY;
-            SDL_GetMouseState(&mouseX, &mouseY);
-            if (mouseX >= (SCREEN_WIDTH - menuWidth) / 2 &&
-                mouseX <= (SCREEN_WIDTH + menuWidth) / 2 &&
-                mouseY >= (SCREEN_HEIGHT - menuHeight) / 2 &&
-                mouseY <= (SCREEN_HEIGHT + menuHeight) / 2) {
+void Game::handleMenuInput(SDL_Event& e,bool& quit) {
+while (SDL_PollEvent(&e) != 0) {
+    if (e.type == SDL_QUIT) {
+        quit = true;
+    } else if (e.type == SDL_MOUSEBUTTONDOWN) {
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+        SDL_Rect multiButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
+        SDL_Rect singerButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
+        if (mouseX >= multiButtonRect.x &&
+            mouseX <= multiButtonRect.x + multiButtonRect.w &&
+            mouseY >= multiButtonRect.y &&
+            mouseY <= multiButtonRect.y + multiButtonRect.h) {
+            gameState = PLAYING;
+            startTime = SDL_GetTicks();
+        }else if(mouseX >= singerButtonRect.x &&
+                mouseX <= singerButtonRect.x + singerButtonRect.w &&
+                mouseY >= singerButtonRect.y &&
+                mouseY <= singerButtonRect.y + singerButtonRect.h) {
+                singerplayer();
                 gameState = PLAYING;
                 startTime = SDL_GetTicks();
-            }
-        }
+                }
     }
 }
+}
 
-void Game::handlePlayingInput(SDL_Event& e) {
+void Game::handlePlayingInput(SDL_Event& e,bool& quit) {
+Uint32 elapsedTime = getElapsedTime();
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
-            quitSDL();
-            exit(0);
+            quit = true;
         } else if (e.type == SDL_KEYDOWN) {
-            player.isKeyPressed[e.key.keysym.scancode] = true;
-            player2.isKeyPressed[e.key.keysym.scancode] = true;
+            player.isKeyPressed[e.key.keysym.scancode] = {true};
+            player2.isKeyPressed[e.key.keysym.scancode] = {true};
         } else if (e.type == SDL_KEYUP) {
-            player.isKeyPressed[e.key.keysym.scancode] = false;
-            player2.isKeyPressed[e.key.keysym.scancode] = false;
+            player.isKeyPressed[e.key.keysym.scancode] = {false};
+            player2.isKeyPressed[e.key.keysym.scancode] = {false};
             player.isJumping = false;
             player2.isJumping2 = false;
         }
     }
+    update();
+    render();
+    frameTime = SDL_GetTicks() - frameStart;
+    if (FrameDelay > frameTime) {
+        SDL_Delay(FrameDelay - frameTime);
+    }
 }
 
-void Game::handleGameoverInput(SDL_Event& e) {
+void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
-            quitSDL();
-            exit(0);
+            quit = true;
         } else if (e.type == SDL_MOUSEBUTTONDOWN) {
             int mouseX, mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
-            SDL_Rect restartButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
+            SDL_Rect restartButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 3 / 5, menuWidth, menuHeight};
+            SDL_Rect backmenuButtonRect = {(SCREEN_WIDTH - submenuWidth) / 2, SCREEN_HEIGHT * 3 / 4, submenuWidth, submenuHeight};
             if (mouseX >= restartButtonRect.x &&
                 mouseX <= restartButtonRect.x + restartButtonRect.w &&
                 mouseY >= restartButtonRect.y &&
                 mouseY <= restartButtonRect.y + restartButtonRect.h) {
                 initElement();
                 gameState = PLAYING;
-            }
+            }else if (mouseX >= backmenuButtonRect.x &&
+                mouseX <= backmenuButtonRect.x + backmenuButtonRect.w &&
+                mouseY >= backmenuButtonRect.y &&
+                mouseY <= backmenuButtonRect.y + backmenuButtonRect.h) {
+                ismulti = true;
+                initElement();
+                drawMenu();
+                gameState = MENU;
+                }
         }
     }
 }
@@ -328,54 +268,56 @@ void Game::handleGameoverInput(SDL_Event& e) {
 void Game::update() {
     Uint32 elapsedTime = getElapsedTime();
 
-        if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL ) {
-            spawnEnemy();
-            lastEnemySpawnTime = elapsedTime;
-        }
-        if (elapsedTime - lastItemSpawnTime >= ITEM_SPAWN_INTERVAL ) {
-            spawnItem();
-            lastItemSpawnTime = elapsedTime;
-        }
-        for (auto& enemy : enemies) {
-            enemy.move();
-        }
-
-        player.GravityCalculation();
-        player.VelocityCalculation();
-        player.PositionCalculation();
-        player.handleInput();
-        if(ismulti){
-            player2.GravityCalculation();
-            player2.VelocityCalculation();
-            player2.PositionCalculation();
-            player2.handleInput2();
-        }
-        SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
-        SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
-
-for (auto it = skills.begin(); it != skills.end();) {
-
-    if (isCollision(playerRect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})) {
-        it->power(enemies);
-        skills.erase(it); // Xóa skill khỏi vector
-    }else {
-         ++it;
+    if (elapsedTime - lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL ) {
+        spawnEnemy();
+        lastEnemySpawnTime = elapsedTime;
     }
-}
+    if (elapsedTime - lastItemSpawnTime >= ITEM_SPAWN_INTERVAL ) {
+        spawnItem();
+        lastItemSpawnTime = elapsedTime;
+    }
+    for (auto& enemy : enemies) {
+        enemy.move();
+    }
 
+    player.GravityCalculation();
+    player.VelocityCalculation();
+    player.PositionCalculation();
+    player.handleInput();
+    if(ismulti){
+        player2.GravityCalculation();
+        player2.VelocityCalculation();
+        player2.PositionCalculation();
+        player2.handleInput2();
+    }
+    SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
+    SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
 
-        for (const auto& enemy : enemies) {
-            if(checkPlayerEnemyCollision(player, enemy)){
-                player1lose = true;
-                numLives--;
-            }else if(checkPlayerEnemyCollision(player2, enemy)&&ismulti){
-                numLives--;
-            }
-            if (numLives == 0) {
-                    gameState = GAMEOVER;
-                    lastPlayTime = elapsedTime;
-            }
+    for (auto it = skills.begin(); it != skills.end();) {
+
+        if (isCollision(playerRect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})) {
+            it->power(enemies);
+            skills.erase(it); // Xóa skill khỏi vector
+        }else if(isCollision(player2Rect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})){
+            it->power(enemies);
+            skills.erase(it);
         }
+        else {
+             ++it;
+        }
+    }
+    for (const auto& enemy : enemies) {
+        if(checkPlayerEnemyCollision(player, enemy)){
+            player1lose = true;
+            numLives--;
+        }else if(checkPlayerEnemyCollision(player2, enemy)&&ismulti){
+            numLives--;
+        }
+        if (numLives == 0) {
+                gameState = GAMEOVER;
+                lastPlayTime = elapsedTime;
+        }
+    }
 }
 
 void Game::render() {
