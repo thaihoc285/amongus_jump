@@ -13,6 +13,7 @@ public:
     void render(SDL_Renderer* renderer) const;
     void init(SDL_Renderer* renderer);
     SDL_Texture* skillTexture;
+    SDL_Texture* explosionTexture;
     string path;
     void power(vector<Enemy> &enemies);
     bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2);

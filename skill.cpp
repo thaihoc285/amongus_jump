@@ -4,8 +4,7 @@ const int SQUARE_SIZE = 50;
 Skill::Skill(int startX, int startY,string pathskill)
     : x(startX),
       y(startY),
-      path(pathskill),
-      skillTexture(NULL) {}
+      path(pathskill) {}
 
 void Skill::init(SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load( path.c_str());
@@ -16,10 +15,12 @@ void Skill::render(SDL_Renderer* renderer) const {
     SDL_Rect skillRect = {x, y, ITEM_SIZE, ITEM_SIZE};
     SDL_RenderCopy(renderer, skillTexture, NULL, &skillRect);
 }
+
+
+
+
 void Skill::power(vector<Enemy> &enemies){
     SDL_Rect skillArea = {x - 100, y - 100, 240, 240};
-    vector<int> enemiesToDestroy;
-
    for (auto it = enemies.begin(); it != enemies.end();) {
         SDL_Rect enemyRect = {it->x, it->y, SQUARE_SIZE, SQUARE_SIZE};
         if (isCollision(skillArea, enemyRect)) {

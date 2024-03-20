@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1710354587 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
+1710580463 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
 	"Character.h"
 
 1710354593 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
@@ -18,23 +18,35 @@
 1709733236 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\main.cpp
 	"Game.h"
 
-1710579791 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
+1710918953 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
 	<iostream>
 	<vector>
+	<chrono>
+	<thread>
 	"Character.h"
 	"Enemy.h"
 	"Skill.h"
 	"SDL_ttf.h"
+	"explosion.h"
 
-1710579939 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
+1710921759 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
 	"Game.h"
 	"enemy.h"
 	"skill.h"
 
-1710527132 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.cpp
+1710917080 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.cpp
 	"skill.h"
 
-1710526706 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
+1710916944 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
+	<SDL.h>
+	"Character.h"
+	"Enemy.h"
+	<vector>
+
+1710921934 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\explosion.cpp
+	"explosion.h"
+
+1710919703 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\explosion.h
 	<SDL.h>
 	"Character.h"
 	"Enemy.h"

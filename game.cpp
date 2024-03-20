@@ -292,11 +292,13 @@ void Game::update() {
     }
     SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
     SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
-
     for (auto it = skills.begin(); it != skills.end();) {
 
         if (isCollision(playerRect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})) {
             it->power(enemies);
+            Explosion explosion(player.x, player.y, "image/explosion1tran.png",SDL_GetTicks());
+            explosion.init(renderer);
+            explosions.push_back(explosion);
             skills.erase(it); // Xóa skill khỏi vector
         }else if(isCollision(player2Rect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})){
             it->power(enemies);
@@ -336,11 +338,11 @@ void Game::render() {
     SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect textRect = {(SCREEN_WIDTH - menuWidth) / 2, 10, menuWidth, menuHeight};
 
-    for (const auto& skill : skills) {
-        skill.render(renderer);
-    }
-    for (const auto& enemy : enemies) {
-        enemy.render(renderer);
+    for (const auto& skill : skills)skill.render(renderer);
+    for (const auto& enemy : enemies)enemy.render(renderer);
+    for (const auto& explosion : explosions) {
+        if(SDL_GetTicks() - explosion.inittime<360)
+            explosion.render(renderer);
     }
     player.render(renderer);
     player2.render(renderer);
@@ -423,7 +425,7 @@ void Game::initElement() {
 void Game::spawnItem() {
     int spawnX, spawnY;
     string itempic;
-    itempic = "image/itemblast.png";
+    itempic = "image/time-bomb.png";
     spawnX = rand() % (SCREEN_WIDTH - ITEM_SIZE);
     spawnY = rand() % (SCREEN_HEIGHT - ITEM_SIZE);
 

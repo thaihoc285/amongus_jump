@@ -2,10 +2,14 @@
 #define GAME_H
 #include<iostream>
 #include<vector>
+#include <chrono>
+#include <thread>
 #include "Character.h"
 #include "Enemy.h"
 #include "Skill.h"
 #include "SDL_ttf.h"
+#include "explosion.h"
+
 
 using namespace std;
 enum GameState {
@@ -30,6 +34,7 @@ private:
     Character player2;
     vector<Enemy> enemies;
     vector<Skill> skills;
+    vector<Explosion> explosions;
     Uint32 startTime;
     Uint32 lastPlayTime;
     int numLives;
