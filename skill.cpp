@@ -20,7 +20,7 @@ void Skill::render(SDL_Renderer* renderer) const {
 
 
 void Skill::power(vector<Enemy> &enemies){
-    SDL_Rect skillArea = {x - 100, y - 100, 240, 240};
+    SDL_Rect skillArea = {x - 110, y - 110, 260, 260};
    for (auto it = enemies.begin(); it != enemies.end();) {
         SDL_Rect enemyRect = {it->x, it->y, SQUARE_SIZE, SQUARE_SIZE};
         if (isCollision(skillArea, enemyRect)) {

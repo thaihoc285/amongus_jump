@@ -18,7 +18,7 @@ Game::Game()
       numLives(1),
       font(nullptr),
       ENEMY_SPAWN_INTERVAL(5000),
-      ITEM_SPAWN_INTERVAL(8000),
+      ITEM_SPAWN_INTERVAL(10000),
       menuWidth(0),
       menuHeight(0),
       submenuWidth(0),
@@ -296,7 +296,7 @@ void Game::update() {
 
         if (isCollision(playerRect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})) {
             it->power(enemies);
-            Explosion explosion(player.x, player.y, "image/explosion1tran.png",SDL_GetTicks());
+            Explosion explosion(player.x, player.y, "image/explosion.png",SDL_GetTicks());
             explosion.init(renderer);
             explosions.push_back(explosion);
             skills.erase(it); // Xóa skill khỏi vector
