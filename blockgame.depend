@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1710580463 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
+1711302553 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
 	"Character.h"
 
-1710922433 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
+1711302742 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
 	<SDL.h>
 	<string>
 	<SDL_image.h>
@@ -18,7 +18,7 @@
 1709733236 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\main.cpp
 	"Game.h"
 
-1710918953 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
+1711355634 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
 	<iostream>
 	<vector>
 	<chrono>
@@ -28,27 +28,36 @@
 	"Skill.h"
 	"SDL_ttf.h"
 	"explosion.h"
+	"invisible.h"
 
-1711287838 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
+1711359007 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
 	"Game.h"
 	"enemy.h"
 	"skill.h"
 
-1711287925 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.cpp
+1711355590 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.cpp
 	"skill.h"
 
-1710916944 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
+1711302760 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
 	<SDL.h>
 	"Character.h"
 	"Enemy.h"
 	<vector>
 
-1710922285 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\explosion.cpp
+1711288046 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\explosion.cpp
 	"explosion.h"
 
 1710919703 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\explosion.h
 	<SDL.h>
 	"Character.h"
 	"Enemy.h"
+	<vector>
+
+1711357682 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\invisible.cpp
+	"invisible.h"
+
+1711357547 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\invisible.h
+	<SDL.h>
+	"Character.h"
 	<vector>
 

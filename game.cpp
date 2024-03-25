@@ -11,11 +11,10 @@ const float FrameDelay = (float)1000 / FPS;
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
-      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png"),
-      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {250, 250, 250, 100},"image/captainleft.png","image/captainright.png"),
+      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png",1),
+      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {250, 250, 250, 100},"image/captainleft.png","image/captainright.png",1),
       startTime(0),
       lastPlayTime(0),
-      numLives(1),
       font(nullptr),
       ENEMY_SPAWN_INTERVAL(5000),
       ITEM_SPAWN_INTERVAL(10000),
@@ -48,7 +47,6 @@ void Game::run() {
         } else if (gameState == PLAYING && !quit) {
             handlePlayingInput(e,quit);
         } else if (gameState == GAMEOVER&& !quit) {
-            numLives = 1;
             drawGameover();
             handleGameoverInput(e,quit);
         }
@@ -293,15 +291,29 @@ void Game::update() {
     SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
     SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
     for (auto it = skills.begin(); it != skills.end();) {
-
         if (isCollision(playerRect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})) {
-            it->power(enemies);
-            Explosion explosion(player.x, player.y, "image/explosion.png",SDL_GetTicks());
-            explosion.init(renderer);
-            explosions.push_back(explosion);
+            it->power(enemies,player);
+            if(it->option == "bomb"){
+                Explosion explosion(player.x, player.y, "image/explosion.png",SDL_GetTicks());
+                explosion.init(renderer);
+                explosions.push_back(explosion);
+            }else if (it->option == "invisible"){
+                Invisible invisible(player,SDL_GetTicks());
+                invisible.initplayer();
+                invisibles.push_back(invisible);
+            }
             skills.erase(it); // Xóa skill khỏi vector
         }else if(isCollision(player2Rect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})){
-            it->power(enemies);
+            it->power(enemies,player2);
+            if(it->option == "bomb"){
+                Explosion explosion(player2.x, player2.y, "image/explosion.png",SDL_GetTicks());
+                explosion.init(renderer);
+                explosions.push_back(explosion);
+            }else if (it->option == "invisible"){
+                Invisible invisible(player2,SDL_GetTicks());
+                invisible.initplayer();
+                invisibles.push_back(invisible);
+            }
             skills.erase(it);
         }
         else {
@@ -311,11 +323,11 @@ void Game::update() {
     for (const auto& enemy : enemies) {
         if(checkPlayerEnemyCollision(player, enemy)){
             player1lose = true;
-            numLives--;
+            player.numlives-- ;
         }else if(checkPlayerEnemyCollision(player2, enemy)&&ismulti){
-            numLives--;
+            player2.numlives-- ;
         }
-        if (numLives == 0) {
+        if (!(player.numlives&&player2.numlives)) {
                 gameState = GAMEOVER;
                 lastPlayTime = elapsedTime;
         }
@@ -338,11 +350,17 @@ void Game::render() {
     SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect textRect = {(SCREEN_WIDTH - menuWidth) / 2, 10, menuWidth, menuHeight};
 
-    for (const auto& skill : skills)skill.render(renderer);
-    for (const auto& enemy : enemies)enemy.render(renderer);
-    for (const auto& explosion : explosions) {
+    for (auto& skill : skills)skill.render(renderer);
+    for (auto& enemy : enemies)enemy.render(renderer);
+    for (auto& explosion : explosions) {
         if(SDL_GetTicks() - explosion.inittime<360)
             explosion.render(renderer);
+    }
+    for(auto it = invisibles.begin(); it != invisibles.end();){
+        if(SDL_GetTicks() - it->inittime > 4000){
+            it->endtime();
+            invisibles.erase(it);
+        }else it++;
     }
     player.render(renderer);
     player2.render(renderer);
@@ -399,7 +417,8 @@ void Game::singerplayer() {
 void Game::initElement() {
     startTime = SDL_GetTicks();
     lastPlayTime = 0;
-    numLives = 1;
+    player.numlives = 1;
+    player2.numlives = 1;
     player1lose = false;
     lastEnemySpawnTime = 0;
     lastItemSpawnTime = 0;
@@ -420,16 +439,32 @@ void Game::initElement() {
     }
     enemies.clear();
     skills.clear();
+    explosions.clear();
+    for(auto invisible : invisibles)invisible.endtime();
+    invisibles.clear();
 }
 
 void Game::spawnItem() {
     int spawnX, spawnY;
     string itempic;
-    itempic = "image/time-bomb.png";
+    string status;
+    int random = rand()%2;
+    switch(random){
+        case 0:
+            status = "bomb";
+            itempic = "image/time-bomb.png";
+            break;
+        case 1:
+            status = "invisible";
+            itempic = "image/invisible.png";
+            break;
+        default:
+            break;
+    }
     spawnX = rand() % (SCREEN_WIDTH - ITEM_SIZE);
     spawnY = rand() % (SCREEN_HEIGHT - ITEM_SIZE);
 
-    Skill newSkill(spawnX, spawnY, itempic);
+    Skill newSkill(spawnX, spawnY, itempic,status);
     newSkill.init(renderer);
     skills.push_back(newSkill);
 }

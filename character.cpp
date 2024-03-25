@@ -2,7 +2,7 @@
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 650;
 const int SQUARE_SIZE = 50;
-Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_Color startColor,string left,string right)
+Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_Color startColor,string left,string right,int heart)
     : chTexture(nullptr),
       x(startX),
       y(startY),
@@ -14,7 +14,8 @@ Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_C
       isJumping2(false),
       pathleft(left),
       pathright(right),
-      path(right){}
+      path(right),
+      numlives(heart){}
 
 void Character::handleInput() {
     if (isKeyPressed[SDL_SCANCODE_UP] && !isJumping) {

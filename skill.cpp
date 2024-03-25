@@ -1,10 +1,11 @@
 #include "skill.h"
 const int ITEM_SIZE = 40;
 const int SQUARE_SIZE = 50;
-Skill::Skill(int startX, int startY,string pathskill)
+Skill::Skill(int startX, int startY,string pathskill,string optionpower)
     : x(startX),
       y(startY),
-      path(pathskill) {}
+      path(pathskill),
+      option(optionpower) {}
 
 void Skill::init(SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load( path.c_str());
@@ -19,17 +20,21 @@ void Skill::render(SDL_Renderer* renderer) const {
 
 
 
-void Skill::power(vector<Enemy> &enemies){
-    SDL_Rect skillArea = {x - 110, y - 110, 260, 260};
-   for (auto it = enemies.begin(); it != enemies.end();) {
-        SDL_Rect enemyRect = {it->x, it->y, SQUARE_SIZE, SQUARE_SIZE};
-        if (isCollision(skillArea, enemyRect)) {
-            it = enemies.erase(it);
-        } else {
-            ++it;
+void Skill::power(vector<Enemy> &enemies,Character &player){
+    if(option == "bomb"){
+        SDL_Rect skillArea = {x - 110, y - 110, 260, 260};
+        for (auto it = enemies.begin(); it != enemies.end();) {
+            SDL_Rect enemyRect = {it->x, it->y, SQUARE_SIZE, SQUARE_SIZE};
+            if (isCollision(skillArea, enemyRect)) {
+                it = enemies.erase(it);
+            } else {
+                ++it;
+            }
         }
-    }
+    }else if(option == "invisible"){
+        player.numlives = 100000000000;
 
+    }
 }
 bool Skill::isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2) {
         return (rect1.x < rect2.x + rect2.w &&

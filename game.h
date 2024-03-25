@@ -9,7 +9,7 @@
 #include "Skill.h"
 #include "SDL_ttf.h"
 #include "explosion.h"
-
+#include "invisible.h"
 
 using namespace std;
 enum GameState {
@@ -35,9 +35,9 @@ private:
     vector<Enemy> enemies;
     vector<Skill> skills;
     vector<Explosion> explosions;
+    vector<Invisible> invisibles;
     Uint32 startTime;
     Uint32 lastPlayTime;
-    int numLives;
     TTF_Font* font;
     SDL_Texture* heartTexture;
 
