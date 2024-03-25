@@ -17,7 +17,7 @@ Game::Game()
       lastPlayTime(0),
       font(nullptr),
       ENEMY_SPAWN_INTERVAL(5000),
-      ITEM_SPAWN_INTERVAL(10000),
+      ITEM_SPAWN_INTERVAL(3000),
       menuWidth(0),
       menuHeight(0),
       submenuWidth(0),
@@ -299,7 +299,7 @@ void Game::update() {
                 explosions.push_back(explosion);
             }else if (it->option == "invisible"){
                 Invisible invisible(player,SDL_GetTicks());
-                invisible.initplayer();
+                invisible.initplayer("image/spiderleft.png","image/spiderright.png");
                 invisibles.push_back(invisible);
             }
             skills.erase(it); // Xóa skill khỏi vector
@@ -311,7 +311,7 @@ void Game::update() {
                 explosions.push_back(explosion);
             }else if (it->option == "invisible"){
                 Invisible invisible(player2,SDL_GetTicks());
-                invisible.initplayer();
+                invisible.initplayer("image/captainleft.png","image/captainright.png");
                 invisibles.push_back(invisible);
             }
             skills.erase(it);

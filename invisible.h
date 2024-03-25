@@ -13,7 +13,7 @@ public:
    string playerleft;
    string playerright;
     void endtime();
-    void initplayer();
+    void initplayer(string playerpathleft,string playerpathright);
 };
 
 #endif // EXPLOSION_H
