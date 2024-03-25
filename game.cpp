@@ -17,7 +17,7 @@ Game::Game()
       lastPlayTime(0),
       font(nullptr),
       ENEMY_SPAWN_INTERVAL(5000),
-      ITEM_SPAWN_INTERVAL(3000),
+      ITEM_SPAWN_INTERVAL(10000),
       menuWidth(0),
       menuHeight(0),
       submenuWidth(0),
