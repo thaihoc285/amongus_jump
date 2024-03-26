@@ -1,6 +1,4 @@
 #include "Game.h"
-#include "enemy.h"
-#include "skill.h"
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 650;
 const int SQUARE_SIZE = 50;
@@ -11,8 +9,8 @@ const float FrameDelay = (float)1000 / FPS;
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
-      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png",1),
-      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {250, 250, 250, 100},"image/captainleft.png","image/captainright.png",1),
+      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png",1,SQUARE_SIZE),
+      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {250, 250, 250, 100},"image/captainleft.png","image/captainright.png",1,SQUARE_SIZE),
       startTime(0),
       lastPlayTime(0),
       font(nullptr),
@@ -301,6 +299,10 @@ void Game::update() {
                 Invisible invisible(player,SDL_GetTicks());
                 invisible.initplayer("image/spiderleft.png","image/spiderright.png");
                 invisibles.push_back(invisible);
+            }else if (it->option == "monster"){
+                Monster monster(player);
+                monster.initplayer("image/spiderleft.png","image/spiderright.png");
+                monsters.push_back(monster);
             }
             skills.erase(it); // Xóa skill khỏi vector
         }else if(isCollision(player2Rect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})){
@@ -321,10 +323,10 @@ void Game::update() {
         }
     }
     for (const auto& enemy : enemies) {
-        if(checkPlayerEnemyCollision(player, enemy)){
+        if(checkPlayerEnemyCollision(player, enemy)&&!player.ismonster){
             player1lose = true;
             player.numlives-- ;
-        }else if(checkPlayerEnemyCollision(player2, enemy)&&ismulti){
+        }else if(checkPlayerEnemyCollision(player2, enemy)&&ismulti&&!player2.ismonster){
             player2.numlives-- ;
         }
         if (!(player.numlives&&player2.numlives)) {
@@ -335,7 +337,6 @@ void Game::update() {
 }
 
 void Game::render() {
-
     SDL_RenderClear(renderer);
     string path = "image/playingbg2.png";
     SDL_Surface* gameSurface = IMG_Load( path.c_str());
@@ -355,6 +356,22 @@ void Game::render() {
     for (auto& explosion : explosions) {
         if(SDL_GetTicks() - explosion.inittime<360)
             explosion.render(renderer);
+    }
+    for(auto it = monsters.begin(); it != monsters.end();) {
+        if(!player.ismonster && it->playermon==&player || (!player2.ismonster && it->playermon == &player2)){
+                it->endtime();
+                monsters.erase(it);
+        }
+        else it++;
+    }
+    for (auto it = enemies.begin(); it!= enemies.end();) {
+        if(checkPlayerEnemyCollision(player, *it)&&player.ismonster){
+            enemies.erase(it);
+            player.ismonster = false;
+        }else if(checkPlayerEnemyCollision(player2, *it)&&ismulti&&player2.ismonster){
+            enemies.erase(it);
+            player2.ismonster = false;
+        }else it++;
     }
     for(auto it = invisibles.begin(); it != invisibles.end();){
         if(SDL_GetTicks() - it->inittime > 4000){
@@ -442,13 +459,14 @@ void Game::initElement() {
     explosions.clear();
     for(auto invisible : invisibles)invisible.endtime();
     invisibles.clear();
+    for(auto monster : monsters)monster.endtime();
 }
 
 void Game::spawnItem() {
     int spawnX, spawnY;
     string itempic;
     string status;
-    int random = rand()%2;
+    int random = rand()%3;
     switch(random){
         case 0:
             status = "bomb";
@@ -458,6 +476,9 @@ void Game::spawnItem() {
             status = "invisible";
             itempic = "image/invisible.png";
             break;
+        case 2:
+            status = "monster";
+            itempic = "image/monster.png";
         default:
             break;
     }

@@ -44,6 +44,8 @@
 		<Unit filename="invisible.cpp" />
 		<Unit filename="invisible.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="monster.cpp" />
+		<Unit filename="monster.h" />
 		<Unit filename="skill.cpp" />
 		<Unit filename="skill.h" />
 		<Extensions>

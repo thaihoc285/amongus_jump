@@ -1,8 +1,7 @@
 #include "Character.h"
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 650;
-const int SQUARE_SIZE = 50;
-Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_Color startColor,string left,string right,int heart)
+Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_Color startColor,string left,string right,int heart,int sizep)
     : chTexture(nullptr),
       x(startX),
       y(startY),
@@ -15,6 +14,8 @@ Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_C
       pathleft(left),
       pathright(right),
       path(right),
+      playersize(sizep),
+      ismonster(false),
       numlives(heart){}
 
 void Character::handleInput() {
@@ -69,14 +70,14 @@ void Character::PositionCalculation() {
     if (x < 0) {
         x = 0;
     }
-    if (x + SQUARE_SIZE > SCREEN_WIDTH) {
-        x = SCREEN_WIDTH - SQUARE_SIZE;
+    if (x + playersize > SCREEN_WIDTH) {
+        x = SCREEN_WIDTH - playersize;
     }
     if (y < 0) {
         y = 0;
     }
-    if (y + SQUARE_SIZE > SCREEN_HEIGHT) {
-        y = SCREEN_HEIGHT - SQUARE_SIZE;
+    if (y + playersize > SCREEN_HEIGHT) {
+        y = SCREEN_HEIGHT - playersize;
     }
 }
 
@@ -84,7 +85,7 @@ void Character::render(SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load( path.c_str());
     chTexture = SDL_CreateTextureFromSurface( renderer, loadedSurface );
     SDL_FreeSurface( loadedSurface );
-    SDL_Rect characterRect = {x, y, SQUARE_SIZE, SQUARE_SIZE};
+    SDL_Rect characterRect = {x, y, playersize, playersize};
     SDL_RenderCopy(renderer, chTexture, NULL, &characterRect);
     SDL_DestroyTexture(chTexture);
 }

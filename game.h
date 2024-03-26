@@ -7,6 +7,7 @@
 #include "Character.h"
 #include "Enemy.h"
 #include "Skill.h"
+#include "monster.h"
 #include "SDL_ttf.h"
 #include "explosion.h"
 #include "invisible.h"
@@ -36,6 +37,7 @@ private:
     vector<Skill> skills;
     vector<Explosion> explosions;
     vector<Invisible> invisibles;
+    vector<Monster> monsters;
     Uint32 startTime;
     Uint32 lastPlayTime;
     TTF_Font* font;

@@ -12,6 +12,7 @@ public:
    Uint32 inittime;
    string playerleft;
    string playerright;
+   bool ghostmonster;
     void endtime();
     void initplayer(string playerpathleft,string playerpathright);
 };

@@ -31,9 +31,6 @@ void Skill::power(vector<Enemy> &enemies,Character &player){
                 ++it;
             }
         }
-    }else if(option == "invisible"){
-        player.numlives = 100000000000;
-
     }
 }
 bool Skill::isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2) {
