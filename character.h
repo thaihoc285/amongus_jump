@@ -24,7 +24,7 @@ public:
     void VelocityCalculation();
     void PositionCalculation();
     void render(SDL_Renderer* renderer);
-    bool ismonster;
+    bool ismonster,isghost;
     int numlives;
 };
 

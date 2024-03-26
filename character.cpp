@@ -16,6 +16,7 @@ Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_C
       path(right),
       playersize(sizep),
       ismonster(false),
+      isghost(false),
       numlives(heart){}
 
 void Character::handleInput() {

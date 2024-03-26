@@ -304,7 +304,7 @@ void Game::update() {
                 monster.initplayer("image/spiderleft.png","image/spiderright.png");
                 monsters.push_back(monster);
             }
-            skills.erase(it); // Xóa skill khỏi vector
+            skills.erase(it);
         }else if(isCollision(player2Rect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})){
             it->power(enemies,player2);
             if(it->option == "bomb"){
@@ -315,6 +315,10 @@ void Game::update() {
                 Invisible invisible(player2,SDL_GetTicks());
                 invisible.initplayer("image/captainleft.png","image/captainright.png");
                 invisibles.push_back(invisible);
+            }else if (it->option == "monster"){
+                Monster monster(player2);
+                monster.initplayer("image/captainleft.png","image/captainright.png");
+                monsters.push_back(monster);
             }
             skills.erase(it);
         }
@@ -358,17 +362,17 @@ void Game::render() {
             explosion.render(renderer);
     }
     for(auto it = monsters.begin(); it != monsters.end();) {
-        if(!player.ismonster && it->playermon==&player || (!player2.ismonster && it->playermon == &player2)){
+        if(!player.ismonster && it->playermon==&player && !player.isghost || (!player2.ismonster && it->playermon == &player2 && !player2.isghost)){
                 it->endtime();
                 monsters.erase(it);
         }
         else it++;
     }
     for (auto it = enemies.begin(); it!= enemies.end();) {
-        if(checkPlayerEnemyCollision(player, *it)&&player.ismonster){
+        if(checkPlayerEnemyCollision(player, *it)&&player.ismonster&&!player.isghost){
             enemies.erase(it);
             player.ismonster = false;
-        }else if(checkPlayerEnemyCollision(player2, *it)&&ismulti&&player2.ismonster){
+        }else if(checkPlayerEnemyCollision(player2, *it)&&ismulti&&player2.ismonster&&!player2.isghost){
             enemies.erase(it);
             player2.ismonster = false;
         }else it++;
@@ -433,6 +437,7 @@ void Game::singerplayer() {
 
 void Game::initElement() {
     startTime = SDL_GetTicks();
+
     lastPlayTime = 0;
     player.numlives = 1;
     player2.numlives = 1;
@@ -460,6 +465,8 @@ void Game::initElement() {
     for(auto invisible : invisibles)invisible.endtime();
     invisibles.clear();
     for(auto monster : monsters)monster.endtime();
+    monsters.clear();
+    player.ismonster=player2.ismonster=player.isghost=player2.isghost=false;
 }
 
 void Game::spawnItem() {
