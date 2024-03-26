@@ -26,6 +26,7 @@ public:
     void render(SDL_Renderer* renderer);
     bool ismonster,isghost;
     int numlives;
+    double moveOx,moveOy;
 };
 
 #endif // CHARACTER_H

@@ -5,8 +5,8 @@ Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_C
     : chTexture(nullptr),
       x(startX),
       y(startY),
-      velX(startVelX),
-      velY(startVelY),
+      velX(0),
+      velY(0),
       aceX(0),
       aceY(0),
       isJumping(false),
@@ -17,7 +17,9 @@ Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_C
       playersize(sizep),
       ismonster(false),
       isghost(false),
-      numlives(heart){}
+      numlives(heart),
+      moveOx(startVelX),
+      moveOy(startVelY){}
 
 void Character::handleInput() {
     if (isKeyPressed[SDL_SCANCODE_UP] && !isJumping) {
@@ -27,10 +29,10 @@ void Character::handleInput() {
         velY = 20;
     }
     if (isKeyPressed[SDL_SCANCODE_LEFT]) {
-        velX = -5;
+        velX = -moveOx;
         path = pathleft;
     } else if (isKeyPressed[SDL_SCANCODE_RIGHT]) {
-        velX = 5;
+        velX = moveOx;
         path = pathright;
     } else {
         velX = 0;

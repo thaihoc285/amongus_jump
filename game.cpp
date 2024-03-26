@@ -9,13 +9,13 @@ const float FrameDelay = (float)1000 / FPS;
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
-      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png",1,SQUARE_SIZE),
-      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 0, 0, {250, 250, 250, 100},"image/captainleft.png","image/captainright.png",1,SQUARE_SIZE),
+      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0, {50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png",1,SQUARE_SIZE),
+      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0, {250, 250, 250, 100},"image/captainleft.png","image/captainright.png",1,SQUARE_SIZE),
       startTime(0),
       lastPlayTime(0),
       font(nullptr),
       ENEMY_SPAWN_INTERVAL(5000),
-      ITEM_SPAWN_INTERVAL(10000),
+      ITEM_SPAWN_INTERVAL(2000),
       menuWidth(0),
       menuHeight(0),
       submenuWidth(0),
@@ -286,8 +286,8 @@ void Game::update() {
         player2.PositionCalculation();
         player2.handleInput2();
     }
-    SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
-    SDL_Rect player2Rect = {player2.x, player2.y, SQUARE_SIZE, SQUARE_SIZE};
+    SDL_Rect playerRect = {player.x, player.y, player.playersize, player.playersize};
+    SDL_Rect player2Rect = {player2.x, player2.y, player2.playersize, player2.playersize};
     for (auto it = skills.begin(); it != skills.end();) {
         if (isCollision(playerRect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})) {
             it->power(enemies,player);
@@ -327,10 +327,10 @@ void Game::update() {
         }
     }
     for (const auto& enemy : enemies) {
-        if(checkPlayerEnemyCollision(player, enemy)&&!player.ismonster){
+        if((checkPlayerEnemyCollision(player, enemy)&&!player.ismonster)||(player2.ismonster&&checkPlayerCharacterCollision(player, player2))){
             player1lose = true;
             player.numlives-- ;
-        }else if(checkPlayerEnemyCollision(player2, enemy)&&ismulti&&!player2.ismonster){
+        }else if(((checkPlayerEnemyCollision(player2, enemy)&&!player2.ismonster)||(player.ismonster&&checkPlayerCharacterCollision(player2,player)))&&ismulti){
             player2.numlives-- ;
         }
         if (!(player.numlives&&player2.numlives)) {
@@ -381,7 +381,9 @@ void Game::render() {
         if(SDL_GetTicks() - it->inittime > 4000){
             it->endtime();
             invisibles.erase(it);
-        }else it++;
+        }else {
+            it++;
+        }
     }
     player.render(renderer);
     player2.render(renderer);
@@ -398,11 +400,9 @@ void Game::quitSDL() {
     if (renderer) {
         SDL_DestroyRenderer(renderer);
     }
-
     if (window) {
         SDL_DestroyWindow(window);
     }
-
     SDL_Quit();
     TTF_CloseFont(font);
     TTF_Quit();
@@ -418,20 +418,24 @@ bool Game::isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2) {
                 rect1.y + rect1.h > rect2.y);
     }
 bool Game::checkPlayerEnemyCollision(const Character& player, const Enemy& enemy) {
-    SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
+    SDL_Rect playerRect = {player.x, player.y, player.playersize, player.playersize};
     SDL_Rect enemyRect = {enemy.x, enemy.y, SQUARE_SIZE, SQUARE_SIZE};
     return isCollision(playerRect, enemyRect);
 }
-
+bool Game::checkPlayerCharacterCollision(const Character& player, const Character& player2) {
+    SDL_Rect playerRect = {player.x, player.y, player.playersize, player.playersize};
+    SDL_Rect player2Rect = {player2.x, player2.y, player2.playersize, player2.playersize};
+    return isCollision(playerRect, player2Rect);
+}
 bool Game::checkPlayerSkillCollision(const Character& player, const Skill& skill) {
-    SDL_Rect playerRect = {player.x, player.y, SQUARE_SIZE, SQUARE_SIZE};
+    SDL_Rect playerRect = {player.x, player.y, player.playersize, player.playersize};
     SDL_Rect skillRect = {skill.x, skill.y, ITEM_SIZE, ITEM_SIZE};
     return isCollision(playerRect, skillRect);
 }
 
 void Game::singerplayer() {
-    player2.x = SCREEN_WIDTH + SQUARE_SIZE*2 ;
-    player2.y = SCREEN_HEIGHT + SQUARE_SIZE*2 ;
+    player2.x = SCREEN_WIDTH + player2.playersize*2 ;
+    player2.y = SCREEN_HEIGHT + player2.playersize*2 ;
     ismulti = false;
 }
 

@@ -15,6 +15,7 @@ public:
    bool ghostmonster;
     void endtime();
     void initplayer(string playerpathleft,string playerpathright);
+//    void maintain();
 };
 
 #endif // EXPLOSION_H

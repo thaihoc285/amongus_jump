@@ -71,6 +71,7 @@ private:
     Uint32 lastItemSpawnTime;
     bool checkPlayerEnemyCollision(const Character& player, const Enemy& enemy);
     bool checkPlayerSkillCollision(const Character& player, const Skill& skill);
+    bool checkPlayerCharacterCollision(const Character& player, const Character& player2);
     float frameTime;
 
 };
