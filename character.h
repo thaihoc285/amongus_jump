@@ -16,7 +16,7 @@ public:
     SDL_Color startColor;
     bool isKeyPressed[SDL_NUM_SCANCODES] = {false};
     SDL_Texture* chTexture;
-    Character(int startX, int startY, int startVelX, int startVelY, SDL_Color startColor,string left,string right,int heart,int sizep);
+    Character(int startX, int startY, int startVelX, int startVelY,double grvt,SDL_Color startColor,string left,string right,int heart,int sizep);
     int playersize;
     void handleInput();
     void handleInput2();
@@ -24,8 +24,9 @@ public:
     void VelocityCalculation();
     void PositionCalculation();
     void render(SDL_Renderer* renderer);
-    bool ismonster,isghost;
+    bool ismonster,isghost,isgravity;
     int numlives;
+    double gravityx;
     double moveOx,moveOy;
 };
 

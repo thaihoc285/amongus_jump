@@ -9,13 +9,13 @@ const float FrameDelay = (float)1000 / FPS;
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
-      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0, {50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png",1,SQUARE_SIZE),
-      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0, {250, 250, 250, 100},"image/captainleft.png","image/captainright.png",1,SQUARE_SIZE),
+      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.6,{50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png",1,SQUARE_SIZE),
+      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.6,{250, 250, 250, 100},"image/captainleft.png","image/captainright.png",1,SQUARE_SIZE),
       startTime(0),
       lastPlayTime(0),
       font(nullptr),
       ENEMY_SPAWN_INTERVAL(5000),
-      ITEM_SPAWN_INTERVAL(10000),
+      ITEM_SPAWN_INTERVAL(3000),
       menuWidth(0),
       menuHeight(0),
       submenuWidth(0),
@@ -52,25 +52,25 @@ void Game::run() {
 }
 void Game::initSDL() {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        logSDLError(std::cout, "SDL_Init", true);
+        logSDLError(cout, "SDL_Init", true);
     }
     window = SDL_CreateWindow(WINDOW_TITLE.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
-        logSDLError(std::cout, "CreateWindow", true);
+        logSDLError(cout, "CreateWindow", true);
     }
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (renderer == nullptr) {
-        logSDLError(std::cout, "CreateRenderer", true);
+        logSDLError(cout, "CreateRenderer", true);
     }
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     if (TTF_Init() == -1) {
-        logSDLError(std::cout, "TTF_Init", true);
+        logSDLError(cout, "TTF_Init", true);
     }
     font = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 24);
 }
-void Game::logSDLError(std::ostream& os, const std::string& msg, bool fatal) {
-    os << msg << " error: " << SDL_GetError() << std::endl;
+void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
+    os << msg << " error: " << SDL_GetError() << endl;
     if (fatal) {
         quitSDL();
         exit(1);
@@ -87,15 +87,15 @@ void Game::drawMenu() {
     SDL_Color textColor = {255, 255, 255, 255};  // White color
     TTF_Font* menuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 36);
     if (!menuFont) {
-        logSDLError(std::cout, "TTF_OpenFont", true);
+        logSDLError(cout, "TTF_OpenFont", true);
     }
-    std::string multistart = "Multiplayer";
+    string multistart = "Multiplayer";
     SDL_Surface* multiSurface = TTF_RenderText_Solid(menuFont, multistart.c_str(), textColor);
     SDL_Texture* multiTexture = SDL_CreateTextureFromSurface(renderer, multiSurface);
     SDL_QueryTexture(multiTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect multiRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
     SDL_RenderCopy(renderer, multiTexture, NULL, &multiRect);
-    std::string singerstart = "Singerplayer";
+    string singerstart = "Singerplayer";
     SDL_Surface* singerSurface = TTF_RenderText_Solid(menuFont, singerstart.c_str(), textColor);
     SDL_Texture* singerTexture = SDL_CreateTextureFromSurface(renderer, singerSurface);
     SDL_QueryTexture(singerTexture, NULL, NULL, &menuWidth, &menuHeight);
@@ -106,7 +106,7 @@ void Game::drawMenu() {
     SDL_FreeSurface(multiSurface);
     SDL_DestroyTexture(multiTexture);
     SDL_FreeSurface(singerSurface);
-    SDL_FreeSurface( menuSurface );
+    SDL_FreeSurface(menuSurface);
     SDL_DestroyTexture(singerTexture);
     SDL_DestroyTexture(menuTexture);
     // Present the renderer
@@ -126,11 +126,11 @@ void Game::drawGameover() {
     TTF_Font* menuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 36);
     TTF_Font* backmenuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 28);
     if (!menuFont) {
-        logSDLError(std::cout, "TTF_OpenFont", true);
+        logSDLError(cout, "TTF_OpenFont", true);
     }
     if(ismulti){
         timeposition=SCREEN_HEIGHT * 1/10;
-        std::string restartText = "Winner";
+        string restartText = "Winner";
         SDL_Surface* winnerSurface = TTF_RenderText_Solid(menuFont, restartText.c_str(), textColor);
         SDL_Texture* winnerTexture = SDL_CreateTextureFromSurface(renderer, winnerSurface);
         SDL_QueryTexture(winnerTexture, NULL, NULL, &menuWidth, &menuHeight);
@@ -149,20 +149,20 @@ void Game::drawGameover() {
         SDL_FreeSurface( winnerSurface);
         SDL_DestroyTexture(winnerTexture);
     }
-    std::string timerOver = "Time Over: " + std::to_string(lastPlayTime / 1000) + ":" + std::to_string(lastPlayTime % 1000);  // Convert milliseconds to seconds
+    string timerOver = "Time Over: " + to_string(lastPlayTime / 1000) + ":" + to_string(lastPlayTime % 1000);  // Convert milliseconds to seconds
     SDL_Surface* toSurface = TTF_RenderText_Solid(font, timerOver.c_str(), textColor);
     SDL_Texture* toTexture = SDL_CreateTextureFromSurface(renderer, toSurface);
     int toWidth, toHeight;
     SDL_QueryTexture(toTexture, NULL, NULL, &toWidth, &toHeight);
     SDL_Rect toRect = {(SCREEN_WIDTH - toWidth) / 2, timeposition, toWidth, toHeight};
     SDL_RenderCopy(renderer, toTexture, NULL, &toRect);
-    std::string restartText = "Restart";
+    string restartText = "Restart";
     SDL_Surface* rtextSurface = TTF_RenderText_Solid(menuFont, restartText.c_str(), textColor);
     SDL_Texture* rtextTexture = SDL_CreateTextureFromSurface(renderer, rtextSurface);
     SDL_QueryTexture(rtextTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect rtextRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 3 / 5, menuWidth, menuHeight};
     SDL_RenderCopy(renderer, rtextTexture, NULL, &rtextRect);
-    std::string backmenu = "Menu";
+    string backmenu = "Menu";
     SDL_Surface* bmenuSurface = TTF_RenderText_Solid(backmenuFont, backmenu.c_str(), textColor);
     SDL_Texture* bmenuTexture = SDL_CreateTextureFromSurface(renderer, bmenuSurface);
     SDL_QueryTexture(bmenuTexture, NULL, NULL, &submenuWidth, &submenuHeight);
@@ -303,6 +303,10 @@ void Game::update() {
                 Monster monster(player);
                 monster.initplayer("image/spiderleft.png","image/spiderright.png");
                 monsters.push_back(monster);
+            }else if (it -> option == "nogravity"){
+                Nogravity nogravity(player,SDL_GetTicks());
+                nogravity.initplayer();
+                nogravities.push_back(nogravity);
             }
             skills.erase(it);
         }else if(isCollision(player2Rect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})){
@@ -319,6 +323,10 @@ void Game::update() {
                 Monster monster(player2);
                 monster.initplayer("image/captainleft.png","image/captainright.png");
                 monsters.push_back(monster);
+            }else if (it -> option == "nogravity"){
+                Nogravity nogravity(player2,SDL_GetTicks());
+                nogravity.initplayer();
+                nogravities.push_back(nogravity);
             }
             skills.erase(it);
         }
@@ -326,18 +334,18 @@ void Game::update() {
              ++it;
         }
     }
-    for (const auto& enemy : enemies) {
-        if((checkPlayerEnemyCollision(player, enemy)&&!player.ismonster)||(player2.ismonster&&checkPlayerCharacterCollision(player, player2))){
-            player1lose = true;
-            player.numlives-- ;
-        }else if(((checkPlayerEnemyCollision(player2, enemy)&&!player2.ismonster)||(player.ismonster&&checkPlayerCharacterCollision(player2,player)))&&ismulti){
-            player2.numlives-- ;
-        }
-        if (!(player.numlives&&player2.numlives)) {
-                gameState = GAMEOVER;
-                lastPlayTime = elapsedTime;
-        }
-    }
+//    for (auto& enemy : enemies) {
+//        if((checkPlayerEnemyCollision(player, enemy)&&!player.ismonster)||(player2.ismonster&&checkPlayerCharacterCollision(player, player2))){
+//            player1lose = true;
+//            player.numlives-- ;
+//        }else if(((checkPlayerEnemyCollision(player2, enemy)&&!player2.ismonster)||(player.ismonster&&checkPlayerCharacterCollision(player2,player)))&&ismulti){
+//            player2.numlives-- ;
+//        }
+//        if (!(player.numlives&&player2.numlives)) {
+//                gameState = GAMEOVER;
+//                lastPlayTime = elapsedTime;
+//        }
+//    }
 }
 
 void Game::render() {
@@ -349,7 +357,7 @@ void Game::render() {
     SDL_RenderCopy(renderer, gameTexture, NULL, &gameRect);
 
     SDL_Color textColor = {255, 255, 255, 255}; // White color
-    std::string timerText = "" + std::to_string(getElapsedTime() / 1000) + ":" + to_string(getElapsedTime() % 1000); // Convert milliseconds to seconds
+    string timerText = "" + to_string(getElapsedTime() / 1000) + ":" + to_string(getElapsedTime() % 1000); // Convert milliseconds to seconds
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, timerText.c_str(), textColor);
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
     SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
@@ -385,6 +393,14 @@ void Game::render() {
             it++;
         }
     }
+    for(auto it = nogravities.begin(); it != nogravities.end();){
+        if(SDL_GetTicks() - it->inittime > 7000){
+            it->endtime();
+            nogravities.erase(it);
+        }else {
+            it++;
+        }
+    }
     player.render(renderer);
     player2.render(renderer);
         // Render the timer
@@ -411,23 +427,23 @@ void Game::quitSDL() {
 Uint32 Game::getElapsedTime() {
     return SDL_GetTicks() - startTime;
 }
-bool Game::isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2) {
+bool Game::isCollision(const SDL_Rect& rect1,const SDL_Rect& rect2) {
         return (rect1.x < rect2.x + rect2.w &&
                 rect1.x + rect1.w > rect2.x &&
                 rect1.y < rect2.y + rect2.h &&
                 rect1.y + rect1.h > rect2.y);
     }
-bool Game::checkPlayerEnemyCollision(const Character& player, const Enemy& enemy) {
+bool Game::checkPlayerEnemyCollision( Character& player,  Enemy& enemy) {
     SDL_Rect playerRect = {player.x, player.y, player.playersize, player.playersize};
     SDL_Rect enemyRect = {enemy.x, enemy.y, SQUARE_SIZE, SQUARE_SIZE};
     return isCollision(playerRect, enemyRect);
 }
-bool Game::checkPlayerCharacterCollision(const Character& player, const Character& player2) {
+bool Game::checkPlayerCharacterCollision( Character& player,  Character& player2) {
     SDL_Rect playerRect = {player.x, player.y, player.playersize, player.playersize};
     SDL_Rect player2Rect = {player2.x, player2.y, player2.playersize, player2.playersize};
     return isCollision(playerRect, player2Rect);
 }
-bool Game::checkPlayerSkillCollision(const Character& player, const Skill& skill) {
+bool Game::checkPlayerSkillCollision( Character& player,  Skill& skill) {
     SDL_Rect playerRect = {player.x, player.y, player.playersize, player.playersize};
     SDL_Rect skillRect = {skill.x, skill.y, ITEM_SIZE, ITEM_SIZE};
     return isCollision(playerRect, skillRect);
@@ -471,30 +487,37 @@ void Game::initElement() {
     for(auto monster : monsters)monster.endtime();
     monsters.clear();
     player.ismonster=player2.ismonster=player.isghost=player2.isghost=false;
+    for(auto nogravity : nogravities)nogravity.endtime();
+    player.isgravity = player2.isgravity = true;
 }
 
 void Game::spawnItem() {
     int spawnX, spawnY;
     string itempic;
     string status;
-    int random = rand()%3;
+    int random = rand()%4;
     switch(random){
         case 0:
-            status = "bomb";
-            itempic = "image/time-bomb.png";
+            status = "monster";
+            itempic = "image/monster.png";
             break;
         case 1:
             status = "invisible";
             itempic = "image/invisible.png";
             break;
         case 2:
-            status = "monster";
-            itempic = "image/monster.png";
+            status = "bomb";
+            itempic = "image/time-bomb.png";
+            break;
+        case 3:
+            status = "nogravity";
+            itempic = "image/nogravity.png";
+            break;
         default:
             break;
     }
     spawnX = rand() % (SCREEN_WIDTH - ITEM_SIZE);
-    spawnY = rand() % (SCREEN_HEIGHT - ITEM_SIZE);
+    spawnY = rand() % (SCREEN_HEIGHT - ITEM_SIZE-SQUARE_SIZE);
 
     Skill newSkill(spawnX, spawnY, itempic,status);
     newSkill.init(renderer);

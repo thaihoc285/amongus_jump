@@ -27,6 +27,3 @@ void Invisible::initplayer(string playerpathleft,string playerpathright) {
     player->moveOx = 5;
     player->isghost = true;
 }
-//void Invisible::maintain(){
-//    player->isghost = true;
-//    }

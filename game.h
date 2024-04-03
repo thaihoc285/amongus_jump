@@ -11,7 +11,7 @@
 #include "SDL_ttf.h"
 #include "explosion.h"
 #include "invisible.h"
-
+#include "nogravity.h"
 using namespace std;
 enum GameState {
         MENU,
@@ -38,6 +38,7 @@ private:
     vector<Explosion> explosions;
     vector<Invisible> invisibles;
     vector<Monster> monsters;
+    vector<Nogravity> nogravities;
     Uint32 startTime;
     Uint32 lastPlayTime;
     TTF_Font* font;
@@ -61,7 +62,7 @@ private:
     Uint32 getElapsedTime();
     void waitUntilKeyPressed();
     void initElement();
-    bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2);
+    bool isCollision( const SDL_Rect& rect1,const SDL_Rect& rect2);
     bool ismulti,player1lose;
     void singerplayer();
     Uint32 frameStart;
@@ -69,9 +70,9 @@ private:
     Uint32 ITEM_SPAWN_INTERVAL;
     Uint32 lastEnemySpawnTime;
     Uint32 lastItemSpawnTime;
-    bool checkPlayerEnemyCollision(const Character& player, const Enemy& enemy);
-    bool checkPlayerSkillCollision(const Character& player, const Skill& skill);
-    bool checkPlayerCharacterCollision(const Character& player, const Character& player2);
+    bool checkPlayerEnemyCollision( Character& player,  Enemy& enemy);
+    bool checkPlayerSkillCollision( Character& player,  Skill& skill);
+    bool checkPlayerCharacterCollision( Character& player,  Character& player2);
     float frameTime;
 
 };

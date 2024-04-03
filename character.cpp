@@ -1,7 +1,7 @@
 #include "Character.h"
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 650;
-Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_Color startColor,string left,string right,int heart,int sizep)
+Character::Character(int startX, int startY, int startVelX, int startVelY,double grvt,SDL_Color startColor,string left,string right,int heart,int sizep)
     : chTexture(nullptr),
       x(startX),
       y(startY),
@@ -17,22 +17,29 @@ Character::Character(int startX, int startY, int startVelX, int startVelY, SDL_C
       playersize(sizep),
       ismonster(false),
       isghost(false),
+      isgravity(true),
       numlives(heart),
       moveOx(startVelX),
-      moveOy(startVelY){}
+      moveOy(startVelY),
+      gravityx(grvt){}
 
 void Character::handleInput() {
     if (isKeyPressed[SDL_SCANCODE_UP] && !isJumping) {
-        velY = -9;
-        isJumping = true;
+        if(isgravity){
+            velY = -9;
+            isJumping = true;
+        }else y-=(moveOx+2);
     } else if (isKeyPressed[SDL_SCANCODE_DOWN]) {
-        velY = 20;
+        if(isgravity)velY = 20;
+        else y+=(moveOx+2);
     }
     if (isKeyPressed[SDL_SCANCODE_LEFT]) {
-        velX = -moveOx;
+        if(isgravity)velX = -moveOx;
+        else x-= (moveOx+1);
         path = pathleft;
     } else if (isKeyPressed[SDL_SCANCODE_RIGHT]) {
-        velX = moveOx;
+        if(isgravity)velX = moveOx;
+        else x+=(moveOx+1);
         path = pathright;
     } else {
         velX = 0;
@@ -41,16 +48,21 @@ void Character::handleInput() {
 
 void Character::handleInput2() {
     if (isKeyPressed[SDL_SCANCODE_W] && !isJumping2) {
-        velY = -9;
-        isJumping2 = true;
+        if(isgravity){
+            velY = -9;
+            isJumping2 = true;
+        }else y-=(moveOx+2);
     } else if (isKeyPressed[SDL_SCANCODE_S]) {
-        velY = 20;
+        if(isgravity)velY = 20;
+        else y+=(moveOx+2);
     }
     if (isKeyPressed[SDL_SCANCODE_A]) {
-        velX = -5;
+        if(isgravity)velX = -moveOx;
+        else x-= (moveOx+1);
         path = pathleft;
     } else if (isKeyPressed[SDL_SCANCODE_D]) {
-        velX = 5;
+        if(isgravity)velX = moveOx;
+        else x+=(moveOx+1);
         path = pathright;
     } else {
         velX = 0;
@@ -58,7 +70,7 @@ void Character::handleInput2() {
 }
 
 void Character::GravityCalculation() {
-    aceY = 0.6;
+    aceY = gravityx;
 }
 
 void Character::VelocityCalculation() {
@@ -67,9 +79,10 @@ void Character::VelocityCalculation() {
 }
 
 void Character::PositionCalculation() {
-    x += velX;
-    y += velY;
-
+    if(isgravity){
+        x += velX;
+        y += velY;
+    }
     if (x < 0) {
         x = 0;
     }

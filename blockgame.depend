@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1711476773 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
+1712121185 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
 	"Character.h"
 
-1711476773 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
+1712120862 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
 	<SDL.h>
 	<string>
 	<SDL_image.h>
@@ -18,7 +18,7 @@
 1709733236 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\main.cpp
 	"Game.h"
 
-1711476182 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
+1712114957 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
 	<iostream>
 	<vector>
 	<chrono>
@@ -30,14 +30,15 @@
 	"SDL_ttf.h"
 	"explosion.h"
 	"invisible.h"
+	"nogravity.h"
 
-1711477859 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
+1712122430 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
 	"Game.h"
 
 1711464661 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.cpp
 	"skill.h"
 
-1711463185 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
+1711769363 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
 	<SDL.h>
 	"Character.h"
 	"Enemy.h"
@@ -52,10 +53,10 @@
 	"Enemy.h"
 	<vector>
 
-1711477859 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\invisible.cpp
+1711769366 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\invisible.cpp
 	"invisible.h"
 
-1711477860 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\invisible.h
+1711678050 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\invisible.h
 	<SDL.h>
 	"Character.h"
 	<vector>
@@ -67,4 +68,12 @@
 
 1711476900 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\monster.cpp
 	"monster.h"
+
+1712119576 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\nogravity.h
+	<SDL.h>
+	"Character.h"
+	<vector>
+
+1712120851 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\nogravity.cpp
+	"nogravity.h"
 

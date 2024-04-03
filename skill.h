@@ -19,11 +19,7 @@ public:
     bool isCollision(const SDL_Rect& rect1, const SDL_Rect& rect2);
     bool checkEnemySkillCollision(const Enemy& enemy, const Skill& skill);
     string option;
-//    int skillX, skillY;
-//    bool active;
-//    int power;
 
-//    void handleCollision(Character& player);
 };
 
 #endif // SKILL_H
