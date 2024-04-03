@@ -15,7 +15,7 @@ Game::Game()
       lastPlayTime(0),
       font(nullptr),
       ENEMY_SPAWN_INTERVAL(5000),
-      ITEM_SPAWN_INTERVAL(3000),
+      ITEM_SPAWN_INTERVAL(10000),
       menuWidth(0),
       menuHeight(0),
       submenuWidth(0),
@@ -334,18 +334,18 @@ void Game::update() {
              ++it;
         }
     }
-//    for (auto& enemy : enemies) {
-//        if((checkPlayerEnemyCollision(player, enemy)&&!player.ismonster)||(player2.ismonster&&checkPlayerCharacterCollision(player, player2))){
-//            player1lose = true;
-//            player.numlives-- ;
-//        }else if(((checkPlayerEnemyCollision(player2, enemy)&&!player2.ismonster)||(player.ismonster&&checkPlayerCharacterCollision(player2,player)))&&ismulti){
-//            player2.numlives-- ;
-//        }
-//        if (!(player.numlives&&player2.numlives)) {
-//                gameState = GAMEOVER;
-//                lastPlayTime = elapsedTime;
-//        }
-//    }
+   for (auto& enemy : enemies) {
+       if((checkPlayerEnemyCollision(player, enemy)&&!player.ismonster)||(player2.ismonster&&checkPlayerCharacterCollision(player, player2))){
+           player1lose = true;
+           player.numlives-- ;
+       }else if(((checkPlayerEnemyCollision(player2, enemy)&&!player2.ismonster)||(player.ismonster&&checkPlayerCharacterCollision(player2,player)))&&ismulti){
+           player2.numlives-- ;
+       }
+       if (!(player.numlives&&player2.numlives)) {
+               gameState = GAMEOVER;
+               lastPlayTime = elapsedTime;
+       }
+   }
 }
 
 void Game::render() {
