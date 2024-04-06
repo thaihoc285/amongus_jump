@@ -14,6 +14,7 @@ Game::Game()
       startTime(0),
       lastPlayTime(0),
       font(nullptr),
+      resultSaved (false),
       ENEMY_SPAWN_INTERVAL(5000),
       ITEM_SPAWN_INTERVAL(10000),
       menuWidth(0),
@@ -101,6 +102,12 @@ void Game::drawMenu() {
     SDL_QueryTexture(singerTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect singerRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
     SDL_RenderCopy(renderer, singerTexture, NULL, &singerRect);
+    string highscoremenu = "Highsocre";
+    SDL_Surface* HighscoreSurface = TTF_RenderText_Solid(menuFont, highscoremenu.c_str(), textColor);
+    SDL_Texture* HighscoreTexture = SDL_CreateTextureFromSurface(renderer, HighscoreSurface);
+    SDL_QueryTexture(HighscoreTexture, NULL, NULL, &menuWidth, &menuHeight);
+    SDL_Rect HighscoreRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 4 / 5, menuWidth, menuHeight};
+    SDL_RenderCopy(renderer, HighscoreTexture, NULL, &HighscoreRect);
     // Release resources
     TTF_CloseFont(menuFont);
     SDL_FreeSurface(multiSurface);
@@ -109,6 +116,8 @@ void Game::drawMenu() {
     SDL_FreeSurface(menuSurface);
     SDL_DestroyTexture(singerTexture);
     SDL_DestroyTexture(menuTexture);
+    SDL_FreeSurface(HighscoreSurface);
+    SDL_DestroyTexture(HighscoreTexture);
     // Present the renderer
     SDL_RenderPresent(renderer);
 }
@@ -149,13 +158,21 @@ void Game::drawGameover() {
         SDL_FreeSurface( winnerSurface);
         SDL_DestroyTexture(winnerTexture);
     }
-    string timerOver = "Time Over: " + to_string(lastPlayTime / 1000) + ":" + to_string(lastPlayTime % 1000);  // Convert milliseconds to seconds
+    string scoretime = to_string(lastPlayTime / 1000) + ":" + to_string(lastPlayTime % 1000);
+    if(!resultSaved&&!ismulti){
+        ofstream file("score.txt",ios::app);
+        file << scoretime<<endl;
+        file.close();
+        resultSaved = true;
+    }
+    string timerOver = "Time Over: " + scoretime;  // Convert milliseconds to seconds
     SDL_Surface* toSurface = TTF_RenderText_Solid(font, timerOver.c_str(), textColor);
     SDL_Texture* toTexture = SDL_CreateTextureFromSurface(renderer, toSurface);
     int toWidth, toHeight;
     SDL_QueryTexture(toTexture, NULL, NULL, &toWidth, &toHeight);
     SDL_Rect toRect = {(SCREEN_WIDTH - toWidth) / 2, timeposition, toWidth, toHeight};
     SDL_RenderCopy(renderer, toTexture, NULL, &toRect);
+
     string restartText = "Restart";
     SDL_Surface* rtextSurface = TTF_RenderText_Solid(menuFont, restartText.c_str(), textColor);
     SDL_Texture* rtextTexture = SDL_CreateTextureFromSurface(renderer, rtextSurface);
@@ -248,6 +265,7 @@ void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
                 mouseY <= restartButtonRect.y + restartButtonRect.h) {
                 initElement();
                 gameState = PLAYING;
+                resultSaved = false;
             }else if (mouseX >= backmenuButtonRect.x &&
                 mouseX <= backmenuButtonRect.x + backmenuButtonRect.w &&
                 mouseY >= backmenuButtonRect.y &&
@@ -256,6 +274,7 @@ void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
                 initElement();
                 drawMenu();
                 gameState = MENU;
+                resultSaved = false;
                 }
         }
     }

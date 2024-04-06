@@ -2,8 +2,9 @@
 #define GAME_H
 #include<iostream>
 #include<vector>
-#include <chrono>
+//#include <chrono>
 #include <thread>
+#include <fstream>
 #include "Character.h"
 #include "Enemy.h"
 #include "Skill.h"
@@ -16,7 +17,8 @@ using namespace std;
 enum GameState {
         MENU,
         PLAYING,
-        GAMEOVER
+        GAMEOVER,
+        HIGHSCORE
         // Add more states if needed
     };
 
@@ -63,7 +65,7 @@ private:
     void waitUntilKeyPressed();
     void initElement();
     bool isCollision( const SDL_Rect& rect1,const SDL_Rect& rect2);
-    bool ismulti,player1lose;
+    bool ismulti,player1lose,resultSaved;
     void singerplayer();
     Uint32 frameStart;
     Uint32 ENEMY_SPAWN_INTERVAL;
