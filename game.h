@@ -5,15 +5,16 @@
 #include <algorithm>
 #include <thread>
 #include <fstream>
+#include <SDL_ttf.h>
 #include "gameconstants.h"
 #include "Character.h"
 #include "Enemy.h"
 #include "Skill.h"
 #include "monster.h"
-#include "SDL_ttf.h"
 #include "explosion.h"
 #include "invisible.h"
 #include "nogravity.h"
+
 using namespace std;
 enum GameState {
         MENU,
@@ -46,8 +47,6 @@ private:
     Uint32 lastPlayTime;
     TTF_Font* font;
     SDL_Texture* heartTexture;
-
-    int menuWidth, menuHeight,submenuWidth,submenuHeight;
     GameState gameState;
     string formatTime(int timeInSeconds);
     void initSDL();
@@ -75,6 +74,16 @@ private:
     Uint32 ITEM_SPAWN_INTERVAL;
     Uint32 lastEnemySpawnTime;
     Uint32 lastItemSpawnTime;
+    int widthbutton1;
+    int heightbutton1;
+    int widhbutton2;
+    int heightbutton2;
+    int widthbutton3;
+    int heightbutton3;
+    TTF_Font* font36 ;
+    TTF_Font* font68 ;
+    TTF_Font* font28 ;
+    TTF_Font* font32 ;
     bool checkPlayerEnemyCollision( Character& player,  Enemy& enemy);
     bool checkPlayerSkillCollision( Character& player,  Skill& skill);
     bool checkPlayerCharacterCollision( Character& player,  Character& player2);

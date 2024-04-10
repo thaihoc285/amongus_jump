@@ -10,17 +10,13 @@ Game::Game()
       resultSaved (false),
       ENEMY_SPAWN_INTERVAL(5000),
       ITEM_SPAWN_INTERVAL(10000),
-      menuWidth(0),
-      menuHeight(0),
-      submenuWidth(0),
-      submenuHeight(0),
       lastEnemySpawnTime(0),
       lastItemSpawnTime(0),
       ismulti(true),
       player1lose(false),
       frameStart(0),
       frameTime(0),
-      gameState(MENU) {
+      gameState(MENU){
         initSDL();
 }
 
@@ -65,6 +61,13 @@ void Game::initSDL() {
         logSDLError(cout, "TTF_Init", true);
     }
     font = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 24);
+    font36 = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 36);
+    font68 = TTF_OpenFont("zebulon_6918646/Zebulon Hollow.otf", 68);
+    font28 = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 28);
+    font32 = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 32);
+    if (!font28 || !font36 || !font || !font68 || !font32) {
+        logSDLError(cout, "TTF_OpenFont", true);
+    }
 }
 void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
     os << msg << " error: " << SDL_GetError() << endl;
@@ -73,10 +76,18 @@ void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
         exit(1);
     }
 }
-// void Game::renderText(const string& text, SDL_Color color, int x,int y, TTF_Font* font,int widthtexture,int heighttexture) {
+// void Game::buttoncanclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font,int widthtexture,int heighttexture) {
 //     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
 //     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 //     SDL_QueryTexture(multiTexture, NULL, NULL, &widthtexture, &heighttexture);
+//     SDL_Rect rect = {x, y, widthtexture, heighttexture};
+//     SDL_RenderCopy(renderer, multiTexture, nullptr, &rect);
+//     SDL_FreeSurface(surface);
+//     SDL_DestroyTexture(texture);
+// }
+// void Game::buttoncantclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font) {
+//     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+//     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 //     SDL_Rect rect = {x, y, widthtexture, heighttexture};
 //     SDL_RenderCopy(renderer, multiTexture, nullptr, &rect);
 //     SDL_FreeSurface(surface);
@@ -89,32 +100,26 @@ void Game::drawMenu() {
     SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
-    // Draw "Start" button in the center
-    SDL_Color textColor = {255, 255, 255, 255};  // White color
-    TTF_Font* menuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 36);
-    if (!menuFont) {
-        logSDLError(cout, "TTF_OpenFont", true);
-    }
+
     string multistart = "Multiplayer";
-    SDL_Surface* multiSurface = TTF_RenderText_Solid(menuFont, multistart.c_str(), textColor);
+    SDL_Surface* multiSurface = TTF_RenderText_Solid(font36, multistart.c_str(), textColor);
     SDL_Texture* multiTexture = SDL_CreateTextureFromSurface(renderer, multiSurface);
-    SDL_QueryTexture(multiTexture, NULL, NULL, &menuWidth, &menuHeight);
-    SDL_Rect multiRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
+    SDL_QueryTexture(multiTexture, NULL, NULL, &widhbutton2, &heightbutton2);
+    SDL_Rect multiRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3, widhbutton2, heightbutton2};
     SDL_RenderCopy(renderer, multiTexture, NULL, &multiRect);
     string singerstart = "Singerplayer";
-    SDL_Surface* singerSurface = TTF_RenderText_Solid(menuFont, singerstart.c_str(), textColor);
+    SDL_Surface* singerSurface = TTF_RenderText_Solid(font36, singerstart.c_str(), textColor);
     SDL_Texture* singerTexture = SDL_CreateTextureFromSurface(renderer, singerSurface);
-    SDL_QueryTexture(singerTexture, NULL, NULL, &menuWidth, &menuHeight);
-    SDL_Rect singerRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
+    SDL_QueryTexture(singerTexture, NULL, NULL, &widthbutton1, &heightbutton1);
+    SDL_Rect singerRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 1 / 2, widthbutton1, heightbutton1};
     SDL_RenderCopy(renderer, singerTexture, NULL, &singerRect);
     string highscoremenu = "Highscore";
-    SDL_Surface* HighscoreSurface = TTF_RenderText_Solid(menuFont, highscoremenu.c_str(), textColor);
+    SDL_Surface* HighscoreSurface = TTF_RenderText_Solid(font36, highscoremenu.c_str(), textColor);
     SDL_Texture* HighscoreTexture = SDL_CreateTextureFromSurface(renderer, HighscoreSurface);
-    SDL_QueryTexture(HighscoreTexture, NULL, NULL, &menuWidth, &menuHeight);
-    SDL_Rect HighscoreRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 4 / 5, menuWidth, menuHeight};
+    SDL_QueryTexture(HighscoreTexture, NULL, NULL, &widthbutton3, &heightbutton3);
+    SDL_Rect HighscoreRect = {(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5, widthbutton3, heightbutton3};
     SDL_RenderCopy(renderer, HighscoreTexture, NULL, &HighscoreRect);
     // Release resources
-    TTF_CloseFont(menuFont);
     SDL_FreeSurface(multiSurface);
     SDL_DestroyTexture(multiTexture);
     SDL_FreeSurface(singerSurface);
@@ -136,19 +141,12 @@ void Game::drawGameover() {
     SDL_Rect gameoverRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, gameoverTexture, NULL, &gameoverRect);
 
-    SDL_Color textColor = {255, 255, 255, 255};  // White color
-    TTF_Font* menuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 36);
-    TTF_Font* backmenuFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 28);
-    if (!menuFont) {
-        logSDLError(cout, "TTF_OpenFont", true);
-    }
     if(ismulti){
         timeposition=SCREEN_HEIGHT * 1/10;
         string restartText = "Winner";
-        SDL_Surface* winnerSurface = TTF_RenderText_Solid(menuFont, restartText.c_str(), textColor);
+        SDL_Surface* winnerSurface = TTF_RenderText_Solid(font36, restartText.c_str(), textColor);
         SDL_Texture* winnerTexture = SDL_CreateTextureFromSurface(renderer, winnerSurface);
-        SDL_QueryTexture(winnerTexture, NULL, NULL, &menuWidth, &menuHeight);
-        SDL_Rect winnerRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT *1/4, menuWidth, menuHeight};
+        SDL_Rect winnerRect = {(SCREEN_WIDTH - winnerSurface->w) / 2, SCREEN_HEIGHT *1/4, winnerSurface->w, winnerSurface->h};
         SDL_RenderCopy(renderer, winnerTexture, NULL, &winnerRect);
         string path ;
         if(player1lose){
@@ -173,26 +171,21 @@ void Game::drawGameover() {
     string timerOver = "Time Over: " + scoretime;  // Convert milliseconds to seconds
     SDL_Surface* toSurface = TTF_RenderText_Solid(font, timerOver.c_str(), textColor);
     SDL_Texture* toTexture = SDL_CreateTextureFromSurface(renderer, toSurface);
-    int toWidth, toHeight;
-    SDL_QueryTexture(toTexture, NULL, NULL, &toWidth, &toHeight);
-    SDL_Rect toRect = {(SCREEN_WIDTH - toWidth) / 2, timeposition, toWidth, toHeight};
+    SDL_Rect toRect = {(SCREEN_WIDTH - toSurface->w) / 2, timeposition, toSurface->w, toSurface->h};
     SDL_RenderCopy(renderer, toTexture, NULL, &toRect);
 
     string restartText = "Restart";
-    SDL_Surface* rtextSurface = TTF_RenderText_Solid(menuFont, restartText.c_str(), textColor);
+    SDL_Surface* rtextSurface = TTF_RenderText_Solid(font36, restartText.c_str(), textColor);
     SDL_Texture* rtextTexture = SDL_CreateTextureFromSurface(renderer, rtextSurface);
-    SDL_QueryTexture(rtextTexture, NULL, NULL, &menuWidth, &menuHeight);
-    SDL_Rect rtextRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 3 / 5, menuWidth, menuHeight};
+    SDL_QueryTexture(rtextTexture, NULL, NULL, &widthbutton1, &heightbutton1);
+    SDL_Rect rtextRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 3 / 5, widthbutton1, heightbutton1};
     SDL_RenderCopy(renderer, rtextTexture, NULL, &rtextRect);
     string backmenu = "Menu";
-    SDL_Surface* bmenuSurface = TTF_RenderText_Solid(backmenuFont, backmenu.c_str(), textColor);
+    SDL_Surface* bmenuSurface = TTF_RenderText_Solid(font28, backmenu.c_str(), textColor);
     SDL_Texture* bmenuTexture = SDL_CreateTextureFromSurface(renderer, bmenuSurface);
-    SDL_QueryTexture(bmenuTexture, NULL, NULL, &submenuWidth, &submenuHeight);
-    SDL_Rect bmenuRect = {(SCREEN_WIDTH - submenuWidth) / 2, SCREEN_HEIGHT * 3 / 4, submenuWidth, submenuHeight};
+    SDL_QueryTexture(bmenuTexture, NULL, NULL, &widhbutton2, &heightbutton2);
+    SDL_Rect bmenuRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 4, widhbutton2, heightbutton2};
     SDL_RenderCopy(renderer, bmenuTexture, NULL, &bmenuRect);
-    // Release resources
-    TTF_CloseFont(menuFont);
-    TTF_CloseFont(backmenuFont);
     SDL_FreeSurface(toSurface);
     SDL_DestroyTexture(toTexture);
     SDL_FreeSurface(rtextSurface);
@@ -201,7 +194,6 @@ void Game::drawGameover() {
     SDL_FreeSurface( gameoverSurface );
     SDL_DestroyTexture(bmenuTexture);
     SDL_DestroyTexture(gameoverTexture);
-    // Present the renderer
     SDL_RenderPresent(renderer);
 }
 
@@ -212,29 +204,23 @@ void Game::drawHighscore(){
     SDL_Texture* highscoreTexture = SDL_CreateTextureFromSurface( renderer, highscoreSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, highscoreTexture, NULL, &menuRect);
-    // Draw "Start" button in the center
-    SDL_Color textColor = {255, 255, 255, 255};  // White color
-    TTF_Font* exitFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 28);
-    TTF_Font* titleFont = TTF_OpenFont("zebulon_6918646/Zebulon Hollow.otf", 68);
-    TTF_Font* listFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 32);
-    if (!exitFont) {
+    if (!font28) {
         logSDLError(cout, "TTF_OpenFont", true);
     }
 
-    // Read scores from file
     ifstream file("score.txt");
     vector<string> scores;
     string score;
     while (file >> score) {
         scores.push_back(score);
     }
-
+    file.close();
     sort(scores.begin(), scores.end(), greater<string>());
 
     const int maxPlayers = min(5, (int)scores.size());
     for (int i = 0; i < maxPlayers; ++i) {
         // Render player rank and score
-        SDL_Surface* playerSurface = TTF_RenderText_Solid(listFont, to_string(i + 1).c_str(), textColor);
+        SDL_Surface* playerSurface = TTF_RenderText_Solid(font32, to_string(i + 1).c_str(), textColor);
         SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
         SDL_Rect playerRect = {0.1 * SCREEN_WIDTH, (i + 1) * 0.14 * SCREEN_HEIGHT + 50, playerSurface->w, playerSurface->h};
         SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
@@ -242,7 +228,7 @@ void Game::drawHighscore(){
         SDL_DestroyTexture(playerTexture);
 
         // Render player score
-        playerSurface = TTF_RenderText_Solid(listFont, scores[i].c_str(), textColor);
+        playerSurface = TTF_RenderText_Solid(font32, scores[i].c_str(), textColor);
         playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
         playerRect = {0.75 * SCREEN_WIDTH, (i + 1) * 0.14 * SCREEN_HEIGHT + 50, playerSurface->w, playerSurface->h};
         SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
@@ -252,18 +238,17 @@ void Game::drawHighscore(){
 
 
     string exittext = "Exit";
-    SDL_Surface* exitSurface=TTF_RenderText_Solid(exitFont,exittext.c_str(),textColor);
+    SDL_Surface* exitSurface=TTF_RenderText_Solid(font28,exittext.c_str(),textColor);
     SDL_Texture* exitTexture = SDL_CreateTextureFromSurface(renderer,exitSurface);
-    SDL_QueryTexture(exitTexture,NULL,NULL, &submenuWidth,&submenuHeight);
-    SDL_Rect exitRect = {0.87*SCREEN_WIDTH,0.9*SCREEN_HEIGHT,submenuWidth,submenuHeight};
+    SDL_QueryTexture(exitTexture,NULL,NULL, &widthbutton1,&heightbutton1);
+    SDL_Rect exitRect = {0.87*SCREEN_WIDTH,0.9*SCREEN_HEIGHT,widthbutton1,heightbutton1};
     SDL_RenderCopy(renderer,exitTexture,NULL,&exitRect);
     string titletext = "Highscore";
-    SDL_Surface* titleSurface=TTF_RenderText_Solid(titleFont,titletext.c_str(),textColor);
+    SDL_Surface* titleSurface=TTF_RenderText_Solid(font68,titletext.c_str(),textColor);
     SDL_Texture* titleTexture = SDL_CreateTextureFromSurface(renderer,titleSurface);
-    SDL_QueryTexture(titleTexture,NULL,NULL, &menuWidth,&menuHeight);
-    SDL_Rect titleRect = {(SCREEN_WIDTH-menuWidth)/2,0.02*SCREEN_HEIGHT,titleSurface->w,titleSurface->h};
+    SDL_Rect titleRect = {(SCREEN_WIDTH-titleSurface->w)/2,0.02*SCREEN_HEIGHT,titleSurface->w,titleSurface->h};
     SDL_RenderCopy(renderer,titleTexture,NULL,&titleRect);
-    TTF_CloseFont(exitFont);
+    (font28);
     SDL_FreeSurface(exitSurface);
     SDL_DestroyTexture(exitTexture);
     SDL_FreeSurface(titleSurface);
@@ -279,9 +264,9 @@ while (SDL_PollEvent(&e) != 0) {
     } else if (e.type == SDL_MOUSEBUTTONDOWN) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
-        SDL_Rect multiButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
-        SDL_Rect singerButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
-        SDL_Rect highscoreButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 4 / 5, menuWidth, menuHeight};
+        SDL_Rect multiButtonRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3, widhbutton2, heightbutton2};
+        SDL_Rect singerButtonRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 1 / 2, widthbutton1, heightbutton1};
+        SDL_Rect highscoreButtonRect = {(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5, widthbutton3, heightbutton3};
         if (mouseX >= multiButtonRect.x &&
             mouseX <= multiButtonRect.x + multiButtonRect.w &&
             mouseY >= multiButtonRect.y &&
@@ -335,7 +320,7 @@ void Game::handleHighscore(SDL_Event& e,bool& quit){
       } else if (e.type == SDL_MOUSEBUTTONDOWN) {
           int mouseX, mouseY;
           SDL_GetMouseState(&mouseX, &mouseY);
-          SDL_Rect exitButtonRect = {0.87*SCREEN_WIDTH, 0.9*SCREEN_HEIGHT, submenuWidth, submenuHeight};
+          SDL_Rect exitButtonRect = {0.87*SCREEN_WIDTH, 0.9*SCREEN_HEIGHT, widthbutton1, heightbutton1};
           if (mouseX >= exitButtonRect.x &&
               mouseX <= exitButtonRect.x + exitButtonRect.w &&
               mouseY >= exitButtonRect.y &&
@@ -353,8 +338,8 @@ void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
         } else if (e.type == SDL_MOUSEBUTTONDOWN) {
             int mouseX, mouseY;
             SDL_GetMouseState(&mouseX, &mouseY);
-            SDL_Rect restartButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 3 / 5, menuWidth, menuHeight};
-            SDL_Rect backmenuButtonRect = {(SCREEN_WIDTH - submenuWidth) / 2, SCREEN_HEIGHT * 3 / 4, submenuWidth, submenuHeight};
+            SDL_Rect restartButtonRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 3 / 5, widthbutton1, heightbutton1};
+            SDL_Rect backmenuButtonRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 4, widhbutton2, heightbutton2};
             if (mouseX >= restartButtonRect.x &&
                 mouseX <= restartButtonRect.x + restartButtonRect.w &&
                 mouseY >= restartButtonRect.y &&
@@ -477,13 +462,11 @@ void Game::render() {
     SDL_Texture* gameTexture = SDL_CreateTextureFromSurface( renderer, gameSurface );
     SDL_Rect gameRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, gameTexture, NULL, &gameRect);
-
-    SDL_Color textColor = {255, 255, 255, 255}; // White color
     string timerText = formatTime(getElapsedTime()/1000);
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, timerText.c_str(), textColor);
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
-    SDL_Rect textRect = {(SCREEN_WIDTH - menuWidth) / 2, 10, menuWidth, menuHeight};
+//    SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
+    SDL_Rect textRect = {(SCREEN_WIDTH - textSurface->w) / 2, 10, textSurface->w, textSurface->h};
 
     for (auto& skill : skills)skill.render(renderer);
     for (auto& enemy : enemies)enemy.render(renderer);
@@ -542,7 +525,7 @@ void Game::quitSDL() {
         SDL_DestroyWindow(window);
     }
     SDL_Quit();
-    TTF_CloseFont(font);
+    (font);
     TTF_Quit();
 }
 

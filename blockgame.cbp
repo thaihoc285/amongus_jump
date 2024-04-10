@@ -40,8 +40,6 @@
 		<Unit filename="game.cpp" />
 		<Unit filename="game.h" />
 		<Unit filename="gameconstants.h" />
-		<Unit filename="init.cpp" />
-		<Unit filename="init.h" />
 		<Unit filename="invisible.cpp" />
 		<Unit filename="invisible.h" />
 		<Unit filename="main.cpp" />

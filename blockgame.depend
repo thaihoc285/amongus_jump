@@ -11,40 +11,38 @@
 1712715776 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.cpp
 	"Enemy.h"
 
-1712715776 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.h
+1712718575 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.h
 	"gameconstants.h"
-	<SDL.h>
 	<string>
 	<SDL_image.h>
 
-1709733236 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\main.cpp
+1712724847 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\main.cpp
 	"Game.h"
 
-1712715945 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
+1712725497 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
 	<iomanip>
 	<sstream>
 	<algorithm>
 	<thread>
 	<fstream>
+	<SDL_ttf.h>
 	"gameconstants.h"
 	"Character.h"
 	"Enemy.h"
 	"Skill.h"
 	"monster.h"
-	"SDL_ttf.h"
 	"explosion.h"
 	"invisible.h"
 	"nogravity.h"
 
-1712715967 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
+1712725419 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
 	"Game.h"
 
 1712715776 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.cpp
 	"skill.h"
 
-1712715776 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
+1712717771 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
 	"gameconstants.h"
-	<SDL.h>
 	"Character.h"
 	"Enemy.h"
 	<vector>
@@ -82,8 +80,11 @@
 1712123414 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\nogravity.cpp
 	"nogravity.h"
 
-1712716003 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\gameconstants.h
+1712724311 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\gameconstants.h
 	<vector>
 	<string>
 	<iostream>
+	<SDL.h>
+
+1712724362 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\onlygamevariable.h
 
