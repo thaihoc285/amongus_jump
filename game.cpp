@@ -1,11 +1,4 @@
 #include "Game.h"
-const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 650;
-const int SQUARE_SIZE = 50;
-const int ITEM_SIZE = 40;
-const string WINDOW_TITLE = "Among us";
-const int FPS = 60;
-const float FrameDelay = (float)1000 / FPS;
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
@@ -48,6 +41,9 @@ void Game::run() {
         } else if (gameState == GAMEOVER&& !quit) {
             drawGameover();
             handleGameoverInput(e,quit);
+        }else if(gameState == HIGHSCORE && !quit){
+            drawHighscore();
+            handleHighscore(e,quit);
         }
     }
 }
@@ -77,6 +73,15 @@ void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
         exit(1);
     }
 }
+// void Game::renderText(const string& text, SDL_Color color, int x,int y, TTF_Font* font,int widthtexture,int heighttexture) {
+//     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+//     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+//     SDL_QueryTexture(multiTexture, NULL, NULL, &widthtexture, &heighttexture);
+//     SDL_Rect rect = {x, y, widthtexture, heighttexture};
+//     SDL_RenderCopy(renderer, multiTexture, nullptr, &rect);
+//     SDL_FreeSurface(surface);
+//     SDL_DestroyTexture(texture);
+// }
 void Game::drawMenu() {
     SDL_RenderClear(renderer);
     string path = "image/amongusbg1.jpg";
@@ -102,7 +107,7 @@ void Game::drawMenu() {
     SDL_QueryTexture(singerTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect singerRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
     SDL_RenderCopy(renderer, singerTexture, NULL, &singerRect);
-    string highscoremenu = "Highsocre";
+    string highscoremenu = "Highscore";
     SDL_Surface* HighscoreSurface = TTF_RenderText_Solid(menuFont, highscoremenu.c_str(), textColor);
     SDL_Texture* HighscoreTexture = SDL_CreateTextureFromSurface(renderer, HighscoreSurface);
     SDL_QueryTexture(HighscoreTexture, NULL, NULL, &menuWidth, &menuHeight);
@@ -158,7 +163,7 @@ void Game::drawGameover() {
         SDL_FreeSurface( winnerSurface);
         SDL_DestroyTexture(winnerTexture);
     }
-    string scoretime = to_string(lastPlayTime / 1000) + ":" + to_string(lastPlayTime % 1000);
+    string scoretime = formatTime(lastPlayTime / 1000);
     if(!resultSaved&&!ismulti){
         ofstream file("score.txt",ios::app);
         file << scoretime<<endl;
@@ -200,6 +205,73 @@ void Game::drawGameover() {
     SDL_RenderPresent(renderer);
 }
 
+void Game::drawHighscore(){
+    SDL_RenderClear(renderer);
+    string path = "image/playingbg2.png";
+    SDL_Surface* highscoreSurface = IMG_Load( path.c_str());
+    SDL_Texture* highscoreTexture = SDL_CreateTextureFromSurface( renderer, highscoreSurface );
+    SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_RenderCopy(renderer, highscoreTexture, NULL, &menuRect);
+    // Draw "Start" button in the center
+    SDL_Color textColor = {255, 255, 255, 255};  // White color
+    TTF_Font* exitFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 28);
+    TTF_Font* titleFont = TTF_OpenFont("zebulon_6918646/Zebulon Hollow.otf", 68);
+    TTF_Font* listFont = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 32);
+    if (!exitFont) {
+        logSDLError(cout, "TTF_OpenFont", true);
+    }
+
+    // Read scores from file
+    ifstream file("score.txt");
+    vector<string> scores;
+    string score;
+    while (file >> score) {
+        scores.push_back(score);
+    }
+
+    sort(scores.begin(), scores.end(), greater<string>());
+
+    const int maxPlayers = min(5, (int)scores.size());
+    for (int i = 0; i < maxPlayers; ++i) {
+        // Render player rank and score
+        SDL_Surface* playerSurface = TTF_RenderText_Solid(listFont, to_string(i + 1).c_str(), textColor);
+        SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
+        SDL_Rect playerRect = {0.1 * SCREEN_WIDTH, (i + 1) * 0.14 * SCREEN_HEIGHT + 50, playerSurface->w, playerSurface->h};
+        SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
+        SDL_FreeSurface(playerSurface);
+        SDL_DestroyTexture(playerTexture);
+
+        // Render player score
+        playerSurface = TTF_RenderText_Solid(listFont, scores[i].c_str(), textColor);
+        playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
+        playerRect = {0.75 * SCREEN_WIDTH, (i + 1) * 0.14 * SCREEN_HEIGHT + 50, playerSurface->w, playerSurface->h};
+        SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
+        SDL_FreeSurface(playerSurface);
+        SDL_DestroyTexture(playerTexture);
+    }
+
+
+    string exittext = "Exit";
+    SDL_Surface* exitSurface=TTF_RenderText_Solid(exitFont,exittext.c_str(),textColor);
+    SDL_Texture* exitTexture = SDL_CreateTextureFromSurface(renderer,exitSurface);
+    SDL_QueryTexture(exitTexture,NULL,NULL, &submenuWidth,&submenuHeight);
+    SDL_Rect exitRect = {0.87*SCREEN_WIDTH,0.9*SCREEN_HEIGHT,submenuWidth,submenuHeight};
+    SDL_RenderCopy(renderer,exitTexture,NULL,&exitRect);
+    string titletext = "Highscore";
+    SDL_Surface* titleSurface=TTF_RenderText_Solid(titleFont,titletext.c_str(),textColor);
+    SDL_Texture* titleTexture = SDL_CreateTextureFromSurface(renderer,titleSurface);
+    SDL_QueryTexture(titleTexture,NULL,NULL, &menuWidth,&menuHeight);
+    SDL_Rect titleRect = {(SCREEN_WIDTH-menuWidth)/2,0.02*SCREEN_HEIGHT,titleSurface->w,titleSurface->h};
+    SDL_RenderCopy(renderer,titleTexture,NULL,&titleRect);
+    TTF_CloseFont(exitFont);
+    SDL_FreeSurface(exitSurface);
+    SDL_DestroyTexture(exitTexture);
+    SDL_FreeSurface(titleSurface);
+    SDL_DestroyTexture(titleTexture);
+    SDL_FreeSurface(highscoreSurface);
+    SDL_DestroyTexture(highscoreTexture);
+    SDL_RenderPresent(renderer);
+}
 void Game::handleMenuInput(SDL_Event& e,bool& quit) {
 while (SDL_PollEvent(&e) != 0) {
     if (e.type == SDL_QUIT) {
@@ -209,20 +281,26 @@ while (SDL_PollEvent(&e) != 0) {
         SDL_GetMouseState(&mouseX, &mouseY);
         SDL_Rect multiButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 2 / 3, menuWidth, menuHeight};
         SDL_Rect singerButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 1 / 2, menuWidth, menuHeight};
+        SDL_Rect highscoreButtonRect = {(SCREEN_WIDTH - menuWidth) / 2, SCREEN_HEIGHT * 4 / 5, menuWidth, menuHeight};
         if (mouseX >= multiButtonRect.x &&
             mouseX <= multiButtonRect.x + multiButtonRect.w &&
             mouseY >= multiButtonRect.y &&
             mouseY <= multiButtonRect.y + multiButtonRect.h) {
-            gameState = PLAYING;
-            startTime = SDL_GetTicks();
+                gameState = PLAYING;
+                startTime = SDL_GetTicks();
         }else if(mouseX >= singerButtonRect.x &&
-                mouseX <= singerButtonRect.x + singerButtonRect.w &&
-                mouseY >= singerButtonRect.y &&
-                mouseY <= singerButtonRect.y + singerButtonRect.h) {
+            mouseX <= singerButtonRect.x + singerButtonRect.w &&
+            mouseY >= singerButtonRect.y &&
+            mouseY <= singerButtonRect.y + singerButtonRect.h) {
                 singerplayer();
                 gameState = PLAYING;
                 startTime = SDL_GetTicks();
-                }
+        }else if(mouseX >= highscoreButtonRect.x &&
+            mouseX <= highscoreButtonRect.x + highscoreButtonRect.w &&
+            mouseY >= highscoreButtonRect.y &&
+            mouseY <= highscoreButtonRect.y + highscoreButtonRect.h){
+                gameState = HIGHSCORE;
+        }
     }
 }
 }
@@ -250,6 +328,24 @@ Uint32 elapsedTime = getElapsedTime();
     }
 }
 
+void Game::handleHighscore(SDL_Event& e,bool& quit){
+  while (SDL_PollEvent(&e) != 0) {
+      if (e.type == SDL_QUIT) {
+          quit = true;
+      } else if (e.type == SDL_MOUSEBUTTONDOWN) {
+          int mouseX, mouseY;
+          SDL_GetMouseState(&mouseX, &mouseY);
+          SDL_Rect exitButtonRect = {0.87*SCREEN_WIDTH, 0.9*SCREEN_HEIGHT, submenuWidth, submenuHeight};
+          if (mouseX >= exitButtonRect.x &&
+              mouseX <= exitButtonRect.x + exitButtonRect.w &&
+              mouseY >= exitButtonRect.y &&
+              mouseY <= exitButtonRect.y + exitButtonRect.h) {
+                gameState = MENU;
+            }
+      }
+  }
+}
+
 void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
@@ -272,7 +368,6 @@ void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
                 mouseY <= backmenuButtonRect.y + backmenuButtonRect.h) {
                 ismulti = true;
                 initElement();
-                drawMenu();
                 gameState = MENU;
                 resultSaved = false;
                 }
@@ -366,7 +461,15 @@ void Game::update() {
        }
    }
 }
+string Game::formatTime(int timeInSeconds) {
+    int minutes = timeInSeconds / 60;
+    int seconds = timeInSeconds % 60;
 
+    string formattedMinutes = (minutes < 10) ? "0" + to_string(minutes) : to_string(minutes);
+    string formattedSeconds = (seconds < 10) ? "0" + to_string(seconds) : to_string(seconds);
+
+    return formattedMinutes + ":" + formattedSeconds;
+}
 void Game::render() {
     SDL_RenderClear(renderer);
     string path = "image/playingbg2.png";
@@ -376,7 +479,7 @@ void Game::render() {
     SDL_RenderCopy(renderer, gameTexture, NULL, &gameRect);
 
     SDL_Color textColor = {255, 255, 255, 255}; // White color
-    string timerText = "" + to_string(getElapsedTime() / 1000) + ":" + to_string(getElapsedTime() % 1000); // Convert milliseconds to seconds
+    string timerText = formatTime(getElapsedTime()/1000);
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, timerText.c_str(), textColor);
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
     SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);

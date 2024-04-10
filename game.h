@@ -1,10 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
-#include<iostream>
-#include<vector>
-//#include <chrono>
+#include <iomanip>
+#include <sstream>
+#include <algorithm>
 #include <thread>
 #include <fstream>
+#include "gameconstants.h"
 #include "Character.h"
 #include "Enemy.h"
 #include "Skill.h"
@@ -48,7 +49,7 @@ private:
 
     int menuWidth, menuHeight,submenuWidth,submenuHeight;
     GameState gameState;
-
+    string formatTime(int timeInSeconds);
     void initSDL();
     void logSDLError(std::ostream& os, const std::string &msg, bool fatal);
     void drawMenu();
@@ -56,11 +57,13 @@ private:
     void handleMenuInput(SDL_Event& e,bool& quit);
     void handlePlayingInput(SDL_Event& e,bool& quit);
     void handleGameoverInput(SDL_Event& e,bool& quit);
+    void handleHighscore(SDL_Event& e,bool& quit);
     void update();
     void render();
     void quitSDL();
     void spawnEnemy();
     void spawnItem();
+    void drawHighscore();
     Uint32 getElapsedTime();
     void waitUntilKeyPressed();
     void initElement();
@@ -75,6 +78,7 @@ private:
     bool checkPlayerEnemyCollision( Character& player,  Enemy& enemy);
     bool checkPlayerSkillCollision( Character& player,  Skill& skill);
     bool checkPlayerCharacterCollision( Character& player,  Character& player2);
+//    bool cmpstringtime(string a,string b);
     float frameTime;
 
 };

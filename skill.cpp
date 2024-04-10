@@ -1,6 +1,4 @@
 #include "skill.h"
-const int ITEM_SIZE = 40;
-const int SQUARE_SIZE = 50;
 Skill::Skill(int startX, int startY,string pathskill,string optionpower)
     : x(startX),
       y(startY),

@@ -1,6 +1,4 @@
 #include "Character.h"
-const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 650;
 Character::Character(int startX, int startY, int startVelX, int startVelY,double grvt,SDL_Color startColor,string left,string right,int heart,int sizep)
     : chTexture(nullptr),
       x(startX),

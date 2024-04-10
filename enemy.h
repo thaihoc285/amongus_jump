@@ -1,6 +1,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
-
+#include "gameconstants.h"
 #include <SDL.h>
 #include <string>
 #include <SDL_image.h>

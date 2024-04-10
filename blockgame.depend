@@ -1,16 +1,18 @@
 # depslib dependency file v1.0
-1712122454 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
+1712715776 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
 	"Character.h"
 
-1712120862 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
+1712715776 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
+	"gameconstants.h"
 	<SDL.h>
 	<string>
 	<SDL_image.h>
 
-1710478627 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.cpp
+1712715776 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.cpp
 	"Enemy.h"
 
-1710478385 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.h
+1712715776 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.h
+	"gameconstants.h"
 	<SDL.h>
 	<string>
 	<SDL_image.h>
@@ -18,11 +20,13 @@
 1709733236 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\main.cpp
 	"Game.h"
 
-1712378306 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
-	<iostream>
-	<vector>
+1712715945 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
+	<iomanip>
+	<sstream>
+	<algorithm>
 	<thread>
 	<fstream>
+	"gameconstants.h"
 	"Character.h"
 	"Enemy.h"
 	"Skill.h"
@@ -32,13 +36,14 @@
 	"invisible.h"
 	"nogravity.h"
 
-1712376169 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
+1712715967 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
 	"Game.h"
 
-1711464661 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.cpp
+1712715776 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.cpp
 	"skill.h"
 
-1711769363 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
+1712715776 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
+	"gameconstants.h"
 	<SDL.h>
 	"Character.h"
 	"Enemy.h"
@@ -76,4 +81,9 @@
 
 1712123414 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\nogravity.cpp
 	"nogravity.h"
+
+1712716003 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\gameconstants.h
+	<vector>
+	<string>
+	<iostream>
 

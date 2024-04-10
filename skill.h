@@ -1,6 +1,6 @@
 #ifndef SKILL_H
 #define SKILL_H
-
+#include "gameconstants.h"
 #include <SDL.h>
 #include "Character.h"
 #include "Enemy.h"
