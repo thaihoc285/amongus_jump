@@ -14,7 +14,7 @@
 #include "explosion.h"
 #include "invisible.h"
 #include "nogravity.h"
-
+#include "bigenemy.h"
 using namespace std;
 enum GameState {
         MENU,
@@ -38,6 +38,7 @@ private:
     Character player;
     Character player2;
     vector<Enemy> enemies;
+    vector<BigE> biges;
     vector<Skill> skills;
     vector<Explosion> explosions;
     vector<Invisible> invisibles;
@@ -61,6 +62,7 @@ private:
     void render();
     void quitSDL();
     void spawnEnemy();
+    void spawnBigE();
     void spawnItem();
     void drawHighscore();
     Uint32 getElapsedTime();
@@ -70,10 +72,9 @@ private:
     bool ismulti,player1lose,resultSaved;
     void singerplayer();
     Uint32 frameStart;
-    Uint32 ENEMY_SPAWN_INTERVAL;
-    Uint32 ITEM_SPAWN_INTERVAL;
     Uint32 lastEnemySpawnTime;
     Uint32 lastItemSpawnTime;
+    Uint32 lastBigeSpawnTime;
     int widthbutton1;
     int heightbutton1;
     int widhbutton2;
@@ -87,6 +88,9 @@ private:
     bool checkPlayerEnemyCollision( Character& player,  Enemy& enemy);
     bool checkPlayerSkillCollision( Character& player,  Skill& skill);
     bool checkPlayerCharacterCollision( Character& player,  Character& player2);
+    bool checkPlayerBigeCollision( Character& player,  BigE& bige);
+    void buttoncanclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font,int &widthtexture,int &heighttexture);
+    void buttoncantclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font);
 //    bool cmpstringtime(string a,string b);
     float frameTime;
 

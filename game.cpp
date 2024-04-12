@@ -8,10 +8,9 @@ Game::Game()
       lastPlayTime(0),
       font(nullptr),
       resultSaved (false),
-      ENEMY_SPAWN_INTERVAL(5000),
-      ITEM_SPAWN_INTERVAL(10000),
       lastEnemySpawnTime(0),
       lastItemSpawnTime(0),
+      lastBigeSpawnTime(0),
       ismulti(true),
       player1lose(false),
       frameStart(0),
@@ -76,23 +75,24 @@ void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
         exit(1);
     }
 }
-// void Game::buttoncanclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font,int widthtexture,int heighttexture) {
-//     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
-//     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-//     SDL_QueryTexture(multiTexture, NULL, NULL, &widthtexture, &heighttexture);
-//     SDL_Rect rect = {x, y, widthtexture, heighttexture};
-//     SDL_RenderCopy(renderer, multiTexture, nullptr, &rect);
-//     SDL_FreeSurface(surface);
-//     SDL_DestroyTexture(texture);
-// }
-// void Game::buttoncantclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font) {
-//     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
-//     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-//     SDL_Rect rect = {x, y, widthtexture, heighttexture};
-//     SDL_RenderCopy(renderer, multiTexture, nullptr, &rect);
-//     SDL_FreeSurface(surface);
-//     SDL_DestroyTexture(texture);
-// }
+ void Game::buttoncanclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font,int &widthtexture,int &heighttexture) {
+     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+     SDL_QueryTexture(texture, NULL, NULL, &widthtexture, &heighttexture);
+     SDL_Rect rect = {x,y, widthtexture, heighttexture};
+     SDL_RenderCopy(renderer, texture, nullptr, &rect);
+     SDL_FreeSurface(surface);
+     SDL_DestroyTexture(texture);
+ }
+ void Game::buttoncantclick(const string& text, SDL_Color color, int x, int y, TTF_Font* font) {
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    int xPos = (x == 0) ? (SCREEN_WIDTH - surface->w) / 2 : x;
+    SDL_Rect rect = {xPos, y, surface->w, surface->h};
+    SDL_RenderCopy(renderer, texture, nullptr, &rect);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+}
 void Game::drawMenu() {
     SDL_RenderClear(renderer);
     string path = "image/amongusbg1.jpg";
@@ -100,34 +100,11 @@ void Game::drawMenu() {
     SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
-
-    string multistart = "Multiplayer";
-    SDL_Surface* multiSurface = TTF_RenderText_Solid(font36, multistart.c_str(), textColor);
-    SDL_Texture* multiTexture = SDL_CreateTextureFromSurface(renderer, multiSurface);
-    SDL_QueryTexture(multiTexture, NULL, NULL, &widhbutton2, &heightbutton2);
-    SDL_Rect multiRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3, widhbutton2, heightbutton2};
-    SDL_RenderCopy(renderer, multiTexture, NULL, &multiRect);
-    string singerstart = "Singerplayer";
-    SDL_Surface* singerSurface = TTF_RenderText_Solid(font36, singerstart.c_str(), textColor);
-    SDL_Texture* singerTexture = SDL_CreateTextureFromSurface(renderer, singerSurface);
-    SDL_QueryTexture(singerTexture, NULL, NULL, &widthbutton1, &heightbutton1);
-    SDL_Rect singerRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 1 / 2, widthbutton1, heightbutton1};
-    SDL_RenderCopy(renderer, singerTexture, NULL, &singerRect);
-    string highscoremenu = "Highscore";
-    SDL_Surface* HighscoreSurface = TTF_RenderText_Solid(font36, highscoremenu.c_str(), textColor);
-    SDL_Texture* HighscoreTexture = SDL_CreateTextureFromSurface(renderer, HighscoreSurface);
-    SDL_QueryTexture(HighscoreTexture, NULL, NULL, &widthbutton3, &heightbutton3);
-    SDL_Rect HighscoreRect = {(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5, widthbutton3, heightbutton3};
-    SDL_RenderCopy(renderer, HighscoreTexture, NULL, &HighscoreRect);
-    // Release resources
-    SDL_FreeSurface(multiSurface);
-    SDL_DestroyTexture(multiTexture);
-    SDL_FreeSurface(singerSurface);
+    buttoncanclick("Multiplayer",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3,font36,widhbutton2,heightbutton2);
+    buttoncanclick("Singerplayer",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 1 / 2,font36,widthbutton1,heightbutton1);
+    buttoncanclick("Highscore",textColor,(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5,font36,widthbutton3,heightbutton3);
     SDL_FreeSurface(menuSurface);
-    SDL_DestroyTexture(singerTexture);
     SDL_DestroyTexture(menuTexture);
-    SDL_FreeSurface(HighscoreSurface);
-    SDL_DestroyTexture(HighscoreTexture);
     // Present the renderer
     SDL_RenderPresent(renderer);
 }
@@ -140,14 +117,10 @@ void Game::drawGameover() {
     SDL_Texture* gameoverTexture = SDL_CreateTextureFromSurface( renderer, gameoverSurface );
     SDL_Rect gameoverRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, gameoverTexture, NULL, &gameoverRect);
-
     if(ismulti){
         timeposition=SCREEN_HEIGHT * 1/10;
         string restartText = "Winner";
-        SDL_Surface* winnerSurface = TTF_RenderText_Solid(font36, restartText.c_str(), textColor);
-        SDL_Texture* winnerTexture = SDL_CreateTextureFromSurface(renderer, winnerSurface);
-        SDL_Rect winnerRect = {(SCREEN_WIDTH - winnerSurface->w) / 2, SCREEN_HEIGHT *1/4, winnerSurface->w, winnerSurface->h};
-        SDL_RenderCopy(renderer, winnerTexture, NULL, &winnerRect);
+        buttoncantclick("Winner",textColor,0, SCREEN_HEIGHT * 1/4,font36);
         string path ;
         if(player1lose){
         path = "image/captainright.png";
@@ -158,8 +131,6 @@ void Game::drawGameover() {
         SDL_RenderCopy(renderer, playerwinTexture, NULL, &playerwinRect);
         SDL_FreeSurface( playerwinSurface );
         SDL_DestroyTexture(playerwinTexture);
-        SDL_FreeSurface( winnerSurface);
-        SDL_DestroyTexture(winnerTexture);
     }
     string scoretime = formatTime(lastPlayTime / 1000);
     if(!resultSaved&&!ismulti){
@@ -168,31 +139,11 @@ void Game::drawGameover() {
         file.close();
         resultSaved = true;
     }
-    string timerOver = "Time Over: " + scoretime;  // Convert milliseconds to seconds
-    SDL_Surface* toSurface = TTF_RenderText_Solid(font, timerOver.c_str(), textColor);
-    SDL_Texture* toTexture = SDL_CreateTextureFromSurface(renderer, toSurface);
-    SDL_Rect toRect = {(SCREEN_WIDTH - toSurface->w) / 2, timeposition, toSurface->w, toSurface->h};
-    SDL_RenderCopy(renderer, toTexture, NULL, &toRect);
 
-    string restartText = "Restart";
-    SDL_Surface* rtextSurface = TTF_RenderText_Solid(font36, restartText.c_str(), textColor);
-    SDL_Texture* rtextTexture = SDL_CreateTextureFromSurface(renderer, rtextSurface);
-    SDL_QueryTexture(rtextTexture, NULL, NULL, &widthbutton1, &heightbutton1);
-    SDL_Rect rtextRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 3 / 5, widthbutton1, heightbutton1};
-    SDL_RenderCopy(renderer, rtextTexture, NULL, &rtextRect);
-    string backmenu = "Menu";
-    SDL_Surface* bmenuSurface = TTF_RenderText_Solid(font28, backmenu.c_str(), textColor);
-    SDL_Texture* bmenuTexture = SDL_CreateTextureFromSurface(renderer, bmenuSurface);
-    SDL_QueryTexture(bmenuTexture, NULL, NULL, &widhbutton2, &heightbutton2);
-    SDL_Rect bmenuRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 4, widhbutton2, heightbutton2};
-    SDL_RenderCopy(renderer, bmenuTexture, NULL, &bmenuRect);
-    SDL_FreeSurface(toSurface);
-    SDL_DestroyTexture(toTexture);
-    SDL_FreeSurface(rtextSurface);
-    SDL_DestroyTexture(rtextTexture);
-    SDL_FreeSurface(bmenuSurface);
+    buttoncantclick("Time Over: " + scoretime,textColor,0, timeposition,font);
+    buttoncanclick("Restart",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 3 / 5,font36,widthbutton1,heightbutton1);
+    buttoncanclick("Menu",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 4,font28,widhbutton2,heightbutton2);
     SDL_FreeSurface( gameoverSurface );
-    SDL_DestroyTexture(bmenuTexture);
     SDL_DestroyTexture(gameoverTexture);
     SDL_RenderPresent(renderer);
 }
@@ -207,7 +158,6 @@ void Game::drawHighscore(){
     if (!font28) {
         logSDLError(cout, "TTF_OpenFont", true);
     }
-
     ifstream file("score.txt");
     vector<string> scores;
     string score;
@@ -216,43 +166,13 @@ void Game::drawHighscore(){
     }
     file.close();
     sort(scores.begin(), scores.end(), greater<string>());
-
     const int maxPlayers = min(5, (int)scores.size());
     for (int i = 0; i < maxPlayers; ++i) {
-        // Render player rank and score
-        SDL_Surface* playerSurface = TTF_RenderText_Solid(font32, to_string(i + 1).c_str(), textColor);
-        SDL_Texture* playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
-        SDL_Rect playerRect = {0.1 * SCREEN_WIDTH, (i + 1) * 0.14 * SCREEN_HEIGHT + 50, playerSurface->w, playerSurface->h};
-        SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
-        SDL_FreeSurface(playerSurface);
-        SDL_DestroyTexture(playerTexture);
-
-        // Render player score
-        playerSurface = TTF_RenderText_Solid(font32, scores[i].c_str(), textColor);
-        playerTexture = SDL_CreateTextureFromSurface(renderer, playerSurface);
-        playerRect = {0.75 * SCREEN_WIDTH, (i + 1) * 0.14 * SCREEN_HEIGHT + 50, playerSurface->w, playerSurface->h};
-        SDL_RenderCopy(renderer, playerTexture, NULL, &playerRect);
-        SDL_FreeSurface(playerSurface);
-        SDL_DestroyTexture(playerTexture);
+        buttoncantclick(to_string(i + 1),textColor,0.1 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
+        buttoncantclick(scores[i],textColor,0.75 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
     }
-
-
-    string exittext = "Exit";
-    SDL_Surface* exitSurface=TTF_RenderText_Solid(font28,exittext.c_str(),textColor);
-    SDL_Texture* exitTexture = SDL_CreateTextureFromSurface(renderer,exitSurface);
-    SDL_QueryTexture(exitTexture,NULL,NULL, &widthbutton1,&heightbutton1);
-    SDL_Rect exitRect = {0.87*SCREEN_WIDTH,0.9*SCREEN_HEIGHT,widthbutton1,heightbutton1};
-    SDL_RenderCopy(renderer,exitTexture,NULL,&exitRect);
-    string titletext = "Highscore";
-    SDL_Surface* titleSurface=TTF_RenderText_Solid(font68,titletext.c_str(),textColor);
-    SDL_Texture* titleTexture = SDL_CreateTextureFromSurface(renderer,titleSurface);
-    SDL_Rect titleRect = {(SCREEN_WIDTH-titleSurface->w)/2,0.02*SCREEN_HEIGHT,titleSurface->w,titleSurface->h};
-    SDL_RenderCopy(renderer,titleTexture,NULL,&titleRect);
-    (font28);
-    SDL_FreeSurface(exitSurface);
-    SDL_DestroyTexture(exitTexture);
-    SDL_FreeSurface(titleSurface);
-    SDL_DestroyTexture(titleTexture);
+    buttoncanclick("Exit",textColor,0.87*SCREEN_WIDTH, 0.9*SCREEN_HEIGHT,font28,widthbutton1,heightbutton1);
+    buttoncantclick("Highscore",textColor,0, .02*SCREEN_HEIGHT,font68);
     SDL_FreeSurface(highscoreSurface);
     SDL_DestroyTexture(highscoreTexture);
     SDL_RenderPresent(renderer);
@@ -367,6 +287,10 @@ void Game::update() {
         spawnEnemy();
         lastEnemySpawnTime = elapsedTime;
     }
+    if (elapsedTime - lastBigeSpawnTime >= BIGE_SPAWN_INTERVAL ) {
+        spawnBigE();
+        lastBigeSpawnTime = elapsedTime;
+    }
     if (elapsedTime - lastItemSpawnTime >= ITEM_SPAWN_INTERVAL ) {
         spawnItem();
         lastItemSpawnTime = elapsedTime;
@@ -374,7 +298,9 @@ void Game::update() {
     for (auto& enemy : enemies) {
         enemy.move();
     }
-
+    for (auto& bige : biges) {
+        bige.move();
+    }
     player.GravityCalculation();
     player.VelocityCalculation();
     player.PositionCalculation();
@@ -434,25 +360,36 @@ void Game::update() {
         }
     }
    for (auto& enemy : enemies) {
-       if((checkPlayerEnemyCollision(player, enemy)&&!player.ismonster)||(player2.ismonster&&checkPlayerCharacterCollision(player, player2))){
+       if((checkPlayerEnemyCollision(player, enemy)&&!player.ismonster)){
            player1lose = true;
            player.numlives-- ;
-       }else if(((checkPlayerEnemyCollision(player2, enemy)&&!player2.ismonster)||(player.ismonster&&checkPlayerCharacterCollision(player2,player)))&&ismulti){
+       }else if((checkPlayerEnemyCollision(player2, enemy)&&!player2.ismonster)&&ismulti){
            player2.numlives-- ;
        }
-       if (!(player.numlives&&player2.numlives)) {
+   }
+   for (auto& bige : biges) {
+       if((checkPlayerBigeCollision(player, bige))
+       ||(player2.ismonster&&checkPlayerCharacterCollision(player, player2))){
+           player1lose = true;
+           player.numlives-- ;
+       }else if((checkPlayerBigeCollision(player2, bige))&&ismulti){
+           player2.numlives-- ;
+       }
+   }
+   if(player2.ismonster&&checkPlayerCharacterCollision(player, player2)){
+        player1lose = true;
+        player.numlives-- ;
+   }else if((player.ismonster&&checkPlayerCharacterCollision(player2,player))&&ismulti)player2.numlives--;
+   if (!(player.numlives&&player2.numlives)) {
                gameState = GAMEOVER;
                lastPlayTime = elapsedTime;
        }
-   }
 }
 string Game::formatTime(int timeInSeconds) {
     int minutes = timeInSeconds / 60;
     int seconds = timeInSeconds % 60;
-
     string formattedMinutes = (minutes < 10) ? "0" + to_string(minutes) : to_string(minutes);
     string formattedSeconds = (seconds < 10) ? "0" + to_string(seconds) : to_string(seconds);
-
     return formattedMinutes + ":" + formattedSeconds;
 }
 void Game::render() {
@@ -470,6 +407,7 @@ void Game::render() {
 
     for (auto& skill : skills)skill.render(renderer);
     for (auto& enemy : enemies)enemy.render(renderer);
+    for (auto& bige : biges)bige.render(renderer);
     for (auto& explosion : explosions) {
         if(SDL_GetTicks() - explosion.inittime<360)
             explosion.render(renderer);
@@ -543,6 +481,11 @@ bool Game::checkPlayerEnemyCollision( Character& player,  Enemy& enemy) {
     SDL_Rect enemyRect = {enemy.x, enemy.y, SQUARE_SIZE, SQUARE_SIZE};
     return isCollision(playerRect, enemyRect);
 }
+bool Game::checkPlayerBigeCollision( Character& player,  BigE& bige) {
+    SDL_Rect playerRect = {player.x, player.y, player.playersize, player.playersize};
+    SDL_Rect bigeRect = {bige.x, bige.y, BIGE_SIZE, BIGE_SIZE};
+    return isCollision(playerRect, bigeRect);
+}
 bool Game::checkPlayerCharacterCollision( Character& player,  Character& player2) {
     SDL_Rect playerRect = {player.x, player.y, player.playersize, player.playersize};
     SDL_Rect player2Rect = {player2.x, player2.y, player2.playersize, player2.playersize};
@@ -553,7 +496,6 @@ bool Game::checkPlayerSkillCollision( Character& player,  Skill& skill) {
     SDL_Rect skillRect = {skill.x, skill.y, ITEM_SIZE, ITEM_SIZE};
     return isCollision(playerRect, skillRect);
 }
-
 void Game::singerplayer() {
     player2.x = SCREEN_WIDTH + player2.playersize*2 ;
     player2.y = SCREEN_HEIGHT + player2.playersize*2 ;
@@ -562,13 +504,13 @@ void Game::singerplayer() {
 
 void Game::initElement() {
     startTime = SDL_GetTicks();
-
     lastPlayTime = 0;
     player.numlives = 1;
     player2.numlives = 1;
     player1lose = false;
     lastEnemySpawnTime = 0;
     lastItemSpawnTime = 0;
+    lastBigeSpawnTime = 0;
     player.x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2;
     player.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
     player.velX = 0;
@@ -585,6 +527,7 @@ void Game::initElement() {
         fill(begin(player2.isKeyPressed),end(player2.isKeyPressed), false);
     }
     enemies.clear();
+    biges.clear();
     skills.clear();
     explosions.clear();
     for(auto invisible : invisibles)invisible.endtime();
@@ -600,7 +543,17 @@ void Game::spawnItem() {
     int spawnX, spawnY;
     string itempic;
     string status;
-    int random = rand()%4;
+    int previousRandom = -1; // Khởi tạo giá trị random trước đó là -1
+    int random;
+    
+    do {
+        srand(time(0));
+        random = rand() % 4; // Random giá trị mới
+    } while (random == previousRandom); 
+    
+    cout<< random<<endl;
+    previousRandom = random; // Lưu trữ giá trị random mới để so sánh ở lần sau
+
     switch(random){
         case 0:
             status = "monster";
@@ -629,26 +582,82 @@ void Game::spawnItem() {
     skills.push_back(newSkill);
 }
 
+
+void Game::spawnBigE() {
+    int spawnX, spawnY,spawnVelX,spawnVelY;
+    string color;
+    int corner = rand() % 6;
+    switch (corner) {
+        case 0:
+            spawnX = SCREEN_WIDTH - BIGE_SIZE;
+            spawnY = rand() % (SCREEN_HEIGHT - BIGE_SIZE);
+            color = "image/bigemerarball.png";
+            spawnVelX = 2;
+            spawnVelY = 2;
+            break;
+        case 1:
+            spawnX = 0;
+            spawnY = rand() % (SCREEN_HEIGHT - BIGE_SIZE);
+            color = "image/biggrayball.png";
+            spawnVelX = 3;
+            spawnVelY = 3;
+            break;
+        case 2:
+            spawnX = rand() % (SCREEN_WIDTH - BIGE_SIZE);
+            spawnY = 0;
+            color = "image/bigredball.png";
+            spawnVelX = 5;
+            spawnVelY = 5;
+            break;
+        case 3:
+            spawnX = 0;
+            spawnY = SCREEN_HEIGHT - BIGE_SIZE;
+            color = "image/biggreenball.png";;
+            spawnVelX = 2;
+            spawnVelY = 0;
+            break;
+        case 4:
+            spawnX = rand() % (SCREEN_WIDTH - BIGE_SIZE);
+            spawnY = 0;
+            color = "image/bigorangeball.png";
+            spawnVelX = 2;
+            spawnVelY = 1;
+            break;
+        case 5:
+            spawnX = rand() % (SCREEN_WIDTH - BIGE_SIZE);
+            spawnY = 0;
+            color  = "image/bigblueball.png";
+            spawnVelX = 4;
+            spawnVelY = 4;
+            break;
+        default:
+            break;
+    }
+    BigE newBigE(spawnX, spawnY, spawnVelX, spawnVelY , color);
+    newBigE.init(renderer);
+    biges.push_back(newBigE);
+}
+
 void Game::spawnEnemy() {
     int spawnX, spawnY,spawnVelX,spawnVelY;
     string color;
-    int corner = rand() % 5;
+    int corner = rand() % 6;
     switch (corner) {
-        case 0:  // Top-left corner
+        case 0:
             spawnX = SCREEN_WIDTH - SQUARE_SIZE;
             spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
             color = "image/emerarball.png";
             spawnVelX = 2;
-            spawnVelY = 3;
+            spawnVelY = 2;
             break;
-        case 1:  // Bottom-left corner
+        case 1:
             spawnX = 0;
             spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
             color = "image/grayball.png";
             spawnVelX = 3;
-            spawnVelY = 4;
+            spawnVelY = 3;
             break;
-        case 2:  // Bottom-right corner
+        case 2:
             spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
             spawnY = 0;
             color = "image/redball.png";
@@ -668,7 +677,7 @@ void Game::spawnEnemy() {
             spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
             color = "image/emerarball.png";
             spawnVelX = 2;
-            spawnVelY = 3;
+            spawnVelY = 2;
             }
             break;
         case 4:
@@ -677,6 +686,13 @@ void Game::spawnEnemy() {
             color = "image/orangeball.png";
             spawnVelX = 2;
             spawnVelY = 1;
+            break;
+        case 5:
+            spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
+            spawnY = 0;
+            color  = "image/blueball.png";
+            spawnVelX = 4;
+            spawnVelY = 4;
             break;
         default:
             break;
