@@ -543,17 +543,9 @@ void Game::spawnItem() {
     int spawnX, spawnY;
     string itempic;
     string status;
-    int previousRandom = -1; // Khởi tạo giá trị random trước đó là -1
     int random;
-    
-    do {
-        srand(time(0));
-        random = rand() % 4; // Random giá trị mới
-    } while (random == previousRandom); 
-    
-    cout<< random<<endl;
-    previousRandom = random; // Lưu trữ giá trị random mới để so sánh ở lần sau
-
+    srand(time(0));
+    random = rand() % 4;
     switch(random){
         case 0:
             status = "monster";
@@ -587,45 +579,62 @@ void Game::spawnBigE() {
     int spawnX, spawnY,spawnVelX,spawnVelY;
     string color;
     int corner = rand() % 6;
+    int ran2 = rand() %2;
     switch (corner) {
         case 0:
-            spawnX = SCREEN_WIDTH - BIGE_SIZE;
-            spawnY = rand() % (SCREEN_HEIGHT - BIGE_SIZE);
+            // spawnX = SCREEN_WIDTH - BIGE_SIZE;
+            spawnX = SCREEN_WIDTH;
+            // spawnY = rand() % (SCREEN_HEIGHT - BIGE_SIZE);
+            spawnY = rand() % (BIGE_SIZE/4)+BIGE_SIZE;
             color = "image/bigemerarball.png";
-            spawnVelX = 2;
+            spawnVelX = -2;
             spawnVelY = 2;
             break;
         case 1:
-            spawnX = 0;
-            spawnY = rand() % (SCREEN_HEIGHT - BIGE_SIZE);
+            // spawnX = 0;
+            spawnX = -BIGE_SIZE;
+            spawnY = rand() % (BIGE_SIZE/4)+BIGE_SIZE;
             color = "image/biggrayball.png";
             spawnVelX = 3;
             spawnVelY = 3;
             break;
         case 2:
-            spawnX = rand() % (SCREEN_WIDTH - BIGE_SIZE);
-            spawnY = 0;
+            // spawnY = 0;
+            // spawnX = rand() % (SCREEN_WIDTH - BIGE_SIZE);
+            spawnX = rand() % (SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
+            spawnY = -BIGE_SIZE;
             color = "image/bigredball.png";
             spawnVelX = 5;
             spawnVelY = 5;
             break;
         case 3:
-            spawnX = 0;
+            if(ran2){
+                // spawnX = SCREEN_WIDTH - SQUARE_SIZE;
+                spawnX = SCREEN_WIDTH;
+                spawnVelX = -3;
+            }else {
+                // spawnX = 0;
+                spawnX = -BIGE_SIZE;
+                spawnVelX = 3;
+            }
             spawnY = SCREEN_HEIGHT - BIGE_SIZE;
-            color = "image/biggreenball.png";;
-            spawnVelX = 2;
+            color = "image/biggreenball.png";
             spawnVelY = 0;
             break;
         case 4:
-            spawnX = rand() % (SCREEN_WIDTH - BIGE_SIZE);
-            spawnY = 0;
+            // spawnY = 0;
+            // spawnX = rand() % (SCREEN_WIDTH - BIGE_SIZE);
+            spawnX = rand() % (SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
+            spawnY = -BIGE_SIZE;
             color = "image/bigorangeball.png";
             spawnVelX = 2;
             spawnVelY = 1;
             break;
         case 5:
-            spawnX = rand() % (SCREEN_WIDTH - BIGE_SIZE);
-            spawnY = 0;
+            // spawnY = 0;
+            // spawnX = rand() % (SCREEN_WIDTH - BIGE_SIZE);
+            spawnX = rand() % (SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
+            spawnY = -BIGE_SIZE;
             color  = "image/bigblueball.png";
             spawnVelX = 4;
             spawnVelY = 4;
@@ -633,6 +642,7 @@ void Game::spawnBigE() {
         default:
             break;
     }
+    cout<<corner<<" "<<spawnX<<" "<<spawnY<<endl;
     BigE newBigE(spawnX, spawnY, spawnVelX, spawnVelY , color);
     newBigE.init(renderer);
     biges.push_back(newBigE);
@@ -642,6 +652,8 @@ void Game::spawnEnemy() {
     int spawnX, spawnY,spawnVelX,spawnVelY;
     string color;
     int corner = rand() % 6;
+    int ran1 = rand() % 2;
+    int ran2 = rand() %2;
     switch (corner) {
         case 0:
             spawnX = SCREEN_WIDTH - SQUARE_SIZE;
@@ -665,19 +677,24 @@ void Game::spawnEnemy() {
             spawnVelY = 5;
             break;
         case 3:
-            if(rand() % 2){
-            spawnX = 0;
-            spawnY = SCREEN_HEIGHT - SQUARE_SIZE;
-            color = "image/greenball.png";;
-            spawnVelX = 2;
-            spawnVelY = 0;
+            if(ran1){
+                if(ran2){
+                    spawnX = SCREEN_WIDTH - SQUARE_SIZE;
+                    spawnVelX = -2;
+                }else {
+                    spawnX = 0;
+                    spawnVelX = 2;
+                }
+                spawnY = SCREEN_HEIGHT - SQUARE_SIZE;
+                color = "image/greenball.png";
+                spawnVelY = 0;
             }
             else {
-            spawnX = SCREEN_WIDTH - SQUARE_SIZE;
-            spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
-            color = "image/emerarball.png";
-            spawnVelX = 2;
-            spawnVelY = 2;
+                spawnX = SCREEN_WIDTH - SQUARE_SIZE;
+                spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
+                color = "image/emerarball.png";
+                spawnVelX = 2;
+                spawnVelY = 2;
             }
             break;
         case 4:

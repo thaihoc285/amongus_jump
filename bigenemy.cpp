@@ -6,24 +6,30 @@ BigE::BigE(int startX, int startY, int startVelX, int startVelY,string pathbige)
      velY(startVelY),
      path(pathbige),
      eTexture(NULL),
-     conclusiontimes(5) {}
+     conclusiontimes(1000000),
+     isonscreen(false) {}
 
 void BigE::move() {
    x += velX;
    y += velY;
-
-   if (x < 0 || x + BIGE_SIZE > SCREEN_WIDTH) {
+    if(((x >= 0 && x + BIGE_SIZE <= SCREEN_WIDTH)&&(y >= 0 && y + BIGE_SIZE <= SCREEN_HEIGHT))&&!isonscreen){
+        conclusiontimes = 5;
+        isonscreen = true;
+        if(this->path == "image/biggreenball.png")conclusiontimes = 3;
+    }
+    if ((x < 0 || x + BIGE_SIZE > SCREEN_WIDTH)&& (conclusiontimes <= 5)) {
        if(conclusiontimes){
         velX = -velX;
         conclusiontimes --;
        }
-   }
-   if (y < 0 || y + BIGE_SIZE > SCREEN_HEIGHT) {
-       if(conclusiontimes){
-        velY = -velY;
-        conclusiontimes --;
-       }
     }
+    if ((y < 0 || y + BIGE_SIZE > SCREEN_HEIGHT) &&(conclusiontimes <= 5 )) {
+        if(conclusiontimes){
+            velY = -velY;
+            conclusiontimes --;
+        }
+    }
+    cout<<conclusiontimes<<endl;
 }
 void BigE::init(SDL_Renderer* renderer) {
    SDL_Surface* loadedSurface = IMG_Load( path.c_str());

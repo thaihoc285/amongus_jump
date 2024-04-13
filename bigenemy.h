@@ -9,6 +9,7 @@ public:
     int x, y;
     double velX, velY;
     int conclusiontimes;
+    bool isonscreen;
     BigE(int startX, int startY, int startVelX, int startVelY,string pathbige);
     string path;
     void move();
