@@ -1,8 +1,6 @@
 #ifndef BIGENEMY_H
 #define BIGENEMY_H
 #include "gameconstants.h"
-#include <string>
-#include <SDL_image.h>
 using namespace std;
 class BigE {
 public:

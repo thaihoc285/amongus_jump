@@ -1,31 +1,24 @@
 # depslib dependency file v1.0
-1712715776 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
+1713373644 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.cpp
 	"Character.h"
 
-1712715776 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
+1713067850 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\character.h
 	"gameconstants.h"
-	<SDL.h>
-	<string>
-	<SDL_image.h>
 
 1712900309 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.cpp
 	"Enemy.h"
 
-1712718575 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.h
+1713067894 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\enemy.h
 	"gameconstants.h"
-	<string>
-	<SDL_image.h>
 
 1712724847 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\main.cpp
 	"Game.h"
 
-1712931391 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
+1713067903 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.h
 	<iomanip>
-	<sstream>
 	<algorithm>
 	<thread>
 	<fstream>
-	<SDL_ttf.h>
 	"gameconstants.h"
 	"Character.h"
 	"Enemy.h"
@@ -36,17 +29,16 @@
 	"nogravity.h"
 	"bigenemy.h"
 
-1712996025 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
+1713374029 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\game.cpp
 	"Game.h"
 
 1712715776 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.cpp
 	"skill.h"
 
-1712717771 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
+1713067857 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\skill.h
 	"gameconstants.h"
 	"Character.h"
 	"Enemy.h"
-	<vector>
 
 1711288046 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\explosion.cpp
 	"explosion.h"
@@ -60,15 +52,11 @@
 1711769366 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\invisible.cpp
 	"invisible.h"
 
-1711678050 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\invisible.h
-	<SDL.h>
+1713067884 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\invisible.h
 	"Character.h"
-	<vector>
 
-1711465370 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\monster.h
-	<SDL.h>
+1713067903 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\monster.h
 	"Character.h"
-	<vector>
 
 1711476900 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\monster.cpp
 	"monster.h"
@@ -81,19 +69,20 @@
 1712123414 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\nogravity.cpp
 	"nogravity.h"
 
-1712996398 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\gameconstants.h
+1713494695 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\gameconstants.h
 	<vector>
 	<string>
 	<iostream>
 	<SDL.h>
+	<SDL_ttf.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
 
 1712724362 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\onlygamevariable.h
 
-1712996116 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\bigenemy.cpp
+1713067903 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\bigenemy.cpp
 	"bigenemy.h"
 
-1712985551 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\bigenemy.h
+1713067903 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\bigenemy.h
 	"gameconstants.h"
-	<string>
-	<SDL_image.h>
 

@@ -3,7 +3,6 @@
 #include "gameconstants.h"
 #include "Character.h"
 #include "Enemy.h"
-#include<vector>
 class Skill {
 public:
     Skill();

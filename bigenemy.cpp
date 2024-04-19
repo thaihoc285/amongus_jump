@@ -29,7 +29,6 @@ void BigE::move() {
             conclusiontimes --;
         }
     }
-    cout<<conclusiontimes<<endl;
 }
 void BigE::init(SDL_Renderer* renderer) {
    SDL_Surface* loadedSurface = IMG_Load( path.c_str());

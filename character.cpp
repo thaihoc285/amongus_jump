@@ -24,6 +24,7 @@ Character::Character(int startX, int startY, int startVelX, int startVelY,double
 void Character::handleInput() {
     if (isKeyPressed[SDL_SCANCODE_UP] && !isJumping) {
         if(isgravity){
+            Mix_PlayChannel(-1,sound_jump,0);
             velY = -9;
             isJumping = true;
         }else y-=(moveOx+2);
@@ -47,6 +48,7 @@ void Character::handleInput() {
 void Character::handleInput2() {
     if (isKeyPressed[SDL_SCANCODE_W] && !isJumping2) {
         if(isgravity){
+            Mix_PlayChannel(-1,sound_jump,0);
             velY = -9;
             isJumping2 = true;
         }else y-=(moveOx+2);

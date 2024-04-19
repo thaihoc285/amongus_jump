@@ -1,11 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 #include <iomanip>
-#include <sstream>
 #include <algorithm>
 #include <thread>
 #include <fstream>
-#include <SDL_ttf.h>
 #include "gameconstants.h"
 #include "Character.h"
 #include "Enemy.h"

@@ -1,8 +1,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 #include "gameconstants.h"
-#include <string>
-#include <SDL_image.h>
 using namespace std;
 class Enemy {
 public:

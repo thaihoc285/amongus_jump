@@ -67,6 +67,20 @@ void Game::initSDL() {
     if (!font28 || !font36 || !font || !font68 || !font32) {
         logSDLError(cout, "TTF_OpenFont", true);
     }
+    if(Mix_OpenAudio(22050,MIX_DEFAULT_FORMAT,2,4096)==-1)logSDLError(cout, "TTF_Mixer", true);
+    sound_cls_item[0]=Mix_LoadWAV("sound/explosion.wav");
+    sound_cls_item[1]=Mix_LoadWAV("sound/ghost.wav");
+    sound_cls_item[2]=Mix_LoadWAV("sound/monster.wav");
+    sound_cls_item[3]=Mix_LoadWAV("sound/fly.wav");
+    sound_gameover = Mix_LoadWAV("sound/gameover.wav");
+    sound_monstereat = Mix_LoadWAV("sound/monstereat.wav");
+    sound_mouseclick = Mix_LoadWAV("sound/mouseclick.wav");
+    sound_jump = Mix_LoadWAV("sound/jump.wav");
+    Mix_VolumeChunk(sound_mouseclick, MIX_MAX_VOLUME /4);
+    Mix_VolumeChunk(sound_cls_item[0], MIX_MAX_VOLUME /6);
+    Mix_VolumeChunk(sound_cls_item[2], MIX_MAX_VOLUME /3);
+    Mix_VolumeChunk(sound_cls_item[1], MIX_MAX_VOLUME /2);
+    Mix_VolumeChunk(sound_monstereat, MIX_MAX_VOLUME /3);
 }
 void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
     os << msg << " error: " << SDL_GetError() << endl;
@@ -191,12 +205,14 @@ while (SDL_PollEvent(&e) != 0) {
             mouseX <= multiButtonRect.x + multiButtonRect.w &&
             mouseY >= multiButtonRect.y &&
             mouseY <= multiButtonRect.y + multiButtonRect.h) {
+                Mix_PlayChannel(-1,sound_mouseclick,0);
                 gameState = PLAYING;
                 startTime = SDL_GetTicks();
         }else if(mouseX >= singerButtonRect.x &&
             mouseX <= singerButtonRect.x + singerButtonRect.w &&
             mouseY >= singerButtonRect.y &&
             mouseY <= singerButtonRect.y + singerButtonRect.h) {
+                Mix_PlayChannel(-1,sound_mouseclick,0);
                 singerplayer();
                 gameState = PLAYING;
                 startTime = SDL_GetTicks();
@@ -204,6 +220,7 @@ while (SDL_PollEvent(&e) != 0) {
             mouseX <= highscoreButtonRect.x + highscoreButtonRect.w &&
             mouseY >= highscoreButtonRect.y &&
             mouseY <= highscoreButtonRect.y + highscoreButtonRect.h){
+                Mix_PlayChannel(-1,sound_mouseclick,0);
                 gameState = HIGHSCORE;
         }
     }
@@ -245,7 +262,8 @@ void Game::handleHighscore(SDL_Event& e,bool& quit){
               mouseX <= exitButtonRect.x + exitButtonRect.w &&
               mouseY >= exitButtonRect.y &&
               mouseY <= exitButtonRect.y + exitButtonRect.h) {
-                gameState = MENU;
+                  Mix_PlayChannel(-1,sound_mouseclick,0);
+                    gameState = MENU;
             }
       }
   }
@@ -264,6 +282,7 @@ void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
                 mouseX <= restartButtonRect.x + restartButtonRect.w &&
                 mouseY >= restartButtonRect.y &&
                 mouseY <= restartButtonRect.y + restartButtonRect.h) {
+                    Mix_PlayChannel(-1,sound_mouseclick,0);
                 initElement();
                 gameState = PLAYING;
                 resultSaved = false;
@@ -271,10 +290,11 @@ void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
                 mouseX <= backmenuButtonRect.x + backmenuButtonRect.w &&
                 mouseY >= backmenuButtonRect.y &&
                 mouseY <= backmenuButtonRect.y + backmenuButtonRect.h) {
-                ismulti = true;
-                initElement();
-                gameState = MENU;
-                resultSaved = false;
+                    Mix_PlayChannel(-1,sound_mouseclick,0);
+                    ismulti = true;
+                    initElement();
+                    gameState = MENU;
+                    resultSaved = false;
                 }
         }
     }
@@ -320,18 +340,22 @@ void Game::update() {
                 Explosion explosion(player.x, player.y, "image/explosion.png",SDL_GetTicks());
                 explosion.init(renderer);
                 explosions.push_back(explosion);
+                Mix_PlayChannel(-1,sound_cls_item[0],0);
             }else if (it->option == "invisible"){
                 Invisible invisible(player,SDL_GetTicks());
                 invisible.initplayer("image/spiderleft.png","image/spiderright.png");
+                Mix_PlayChannel(-1,sound_cls_item[1],0);
                 invisibles.push_back(invisible);
             }else if (it->option == "monster"){
                 Monster monster(player);
                 monster.initplayer("image/spiderleft.png","image/spiderright.png");
                 monsters.push_back(monster);
+                Mix_PlayChannel(-1,sound_cls_item[2],0);
             }else if (it -> option == "nogravity"){
                 Nogravity nogravity(player,SDL_GetTicks());
                 nogravity.initplayer();
                 nogravities.push_back(nogravity);
+                Mix_PlayChannel(-1,sound_cls_item[3],0);
             }
             skills.erase(it);
         }else if(isCollision(player2Rect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})){
@@ -340,18 +364,22 @@ void Game::update() {
                 Explosion explosion(player2.x, player2.y, "image/explosion.png",SDL_GetTicks());
                 explosion.init(renderer);
                 explosions.push_back(explosion);
+                Mix_PlayChannel(-1,sound_cls_item[0],0);
             }else if (it->option == "invisible"){
                 Invisible invisible(player2,SDL_GetTicks());
                 invisible.initplayer("image/captainleft.png","image/captainright.png");
+                Mix_PlayChannel(-1,sound_cls_item[1],0);
                 invisibles.push_back(invisible);
             }else if (it->option == "monster"){
                 Monster monster(player2);
                 monster.initplayer("image/captainleft.png","image/captainright.png");
                 monsters.push_back(monster);
+                Mix_PlayChannel(-1,sound_cls_item[2],0);
             }else if (it -> option == "nogravity"){
                 Nogravity nogravity(player2,SDL_GetTicks());
                 nogravity.initplayer();
                 nogravities.push_back(nogravity);
+                Mix_PlayChannel(-1,sound_cls_item[3],0);
             }
             skills.erase(it);
         }
@@ -381,8 +409,10 @@ void Game::update() {
         player.numlives-- ;
    }else if((player.ismonster&&checkPlayerCharacterCollision(player2,player))&&ismulti)player2.numlives--;
    if (!(player.numlives&&player2.numlives)) {
-               gameState = GAMEOVER;
-               lastPlayTime = elapsedTime;
+            Mix_HaltChannel(-1);
+            Mix_PlayChannel(-1,sound_gameover,0);
+            gameState = GAMEOVER;
+            lastPlayTime = elapsedTime;
        }
 }
 string Game::formatTime(int timeInSeconds) {
@@ -422,10 +452,12 @@ void Game::render() {
     for (auto it = enemies.begin(); it!= enemies.end();) {
         if(checkPlayerEnemyCollision(player, *it)&&player.ismonster&&!player.isghost){
             enemies.erase(it);
+            Mix_PlayChannel(-1,sound_monstereat,0);
             player.ismonster = false;
         }else if(checkPlayerEnemyCollision(player2, *it)&&ismulti&&player2.ismonster&&!player2.isghost){
             enemies.erase(it);
             player2.ismonster = false;
+            Mix_PlayChannel(-1,sound_monstereat,0);
         }else it++;
     }
     for(auto it = invisibles.begin(); it != invisibles.end();){

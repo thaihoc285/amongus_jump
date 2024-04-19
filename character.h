@@ -1,9 +1,6 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 #include "gameconstants.h"
-#include <SDL.h>
-#include <string>
-#include <SDL_image.h>
 using namespace std;
 class Character {
 public:

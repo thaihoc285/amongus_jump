@@ -1,8 +1,6 @@
 #ifndef INVISIBLE_H
 #define INVISIBLE_H
-#include <SDL.h>
 #include "Character.h"
-#include<vector>
 class Invisible {
 public:
    Invisible();
