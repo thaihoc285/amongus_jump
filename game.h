@@ -89,6 +89,7 @@ private:
     bool checkPlayerBigeCollision( Character& player,  BigE& bige);
     void buttoncanclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font,int &widthtexture,int &heighttexture);
     void buttoncantclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font);
+    void buttonclick(const string& path, SDL_Color color, int x,int y, TTF_Font* font,int &widthtexture,int &heighttexture);
 //    bool cmpstringtime(string a,string b);
     float frameTime;
 

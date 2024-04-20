@@ -15,6 +15,8 @@ void Monster::initplayer(string playerpathleft,string playerpathright) {
     playermonright = playerpathright;
     playermon->pathleft="image/mtblackleft.png";
     playermon->playersize = 70;
+    playermon->isghost = false;
+    playermon->numlives = 1;
     playermon->ismonster = true;
     playermon->moveOx = 3;
     playermon->pathright="image/mtblackright.png";

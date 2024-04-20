@@ -19,12 +19,18 @@ Character::Character(int startX, int startY, int startVelX, int startVelY,double
       numlives(heart),
       moveOx(startVelX),
       moveOy(startVelY),
-      gravityx(grvt){}
+      gravityx(grvt){
+            Mix_OpenAudio(22050,MIX_DEFAULT_FORMAT,2,4096);
+            sound_jump = Mix_LoadWAV("sound/jump2.wav");
+            sound_jump2 = Mix_LoadWAV("sound/jump.wav");
+            Mix_VolumeChunk(sound_jump, MIX_MAX_VOLUME /6);
+            Mix_VolumeChunk(sound_jump2, MIX_MAX_VOLUME /2);
+      }
 
 void Character::handleInput() {
     if (isKeyPressed[SDL_SCANCODE_UP] && !isJumping) {
         if(isgravity){
-            Mix_PlayChannel(-1,sound_jump,0);
+            Mix_PlayChannel(6,sound_jump,0);
             velY = -9;
             isJumping = true;
         }else y-=(moveOx+2);
@@ -48,7 +54,7 @@ void Character::handleInput() {
 void Character::handleInput2() {
     if (isKeyPressed[SDL_SCANCODE_W] && !isJumping2) {
         if(isgravity){
-            Mix_PlayChannel(-1,sound_jump,0);
+            Mix_PlayChannel(5,sound_jump2,0);
             velY = -9;
             isJumping2 = true;
         }else y-=(moveOx+2);

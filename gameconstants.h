@@ -13,7 +13,7 @@ const int SQUARE_SIZE = 50;
 const int ITEM_SIZE = 40;
 const int BIGE_SIZE = 200;
 const int ENEMY_SPAWN_INTERVAL = 5000;
-const int ITEM_SPAWN_INTERVAL = 9000;
+const int ITEM_SPAWN_INTERVAL = 8000;
 const int BIGE_SPAWN_INTERVAL = 28000;
 const std::string WINDOW_TITLE = "Among us";
 const int FPS = 60;
@@ -24,4 +24,8 @@ static Mix_Chunk* sound_gameover;
 static Mix_Chunk* sound_monstereat;
 static Mix_Chunk* sound_mouseclick;
 static Mix_Chunk* sound_jump;
+static Mix_Chunk* sound_jump2;
+static Mix_Chunk* sound_bg[2];
+static Mix_Chunk* sound_enemy[2];
+
 #endif // GAME_CONSTANTS_H
