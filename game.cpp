@@ -6,7 +6,6 @@ Game::Game()
       player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.6,{250, 250, 250, 100},"image/captainleft.png","image/captainright.png",1,SQUARE_SIZE),
       startTime(0),
       lastPlayTime(0),
-      font(nullptr),
       resultSaved (false),
       lastEnemySpawnTime(0),
       lastItemSpawnTime(0),
@@ -86,7 +85,7 @@ void Game::initSDL() {
     Mix_VolumeChunk(sound_cls_item[1], MIX_MAX_VOLUME /2);
     Mix_VolumeChunk(sound_monstereat, MIX_MAX_VOLUME /3);
     Mix_VolumeChunk(sound_bg[1], MIX_MAX_VOLUME /5);
-    Mix_VolumeChunk(sound_bg[0], MIX_MAX_VOLUME /2);
+    Mix_VolumeChunk(sound_bg[0], MIX_MAX_VOLUME*2 /3);
     Mix_VolumeChunk(sound_enemy[0], MIX_MAX_VOLUME /2);
     Mix_PlayChannel(1,sound_bg[0],-1);
 }
@@ -97,15 +96,6 @@ void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
         exit(1);
     }
 }
- void Game::buttoncanclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font,int &widthtexture,int &heighttexture) {
-     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
-     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-     SDL_QueryTexture(texture, NULL, NULL, &widthtexture, &heighttexture);
-     SDL_Rect rect = {x,y, widthtexture, heighttexture};
-     SDL_RenderCopy(renderer, texture, nullptr, &rect);
-     SDL_FreeSurface(surface);
-     SDL_DestroyTexture(texture);
- }
   void Game::buttonclick(const string& path, SDL_Color color, int x,int y, TTF_Font* font,int &widthtexture,int &heighttexture) {
      SDL_Surface* surface = IMG_Load( path.c_str());
      SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -126,13 +116,13 @@ void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
 }
 void Game::drawMenu() {
     SDL_RenderClear(renderer);
-    string path = "image/amongusbg1.jpg";
+    string path = "image/bg_with_text.png";
     SDL_Surface* menuSurface = IMG_Load( path.c_str());
     SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
     buttonclick("image/multiplayer.png",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3,font36,widhbutton2,heightbutton2);
-    buttonclick("image/singleplayer.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 1 / 2,font36,widthbutton1,heightbutton1);
+    buttonclick("image/singleplayer.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 8 / 15,font36,widthbutton1,heightbutton1);
     buttonclick("image/highscore.png",textColor,(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5,font36,widthbutton3,heightbutton3);
     SDL_FreeSurface(menuSurface);
     SDL_DestroyTexture(menuTexture);
@@ -216,12 +206,13 @@ while (SDL_PollEvent(&e) != 0) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
         SDL_Rect multiButtonRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3, widhbutton2, heightbutton2};
-        SDL_Rect singerButtonRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 1 / 2, widthbutton1, heightbutton1};
+        SDL_Rect singerButtonRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 8 / 15, widthbutton1, heightbutton1};
         SDL_Rect highscoreButtonRect = {(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5, widthbutton3, heightbutton3};
         if (mouseX >= multiButtonRect.x &&
             mouseX <= multiButtonRect.x + multiButtonRect.w &&
             mouseY >= multiButtonRect.y &&
             mouseY <= multiButtonRect.y + multiButtonRect.h) {
+                Mix_HaltChannel(-1);
                 Mix_PlayChannel(-1,sound_mouseclick,0);
                 Mix_PlayChannel(1,sound_bg[1],-1);
                 gameState = PLAYING;
@@ -230,10 +221,10 @@ while (SDL_PollEvent(&e) != 0) {
             mouseX <= singerButtonRect.x + singerButtonRect.w &&
             mouseY >= singerButtonRect.y &&
             mouseY <= singerButtonRect.y + singerButtonRect.h) {
-                Mix_PlayChannel(-1,sound_mouseclick,0);
-                singerplayer();
                 Mix_HaltChannel(-1);
+                Mix_PlayChannel(-1,sound_mouseclick,0);
                 Mix_PlayChannel(1,sound_bg[1],-1);
+                singerplayer();
                 gameState = PLAYING;
                 startTime = SDL_GetTicks();
         }else if(mouseX >= highscoreButtonRect.x &&
@@ -365,6 +356,7 @@ void Game::update() {
                 explosions.push_back(explosion);
                 Mix_PlayChannel(-1,sound_cls_item[0],0);
             }else if (it->option == "invisible"){
+                countghost++;
                 Invisible invisible(player,SDL_GetTicks());
                 invisible.initplayer("image/spiderleft.png","image/spiderright.png");
                 Mix_PlayChannel(-1,sound_cls_item[1],0);
@@ -375,6 +367,7 @@ void Game::update() {
                 monsters.push_back(monster);
                 Mix_PlayChannel(-1,sound_cls_item[2],0);
             }else if (it -> option == "nogravity"){
+                countnogravity++;
                 Nogravity nogravity(player,SDL_GetTicks());
                 nogravity.initplayer();
                 nogravities.push_back(nogravity);
@@ -433,7 +426,7 @@ void Game::update() {
    }else if((player.ismonster&&checkPlayerCharacterCollision(player2,player))&&ismulti)player2.numlives--;
    if (!(player.numlives&&player2.numlives)) {
             Mix_HaltChannel(-1);
-            Mix_PlayChannel(-1,sound_gameover,0);
+            Mix_PlayChannel(1,sound_gameover,0);
             gameState = GAMEOVER;
             lastPlayTime = elapsedTime;
        }
@@ -483,17 +476,19 @@ void Game::render() {
         }else it++;
     }
     for(auto it = invisibles.begin(); it != invisibles.end();){
-        if(SDL_GetTicks() - it->inittime > 4000){
+        if(SDL_GetTicks() - it->inittime > timeghost*countghost){
             it->endtime();
             invisibles.erase(it);
+            countghost = 0;
         }else {
             it++;
         }
     }
     for(auto it = nogravities.begin(); it != nogravities.end();){
-        if(SDL_GetTicks() - it->inittime > 6000){
+        if(SDL_GetTicks() - it->inittime > timenogravity*countnogravity){
             it->endtime();
             nogravities.erase(it);
+            countnogravity = 0;
         }else {
             it++;
         }

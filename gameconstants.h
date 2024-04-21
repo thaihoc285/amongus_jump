@@ -27,5 +27,19 @@ static Mix_Chunk* sound_jump;
 static Mix_Chunk* sound_jump2;
 static Mix_Chunk* sound_bg[2];
 static Mix_Chunk* sound_enemy[2];
-
+static TTF_Font* font ;
+static TTF_Font* font36 ;
+static TTF_Font* font68 ;
+static TTF_Font* font28 ;
+static TTF_Font* font32 ;
+static int widthbutton1;
+static int heightbutton1;
+static int widhbutton2;
+static int heightbutton2;
+static int widthbutton3;
+static int heightbutton3;
+static int timeghost = 4000;
+static int timenogravity = 6000;
+static int countghost = 0;
+static int countnogravity = 0;
 #endif // GAME_CONSTANTS_H
