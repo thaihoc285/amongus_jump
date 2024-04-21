@@ -19,6 +19,8 @@ Character::Character(int startX, int startY, int startVelX, int startVelY,double
       numlives(heart),
       moveOx(startVelX),
       moveOy(startVelY),
+      countghost(0),
+    countnogravity(0),
       gravityx(grvt){
             Mix_OpenAudio(22050,MIX_DEFAULT_FORMAT,2,4096);
             sound_jump = Mix_LoadWAV("Sources/sound/jump2.wav");

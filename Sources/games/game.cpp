@@ -356,7 +356,7 @@ void Game::update() {
                 explosions.push_back(explosion);
                 Mix_PlayChannel(-1,sound_cls_item[0],0);
             }else if (it->option == "invisible"){
-                countghost++;
+                player.countghost++;
                 Invisible invisible(player,SDL_GetTicks());
                 invisible.initplayer("Sources/image/spiderleft.png","Sources/image/spiderright.png");
                 Mix_PlayChannel(-1,sound_cls_item[1],0);
@@ -367,7 +367,7 @@ void Game::update() {
                 monsters.push_back(monster);
                 Mix_PlayChannel(-1,sound_cls_item[2],0);
             }else if (it -> option == "nogravity"){
-                countnogravity++;
+                player.countnogravity++;
                 Nogravity nogravity(player,SDL_GetTicks());
                 nogravity.initplayer();
                 nogravities.push_back(nogravity);
@@ -382,6 +382,7 @@ void Game::update() {
                 explosions.push_back(explosion);
                 Mix_PlayChannel(-1,sound_cls_item[0],0);
             }else if (it->option == "invisible"){
+                player2.countghost++;
                 Invisible invisible(player2,SDL_GetTicks());
                 invisible.initplayer("Sources/image/captainleft.png","Sources/image/captainright.png");
                 Mix_PlayChannel(-1,sound_cls_item[1],0);
@@ -392,6 +393,7 @@ void Game::update() {
                 monsters.push_back(monster);
                 Mix_PlayChannel(-1,sound_cls_item[2],0);
             }else if (it -> option == "nogravity"){
+                player2.countnogravity++;
                 Nogravity nogravity(player2,SDL_GetTicks());
                 nogravity.initplayer();
                 nogravities.push_back(nogravity);
@@ -476,19 +478,19 @@ void Game::render() {
         }else it++;
     }
     for(auto it = invisibles.begin(); it != invisibles.end();){
-        if(SDL_GetTicks() - it->inittime > timeghost*countghost){
+        if(SDL_GetTicks() - it->inittime > timeghost*((it->player)->countghost)){
             it->endtime();
+            (it->player)->countghost = 0;
             invisibles.erase(it);
-            countghost = 0;
         }else {
             it++;
         }
     }
     for(auto it = nogravities.begin(); it != nogravities.end();){
-        if(SDL_GetTicks() - it->inittime > timenogravity*countnogravity){
+        if(SDL_GetTicks() - it->inittime > timenogravity*((it->player)->countnogravity)){
             it->endtime();
+            (it->player)->countnogravity = 0;
             nogravities.erase(it);
-            countnogravity = 0;
         }else {
             it++;
         }

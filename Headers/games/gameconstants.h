@@ -40,6 +40,6 @@ static int widthbutton3;
 static int heightbutton3;
 static int timeghost = 4000;
 static int timenogravity = 6000;
-static int countghost = 0;
-static int countnogravity = 0;
+
+
 #endif // GAME_CONSTANTS_H

@@ -25,6 +25,8 @@ public:
     int numlives;
     double gravityx;
     double moveOx,moveOy;
+    int countghost;
+    int countnogravity;
 };
 
 #endif // CHARACTER_H
