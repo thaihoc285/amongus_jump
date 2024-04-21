@@ -5,14 +5,14 @@
 #include <thread>
 #include <fstream>
 #include "gameconstants.h"
-#include "Character.h"
-#include "Enemy.h"
-#include "Skill.h"
-#include "monster.h"
-#include "explosion.h"
-#include "invisible.h"
-#include "nogravity.h"
-#include "bigenemy.h"
+#include "../characters/character.h"
+#include "../characters/Enemy.h"
+#include "../items/Skill.h"
+#include "../items/monster.h"
+#include "../items/explosion.h"
+#include "../items/invisible.h"
+#include "../items/nogravity.h"
+#include "../characters/bigenemy.h"
 using namespace std;
 enum GameState {
         MENU,

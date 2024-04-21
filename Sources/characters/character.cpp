@@ -1,4 +1,4 @@
-#include "Character.h"
+#include "../../Headers/characters/character.h"
 Character::Character(int startX, int startY, int startVelX, int startVelY,double grvt,SDL_Color startColor,string left,string right,int heart,int sizep)
     : chTexture(nullptr),
       x(startX),

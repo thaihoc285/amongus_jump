@@ -1,6 +1,6 @@
 #ifndef BIGENEMY_H
 #define BIGENEMY_H
-#include "gameconstants.h"
+#include "../games/gameconstants.h"
 using namespace std;
 class BigE {
 public:

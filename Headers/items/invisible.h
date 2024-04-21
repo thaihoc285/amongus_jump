@@ -1,6 +1,6 @@
 #ifndef INVISIBLE_H
 #define INVISIBLE_H
-#include "Character.h"
+#include "../characters/character.h"
 class Invisible {
 public:
    Invisible();

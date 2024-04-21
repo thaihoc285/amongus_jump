@@ -1,8 +1,8 @@
 #ifndef EXPLOSION_H
 #define EXPLOSION_H
 #include <SDL.h>
-#include "Character.h"
-#include "Enemy.h"
+#include "../characters/character.h"
+#include "../characters/enemy.h"
 #include<vector>
 class Explosion {
 public:

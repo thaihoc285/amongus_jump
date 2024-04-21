@@ -1,4 +1,4 @@
-#include "invisible.h"
+#include "../../Headers/items/invisible.h"
 Invisible::Invisible(Character& playerinvisible,Uint32 starttime)
     : player(&playerinvisible),
     inittime(starttime){}

@@ -31,26 +31,26 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="bigenemy.cpp" />
-		<Unit filename="bigenemy.h" />
-		<Unit filename="character.cpp" />
-		<Unit filename="character.h" />
-		<Unit filename="enemy.cpp" />
-		<Unit filename="enemy.h" />
-		<Unit filename="explosion.cpp" />
-		<Unit filename="explosion.h" />
-		<Unit filename="game.cpp" />
-		<Unit filename="game.h" />
-		<Unit filename="gameconstants.h" />
-		<Unit filename="invisible.cpp" />
-		<Unit filename="invisible.h" />
+		<Unit filename="Headers/characters/bigenemy.h" />
+		<Unit filename="Headers/characters/character.h" />
+		<Unit filename="Headers/characters/enemy.h" />
+		<Unit filename="Headers/games/game.h" />
+		<Unit filename="Headers/games/gameconstants.h" />
+		<Unit filename="Headers/items/explosion.h" />
+		<Unit filename="Headers/items/invisible.h" />
+		<Unit filename="Headers/items/monster.h" />
+		<Unit filename="Headers/items/nogravity.h" />
+		<Unit filename="Headers/items/skill.h" />
+		<Unit filename="Sources/characters/bigenemy.cpp" />
+		<Unit filename="Sources/characters/character.cpp" />
+		<Unit filename="Sources/characters/enemy.cpp" />
+		<Unit filename="Sources/games/game.cpp" />
+		<Unit filename="Sources/items/explosion.cpp" />
+		<Unit filename="Sources/items/invisible.cpp" />
+		<Unit filename="Sources/items/monster.cpp" />
+		<Unit filename="Sources/items/nogravity.cpp" />
+		<Unit filename="Sources/items/skill.cpp" />
 		<Unit filename="main.cpp" />
-		<Unit filename="monster.cpp" />
-		<Unit filename="monster.h" />
-		<Unit filename="nogravity.cpp" />
-		<Unit filename="nogravity.h" />
-		<Unit filename="skill.cpp" />
-		<Unit filename="skill.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

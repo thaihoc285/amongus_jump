@@ -1,4 +1,4 @@
-#include "bigenemy.h"
+#include "../../Headers/characters/bigenemy.h"
 BigE::BigE(int startX, int startY, int startVelX, int startVelY,string pathbige)
    : x(startX),
      y(startY),

@@ -1,6 +1,6 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
-#include "gameconstants.h"
+#include "../games/gameconstants.h"
 using namespace std;
 class Character {
 public:

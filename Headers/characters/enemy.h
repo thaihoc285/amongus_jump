@@ -1,6 +1,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
-#include "gameconstants.h"
+#include "../games/gameconstants.h"
 using namespace std;
 class Enemy {
 public:

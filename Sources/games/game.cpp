@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "../../Headers/games/game.h"
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
@@ -58,11 +58,11 @@ void Game::initSDL() {
     if (TTF_Init() == -1) {
         logSDLError(cout, "TTF_Init", true);
     }
-    font = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 24);
-    font36 = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 36);
-    font68 = TTF_OpenFont("zebulon_6918646/Zebulon Hollow.otf", 68);
-    font28 = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 28);
-    font32 = TTF_OpenFont("zebulon_6918646/Zebulon.otf", 32);
+    font = TTF_OpenFont("fonttext/Zebulon.otf", 24);
+    font36 = TTF_OpenFont("fonttext/Zebulon.otf", 36);
+    font68 = TTF_OpenFont("fonttext/Zebulon Hollow.otf", 68);
+    font28 = TTF_OpenFont("fonttext/Zebulon.otf", 28);
+    font32 = TTF_OpenFont("fonttext/Zebulon.otf", 32);
     if (!font28 || !font36 || !font || !font68 || !font32) {
         logSDLError(cout, "TTF_OpenFont", true);
     }

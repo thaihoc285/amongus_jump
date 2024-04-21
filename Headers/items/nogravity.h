@@ -1,7 +1,7 @@
 #ifndef NOGRAVITY_H
 #define NOGRAVITY_H
 #include <SDL.h>
-#include "Character.h"
+#include "../characters/character.h"
 #include<vector>
 class Nogravity {
 public:

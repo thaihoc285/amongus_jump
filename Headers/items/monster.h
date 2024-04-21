@@ -1,6 +1,6 @@
 #ifndef MONSTER_H
 #define MONSTER_H
-#include "Character.h"
+#include "../characters/character.h"
 class Monster {
 public:
    Monster();

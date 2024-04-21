@@ -1,4 +1,4 @@
-#include "skill.h"
+#include "../../Headers/items/skill.h"
 Skill::Skill(int startX, int startY,string pathskill,string optionpower)
     : x(startX),
       y(startY),

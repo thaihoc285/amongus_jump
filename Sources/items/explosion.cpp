@@ -1,4 +1,4 @@
-#include "explosion.h"
+#include "../../Headers/items/explosion.h"
 Explosion::Explosion(int startX, int startY,string pathExplosion,Uint32 starttime)
     : x(startX),
       y(startY),

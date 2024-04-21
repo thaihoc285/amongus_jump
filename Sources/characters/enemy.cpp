@@ -1,4 +1,4 @@
-#include "Enemy.h"
+#include "../../Headers/characters/enemy.h"
 Enemy::Enemy(int startX, int startY, int startVelX, int startVelY,string pathenemy)
     : x(startX),
       y(startY),

@@ -1,8 +1,8 @@
 #ifndef SKILL_H
 #define SKILL_H
-#include "gameconstants.h"
-#include "Character.h"
-#include "Enemy.h"
+#include "../games/gameconstants.h"
+#include "../characters/character.h"
+#include "../characters/enemy.h"
 class Skill {
 public:
     Skill();
