@@ -5,8 +5,8 @@ Invisible::Invisible(Character& playerinvisible,Uint32 starttime)
 void Invisible::endtime() {
     player->numlives = 1;
     if(player->ismonster){
-        player->pathleft = "image/mtblackleft.png";
-        player->pathright = "image/mtblackright.png";
+        player->pathleft = "Sources/image/mtblackleft.png";
+        player->pathright = "Sources/image/mtblackright.png";
         player->playersize = 70;
         player->moveOx = 3;
     }else{
@@ -20,8 +20,8 @@ void Invisible::initplayer(string playerpathleft,string playerpathright) {
     playerleft = playerpathleft;
     playerright = playerpathright;
     player->numlives = 10000000;
-    player->pathleft="image/ghostleft.png";
-    player->pathright="image/ghostright.png";
+    player->pathleft="Sources/image/ghostleft.png";
+    player->pathright="Sources/image/ghostright.png";
     player->path = player->pathright;
     player->playersize = 50;
     player->moveOx = 5;

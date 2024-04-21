@@ -2,8 +2,8 @@
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
-      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.6,{50, 50, 50, 0},"image/spiderleft.png","image/spiderright.png",1,SQUARE_SIZE),
-      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.6,{250, 250, 250, 100},"image/captainleft.png","image/captainright.png",1,SQUARE_SIZE),
+      player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.6,{50, 50, 50, 0},"Sources/image/spiderleft.png","Sources./image/spiderright.png",1,SQUARE_SIZE),
+      player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.6,{250, 250, 250, 100},"Sources/image/captainleft.png","Sources/image/captainright.png",1,SQUARE_SIZE),
       startTime(0),
       lastPlayTime(0),
       resultSaved (false),
@@ -58,27 +58,27 @@ void Game::initSDL() {
     if (TTF_Init() == -1) {
         logSDLError(cout, "TTF_Init", true);
     }
-    font = TTF_OpenFont("fonttext/Zebulon.otf", 24);
-    font36 = TTF_OpenFont("fonttext/Zebulon.otf", 36);
-    font68 = TTF_OpenFont("fonttext/Zebulon Hollow.otf", 68);
-    font28 = TTF_OpenFont("fonttext/Zebulon.otf", 28);
-    font32 = TTF_OpenFont("fonttext/Zebulon.otf", 32);
+    font = TTF_OpenFont("Sources/fonttext/Zebulon.otf", 24);
+    font36 = TTF_OpenFont("Sources/fonttext/Zebulon.otf", 36);
+    font68 = TTF_OpenFont("Sources/fonttext/Zebulon Hollow.otf", 68);
+    font28 = TTF_OpenFont("Sources/fonttext/Zebulon.otf", 28);
+    font32 = TTF_OpenFont("Sources/fonttext/Zebulon.otf", 32);
     if (!font28 || !font36 || !font || !font68 || !font32) {
         logSDLError(cout, "TTF_OpenFont", true);
     }
     if(Mix_OpenAudio(22050,MIX_DEFAULT_FORMAT,2,4096)==-1)logSDLError(cout, "TTF_Mixer", true);
 //    Mix_AllocateChannels(2);
-    sound_cls_item[0]=Mix_LoadWAV("sound/explosion.wav");
-    sound_cls_item[1]=Mix_LoadWAV("sound/ghost.wav");
-    sound_cls_item[2]=Mix_LoadWAV("sound/monster.wav");
-    sound_cls_item[3]=Mix_LoadWAV("sound/fly.wav");
-    sound_gameover = Mix_LoadWAV("sound/gameover.wav");
-    sound_monstereat = Mix_LoadWAV("sound/monstereat.wav");
-    sound_mouseclick = Mix_LoadWAV("sound/mouseclick.wav");
-    sound_bg[0] = Mix_LoadWAV("sound/bg_menu.wav");
-    sound_bg[1] = Mix_LoadWAV("sound/bg_playing.wav");
-    sound_enemy[1] = Mix_LoadWAV("sound/bigewarning.wav");
-    sound_enemy[0] = Mix_LoadWAV("sound/enemyspawn.wav");
+    sound_cls_item[0]=Mix_LoadWAV("Sources/sound/explosion.wav");
+    sound_cls_item[1]=Mix_LoadWAV("Sources/sound/ghost.wav");
+    sound_cls_item[2]=Mix_LoadWAV("Sources/sound/monster.wav");
+    sound_cls_item[3]=Mix_LoadWAV("Sources/sound/fly.wav");
+    sound_gameover = Mix_LoadWAV("Sources/sound/gameover.wav");
+    sound_monstereat = Mix_LoadWAV("Sources/sound/monstereat.wav");
+    sound_mouseclick = Mix_LoadWAV("Sources/sound/mouseclick.wav");
+    sound_bg[0] = Mix_LoadWAV("Sources/sound/bg_menu.wav");
+    sound_bg[1] = Mix_LoadWAV("Sources/sound/bg_playing.wav");
+    sound_enemy[1] = Mix_LoadWAV("Sources/sound/bigewarning.wav");
+    sound_enemy[0] = Mix_LoadWAV("Sources/sound/enemyspawn.wav");
     Mix_VolumeChunk(sound_mouseclick, MIX_MAX_VOLUME /4);
     Mix_VolumeChunk(sound_cls_item[0], MIX_MAX_VOLUME /6);
     Mix_VolumeChunk(sound_cls_item[2], MIX_MAX_VOLUME /3);
@@ -116,14 +116,14 @@ void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
 }
 void Game::drawMenu() {
     SDL_RenderClear(renderer);
-    string path = "image/bg_with_text.png";
+    string path = "Sources/image/bg_with_text.png";
     SDL_Surface* menuSurface = IMG_Load( path.c_str());
     SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
-    buttonclick("image/multiplayer.png",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3,font36,widhbutton2,heightbutton2);
-    buttonclick("image/singleplayer.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 8 / 15,font36,widthbutton1,heightbutton1);
-    buttonclick("image/highscore.png",textColor,(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5,font36,widthbutton3,heightbutton3);
+    buttonclick("Sources/image/multiplayer.png",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3,font36,widhbutton2,heightbutton2);
+    buttonclick("Sources/image/singleplayer.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 8 / 15,font36,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/highscore.png",textColor,(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5,font36,widthbutton3,heightbutton3);
     SDL_FreeSurface(menuSurface);
     SDL_DestroyTexture(menuTexture);
     // Present the renderer
@@ -133,7 +133,7 @@ void Game::drawMenu() {
 void Game::drawGameover() {
     SDL_RenderClear(renderer);
     int timeposition = SCREEN_HEIGHT * 1/3;
-    string path = "image/gameoveramongus1.png";
+    string path = "Sources/image/gameoveramongus1.png";
     SDL_Surface* gameoverSurface = IMG_Load( path.c_str());
     SDL_Texture* gameoverTexture = SDL_CreateTextureFromSurface( renderer, gameoverSurface );
     SDL_Rect gameoverRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
@@ -144,8 +144,8 @@ void Game::drawGameover() {
         buttoncantclick("Winner",textColor,0, SCREEN_HEIGHT * 1/4,font36);
         string path ;
         if(player1lose){
-        path = "image/captainright.png";
-        }else path = "image/spiderright.png";
+        path = "Sources/image/captainright.png";
+        }else path = "Sources/image/spiderright.png";
         SDL_Surface* playerwinSurface = IMG_Load( path.c_str());
         SDL_Texture* playerwinTexture = SDL_CreateTextureFromSurface( renderer, playerwinSurface );
         SDL_Rect playerwinRect = {(SCREEN_WIDTH - 170) / 2, SCREEN_HEIGHT *7/20, 150, 150};
@@ -162,8 +162,8 @@ void Game::drawGameover() {
     }
 
     buttoncantclick("Time Over: " + scoretime,textColor,0, timeposition,font);
-    buttonclick("image/restartbutton.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 3 / 5,font36,widthbutton1,heightbutton1);
-    buttonclick("image/menubutton.png",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 4,font28,widhbutton2,heightbutton2);
+    buttonclick("Sources/image/restartbutton.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 3 / 5,font36,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/menubutton.png",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 4,font28,widhbutton2,heightbutton2);
     SDL_FreeSurface( gameoverSurface );
     SDL_DestroyTexture(gameoverTexture);
     SDL_RenderPresent(renderer);
@@ -171,7 +171,7 @@ void Game::drawGameover() {
 
 void Game::drawHighscore(){
     SDL_RenderClear(renderer);
-    string path = "image/playingbg2.png";
+    string path = "Sources/image/playingbg2.png";
     SDL_Surface* highscoreSurface = IMG_Load( path.c_str());
     SDL_Texture* highscoreTexture = SDL_CreateTextureFromSurface( renderer, highscoreSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
@@ -192,7 +192,7 @@ void Game::drawHighscore(){
         buttoncantclick(to_string(i + 1),textColor,0.1 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
         buttoncantclick(scores[i],textColor,0.75 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
     }
-    buttonclick("image/exitbutton.png",textColor,0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,font28,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/exitbutton.png",textColor,0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,font28,widthbutton1,heightbutton1);
     buttoncantclick("Highscore",textColor,0, .02*SCREEN_HEIGHT,font68);
     SDL_FreeSurface(highscoreSurface);
     SDL_DestroyTexture(highscoreTexture);
@@ -351,19 +351,19 @@ void Game::update() {
         if (isCollision(playerRect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})) {
             it->power(enemies,player);
             if(it->option == "bomb"){
-                Explosion explosion(player.x, player.y, "image/explosion.png",SDL_GetTicks());
+                Explosion explosion(player.x, player.y, "Sources/image/explosion.png",SDL_GetTicks());
                 explosion.init(renderer);
                 explosions.push_back(explosion);
                 Mix_PlayChannel(-1,sound_cls_item[0],0);
             }else if (it->option == "invisible"){
                 countghost++;
                 Invisible invisible(player,SDL_GetTicks());
-                invisible.initplayer("image/spiderleft.png","image/spiderright.png");
+                invisible.initplayer("Sources/image/spiderleft.png","Sources/image/spiderright.png");
                 Mix_PlayChannel(-1,sound_cls_item[1],0);
                 invisibles.push_back(invisible);
             }else if (it->option == "monster"){
                 Monster monster(player);
-                monster.initplayer("image/spiderleft.png","image/spiderright.png");
+                monster.initplayer("Sources/image/spiderleft.png","Sources/image/spiderright.png");
                 monsters.push_back(monster);
                 Mix_PlayChannel(-1,sound_cls_item[2],0);
             }else if (it -> option == "nogravity"){
@@ -377,18 +377,18 @@ void Game::update() {
         }else if(isCollision(player2Rect, {it->x, it->y, ITEM_SIZE, ITEM_SIZE})){
             it->power(enemies,player2);
             if(it->option == "bomb"){
-                Explosion explosion(player2.x, player2.y, "image/explosion.png",SDL_GetTicks());
+                Explosion explosion(player2.x, player2.y, "Sources/image/explosion.png",SDL_GetTicks());
                 explosion.init(renderer);
                 explosions.push_back(explosion);
                 Mix_PlayChannel(-1,sound_cls_item[0],0);
             }else if (it->option == "invisible"){
                 Invisible invisible(player2,SDL_GetTicks());
-                invisible.initplayer("image/captainleft.png","image/captainright.png");
+                invisible.initplayer("Sources/image/captainleft.png","Sources/image/captainright.png");
                 Mix_PlayChannel(-1,sound_cls_item[1],0);
                 invisibles.push_back(invisible);
             }else if (it->option == "monster"){
                 Monster monster(player2);
-                monster.initplayer("image/captainleft.png","image/captainright.png");
+                monster.initplayer("Sources/image/captainleft.png","Sources/image/captainright.png");
                 monsters.push_back(monster);
                 Mix_PlayChannel(-1,sound_cls_item[2],0);
             }else if (it -> option == "nogravity"){
@@ -440,7 +440,7 @@ string Game::formatTime(int timeInSeconds) {
 }
 void Game::render() {
     SDL_RenderClear(renderer);
-    string path = "image/playingbg2.png";
+    string path = "Sources/image/playingbg2.png";
     SDL_Surface* gameSurface = IMG_Load( path.c_str());
     SDL_Texture* gameTexture = SDL_CreateTextureFromSurface( renderer, gameSurface );
     SDL_Rect gameRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
@@ -598,19 +598,19 @@ void Game::spawnItem() {
     switch(random){
         case 0:
             status = "monster";
-            itempic = "image/monster.png";
+            itempic = "Sources/image/monster.png";
             break;
         case 1:
             status = "invisible";
-            itempic = "image/invisible.png";
+            itempic = "Sources/image/invisible.png";
             break;
         case 2:
             status = "bomb";
-            itempic = "image/time-bomb.png";
+            itempic = "Sources/image/time-bomb.png";
             break;
         case 3:
             status = "nogravity";
-            itempic = "image/nogravity.png";
+            itempic = "Sources/image/nogravity.png";
             break;
         default:
             break;
@@ -631,21 +631,21 @@ void Game::spawnBigE() {
         case 0:
             spawnX = SCREEN_WIDTH;
             spawnY = rand() % (BIGE_SIZE/4)+BIGE_SIZE;
-            color = "image/bigemerarball.png";
+            color = "Sources/image/bigemerarball.png";
             spawnVelX = -2;
             spawnVelY = 2;
             break;
         case 1:
             spawnX = -BIGE_SIZE;
             spawnY = rand() % (BIGE_SIZE/4)+BIGE_SIZE;
-            color = "image/biggrayball.png";
+            color = "Sources/image/biggrayball.png";
             spawnVelX = 3;
             spawnVelY = 3;
             break;
         case 2:
             spawnX = rand() % (SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
             spawnY = -BIGE_SIZE;
-            color = "image/bigredball.png";
+            color = "Sources/image/bigredball.png";
             spawnVelX = 5;
             spawnVelY = 5;
             break;
@@ -658,28 +658,27 @@ void Game::spawnBigE() {
                 spawnVelX = 3;
             }
             spawnY = SCREEN_HEIGHT - BIGE_SIZE;
-            color = "image/biggreenball.png";
+            color = "Sources/image/biggreenball.png";
             spawnVelY = 0;
             break;
         case 4:
             spawnX = (SCREEN_WIDTH - BIGE_SIZE)/2;
             // spawnX = rand() % (SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
             spawnY = -BIGE_SIZE;
-            color = "image/bigorangeball.png";
+            color = "Sources/image/bigorangeball.png";
             spawnVelX = 2;
             spawnVelY = 1;
             break;
         case 5:
             spawnX = rand() % (SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
             spawnY = -BIGE_SIZE;
-            color  = "image/bigblueball.png";
+            color  = "Sources/image/bigblueball.png";
             spawnVelX = 4;
             spawnVelY = 4;
             break;
         default:
             break;
     }
-    cout<<corner<<" "<<spawnX<<" "<<spawnY<<endl;
     BigE newBigE(spawnX, spawnY, spawnVelX, spawnVelY , color);
     newBigE.init(renderer);
     biges.push_back(newBigE);
@@ -695,21 +694,21 @@ void Game::spawnEnemy() {
         case 0:
             spawnX = SCREEN_WIDTH - SQUARE_SIZE;
             spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
-            color = "image/emerarball.png";
+            color = "Sources/image/emerarball.png";
             spawnVelX = 2;
             spawnVelY = 2;
             break;
         case 1:
             spawnX = 0;
             spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
-            color = "image/grayball.png";
+            color = "Sources/image/grayball.png";
             spawnVelX = 3;
             spawnVelY = 3;
             break;
         case 2:
             spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
             spawnY = 0;
-            color = "image/redball.png";
+            color = "Sources/image/redball.png";
             spawnVelX = 5;
             spawnVelY = 5;
             break;
@@ -723,13 +722,13 @@ void Game::spawnEnemy() {
                     spawnVelX = 2;
                 }
                 spawnY = SCREEN_HEIGHT - SQUARE_SIZE;
-                color = "image/greenball.png";
+                color = "Sources/image/greenball.png";
                 spawnVelY = 0;
             }
             else {
                 spawnX = SCREEN_WIDTH - SQUARE_SIZE;
                 spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
-                color = "image/emerarball.png";
+                color = "Sources/image/emerarball.png";
                 spawnVelX = 2;
                 spawnVelY = 2;
             }
@@ -737,14 +736,14 @@ void Game::spawnEnemy() {
         case 4:
             spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
             spawnY = 0;
-            color = "image/orangeball.png";
+            color = "Sources/image/orangeball.png";
             spawnVelX = 2;
             spawnVelY = 1;
             break;
         case 5:
             spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
             spawnY = 0;
-            color  = "image/blueball.png";
+            color  = "Sources/image/blueball.png";
             spawnVelX = 4;
             spawnVelY = 4;
             break;

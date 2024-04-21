@@ -13,13 +13,13 @@ void Monster::endtime() {
 void Monster::initplayer(string playerpathleft,string playerpathright) {
     playermonleft = playerpathleft;
     playermonright = playerpathright;
-    playermon->pathleft="image/mtblackleft.png";
+    playermon->pathleft="Sources/image/mtblackleft.png";
     playermon->playersize = 70;
     playermon->isghost = false;
     playermon->numlives = 1;
     playermon->ismonster = true;
     playermon->moveOx = 3;
-    playermon->pathright="image/mtblackright.png";
+    playermon->pathright="Sources/image/mtblackright.png";
     playermon->path = playermon->pathright;
 }
 

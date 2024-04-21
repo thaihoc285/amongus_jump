@@ -15,7 +15,7 @@ void BigE::move() {
     if(((x >= 0 && x + BIGE_SIZE <= SCREEN_WIDTH)&&(y >= 0 && y + BIGE_SIZE <= SCREEN_HEIGHT))&&!isonscreen){
         conclusiontimes = 5;
         isonscreen = true;
-        if(this->path == "image/biggreenball.png")conclusiontimes = 3;
+        if(this->path == "Sources/image/biggreenball.png")conclusiontimes = 3;
     }
     if ((x < 0 || x + BIGE_SIZE > SCREEN_WIDTH)&& (conclusiontimes <= 5)) {
        if(conclusiontimes){
