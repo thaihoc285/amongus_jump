@@ -92,7 +92,7 @@
 1713718021 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\headers\characters\bigenemy.h
 	"../games/gameconstants.h"
 
-1714055687 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\headers\games\gameconstants.h
+1714060608 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\headers\games\gameconstants.h
 	<vector>
 	<string>
 	<iostream>
@@ -151,7 +151,7 @@
 	"../characters/character.h"
 	"../characters/enemy.h"
 
-1714055429 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\headers\games\game.h
+1714060005 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\headers\games\game.h
 	<iomanip>
 	<algorithm>
 	<thread>
@@ -165,9 +165,16 @@
 	"../items/invisible.h"
 	"../items/nogravity.h"
 	"../characters/bigenemy.h"
+	"../background/background.h"
 
-1714056504 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\sources\games\game.cpp
+1714060680 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\sources\games\game.cpp
 	"../../Headers/games/game.h"
 
 1714036642 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\headers\games\soundconstants.h
+
+1714061233 source:c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\sources\background\background.cpp
+	"../../Headers/background/background.h"
+
+1714060441 c:\users\admin\downloads\workspace\game\sdl-codeblock\blockgame\headers\background\background.h
+	"../games/gameconstants.h"
 

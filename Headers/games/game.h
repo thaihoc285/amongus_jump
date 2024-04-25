@@ -13,6 +13,7 @@
 #include "../items/invisible.h"
 #include "../items/nogravity.h"
 #include "../characters/bigenemy.h"
+#include "../background/background.h"
 using namespace std;
 enum GameState {
         MENU,
@@ -34,7 +35,8 @@ public:
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
-
+    Background* background1;
+    Background* background2;
     Character player;
     Character player2;
     vector<Enemy> enemies;

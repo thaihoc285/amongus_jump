@@ -1,6 +1,4 @@
 #include "../../Headers/games/game.h"
-
-
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
@@ -72,6 +70,9 @@ void Game::initSDL() {
     if (renderer == nullptr) {
         logSDLError(cout, "CreateRenderer", true);
     }
+    background1 = new Background(renderer, "Sources/image/playingbg2.png");
+    background2 = new Background(renderer, "Sources/image/playingbg2.png");
+    background2->destRect.x = SCREEN_WIDTH;
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     if (TTF_Init() == -1) {
@@ -549,15 +550,13 @@ string Game::formatTime(int timeInSeconds) {
 }
 void Game::render() {
     SDL_RenderClear(renderer);
-    string path = "Sources/image/playingbg2.png";
-    SDL_Surface* gameSurface = IMG_Load( path.c_str());
-    SDL_Texture* gameTexture = SDL_CreateTextureFromSurface( renderer, gameSurface );
-    SDL_Rect gameRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-    SDL_RenderCopy(renderer, gameTexture, NULL, &gameRect);
+    background1->scroll();
+    background2->scroll();
+    background1->render(renderer);
+    background2->render(renderer);
     string timerText = formatTime(getElapsedTime()/1000);
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, timerText.c_str(), textColor);
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-//    SDL_QueryTexture(textTexture, NULL, NULL, &menuWidth, &menuHeight);
     SDL_Rect textRect = {(SCREEN_WIDTH - textSurface->w) / 2, 10, textSurface->w, textSurface->h};
     for (auto& skill : skills)skill.render(renderer);
     for (auto& enemy : enemies)enemy.render(renderer);
@@ -604,10 +603,7 @@ void Game::render() {
     }
     player.render(renderer);
     player2.render(renderer);
-        // Render the timer
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
-    SDL_FreeSurface( gameSurface );
-    SDL_DestroyTexture(gameTexture);
     SDL_DestroyTexture(textTexture);
     SDL_FreeSurface(textSurface);
     SDL_RenderPresent(renderer);
@@ -722,8 +718,8 @@ void Game::spawnItem() {
         default:
             break;
     }
-    spawnX = rand() % (SCREEN_WIDTH - ITEM_SIZE);
-    spawnY = rand() % (SCREEN_HEIGHT - ITEM_SIZE-SQUARE_SIZE);
+    spawnX = rand() % (int)(SCREEN_WIDTH - ITEM_SIZE);
+    spawnY = rand() % (int)(SCREEN_HEIGHT - ITEM_SIZE-SQUARE_SIZE);
 
     Skill newSkill(spawnX, spawnY, itempic,status);
     newSkill.init(renderer);
@@ -737,20 +733,20 @@ void Game::spawnBigE() {
     switch (corner) {
         case 0:
             spawnX = SCREEN_WIDTH;
-            spawnY = rand() % (BIGE_SIZE/4)+BIGE_SIZE;
+            spawnY = rand() % (int)(BIGE_SIZE/4)+BIGE_SIZE;
             color = "Sources/image/bigemerarball.png";
             spawnVelX = -2;
             spawnVelY = 2;
             break;
         case 1:
             spawnX = -BIGE_SIZE;
-            spawnY = rand() % (BIGE_SIZE/4)+BIGE_SIZE;
+            spawnY = rand() % (int)(BIGE_SIZE/4)+BIGE_SIZE;
             color = "Sources/image/biggrayball.png";
             spawnVelX = 3;
             spawnVelY = 3;
             break;
         case 2:
-            spawnX = rand() % (SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
+            spawnX = rand() % (int)(SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
             spawnY = -BIGE_SIZE;
             color = "Sources/image/bigredball.png";
             spawnVelX = 5;
@@ -776,7 +772,7 @@ void Game::spawnBigE() {
             spawnVelY = 1;
             break;
         case 5:
-            spawnX = rand() % (SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
+            spawnX = rand() % (int)(SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
             spawnY = -BIGE_SIZE;
             color  = "Sources/image/bigblueball.png";
             spawnVelX = 4;
@@ -799,20 +795,20 @@ void Game::spawnEnemy() {
     switch (corner) {
         case 0:
             spawnX = SCREEN_WIDTH - SQUARE_SIZE;
-            spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
+            spawnY = rand() % (int)(SCREEN_HEIGHT - SQUARE_SIZE);
             color = "Sources/image/emerarball.png";
             spawnVelX = 2;
             spawnVelY = 2;
             break;
         case 1:
             spawnX = 0;
-            spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
+            spawnY = rand() % (int)(SCREEN_HEIGHT - SQUARE_SIZE);
             color = "Sources/image/grayball.png";
             spawnVelX = 3;
             spawnVelY = 3;
             break;
         case 2:
-            spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
+            spawnX = rand() % (int)(SCREEN_WIDTH - SQUARE_SIZE);
             spawnY = 0;
             color = "Sources/image/redball.png";
             spawnVelX = 5;
@@ -833,21 +829,21 @@ void Game::spawnEnemy() {
             }
             else {
                 spawnX = SCREEN_WIDTH - SQUARE_SIZE;
-                spawnY = rand() % (SCREEN_HEIGHT - SQUARE_SIZE);
+                spawnY = rand() % (int)(SCREEN_HEIGHT - SQUARE_SIZE);
                 color = "Sources/image/emerarball.png";
                 spawnVelX = 2;
                 spawnVelY = 2;
             }
             break;
         case 4:
-            spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
+            spawnX = rand() % (int)(SCREEN_WIDTH - SQUARE_SIZE);
             spawnY = 0;
             color = "Sources/image/orangeball.png";
             spawnVelX = 2;
             spawnVelY = 1;
             break;
         case 5:
-            spawnX = rand() % (SCREEN_WIDTH - SQUARE_SIZE);
+            spawnX = rand() % (int)(SCREEN_WIDTH - SQUARE_SIZE);
             spawnY = 0;
             color  = "Sources/image/blueball.png";
             spawnVelX = 4;

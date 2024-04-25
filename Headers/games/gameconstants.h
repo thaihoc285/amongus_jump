@@ -7,11 +7,11 @@
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
-const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 650;
-const int SQUARE_SIZE = 50;
-const int ITEM_SIZE = 40;
-const int BIGE_SIZE = 200;
+const float SCREEN_WIDTH = 1000;
+const float SCREEN_HEIGHT = 650;
+const float SQUARE_SIZE = 50;
+const float ITEM_SIZE = 40;
+const float BIGE_SIZE = 200;
 static int ENEMY_SPAWN_INTERVAL = 5000;
 static int ITEM_SPAWN_INTERVAL = 8000;
 static int BIGE_SPAWN_INTERVAL = 28000;

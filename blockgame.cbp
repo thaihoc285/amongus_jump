@@ -31,6 +31,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Headers/background/background.h" />
 		<Unit filename="Headers/characters/bigenemy.h" />
 		<Unit filename="Headers/characters/character.h" />
 		<Unit filename="Headers/characters/enemy.h" />
@@ -42,6 +43,7 @@
 		<Unit filename="Headers/items/monster.h" />
 		<Unit filename="Headers/items/nogravity.h" />
 		<Unit filename="Headers/items/skill.h" />
+		<Unit filename="Sources/background/background.cpp" />
 		<Unit filename="Sources/characters/bigenemy.cpp" />
 		<Unit filename="Sources/characters/character.cpp" />
 		<Unit filename="Sources/characters/enemy.cpp" />
