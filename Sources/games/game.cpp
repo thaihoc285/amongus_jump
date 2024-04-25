@@ -16,7 +16,10 @@ Game::Game()
       player1lose(false),
       frameStart(0),
       frameTime(0),
-      gameState(MENU){
+      gameState(MENU),
+      easyimage("Sources/image/easy.png"),
+      mediumimage("Sources/image/mediumclicked.png"),
+      hardimage("Sources/image/hard.png"){
         initSDL();
 }
 
@@ -83,7 +86,6 @@ void Game::initSDL() {
         logSDLError(cout, "TTF_OpenFont", true);
     }
     if(Mix_OpenAudio(22050,MIX_DEFAULT_FORMAT,2,4096)==-1)logSDLError(cout, "TTF_Mixer", true);
-//    Mix_AllocateChannels(2);
     sound_cls_item[0]=Mix_LoadWAV("Sources/sound/explosion.wav");
     sound_cls_item[1]=Mix_LoadWAV("Sources/sound/ghost.wav");
     sound_cls_item[2]=Mix_LoadWAV("Sources/sound/monster.wav");
@@ -104,7 +106,7 @@ void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
         exit(1);
     }
 }
-  void Game::buttonclick(const string& path, SDL_Color color, int x,int y, TTF_Font* font,int &widthtexture,int &heighttexture) {
+  void Game::buttonclick(const string& path, int x,int y,int &widthtexture,int &heighttexture) {
      SDL_Surface* surface = IMG_Load( path.c_str());
      SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
      SDL_QueryTexture(texture, NULL, NULL, &widthtexture, &heighttexture);
@@ -129,10 +131,10 @@ void Game::drawMenu() {
     SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
-    buttonclick("Sources/image/multiplayer.png",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 5,font36,widhbutton2,heightbutton2);
-    buttonclick("Sources/image/singleplayer.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 7/15,font36,widthbutton1,heightbutton1);
-    buttonclick("Sources/image/highscore.png",textColor,(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 11 /15,font36,widthbutton3,heightbutton3);
-    buttonclick("Sources/image/option.png",textColor,(SCREEN_WIDTH - widthbutton4) / 2, SCREEN_HEIGHT * 13 /15,font36,widthbutton4,heightbutton4);
+    buttonclick("Sources/image/multiplayer.png",(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 5,widhbutton2,heightbutton2);
+    buttonclick("Sources/image/singleplayer.png",(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 7/15,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/highscore.png",(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 11 /15,widthbutton3,heightbutton3);
+    buttonclick("Sources/image/option.png",(SCREEN_WIDTH - widthbutton4) / 2, SCREEN_HEIGHT * 13 /15,widthbutton4,heightbutton4);
     SDL_FreeSurface(menuSurface);
     SDL_DestroyTexture(menuTexture);
     // Present the renderer
@@ -171,8 +173,8 @@ void Game::drawGameover() {
     }
 
     buttoncantclick("Time Over: " + scoretime,textColor,0, timeposition,font);
-    buttonclick("Sources/image/restartbutton.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 3 / 5,font36,widthbutton1,heightbutton1);
-    buttonclick("Sources/image/menubutton.png",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 4,font28,widhbutton2,heightbutton2);
+    buttonclick("Sources/image/restartbutton.png",(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 3 / 5,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/menubutton.png",(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 4,widhbutton2,heightbutton2);
     SDL_FreeSurface( gameoverSurface );
     SDL_DestroyTexture(gameoverTexture);
     SDL_RenderPresent(renderer);
@@ -198,7 +200,7 @@ void Game::drawHighscore(){
         buttoncantclick(to_string(i + 1),textColor,0.1 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
         buttoncantclick(scores[i],textColor,0.75 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
     }
-    buttonclick("Sources/image/exitbutton.png",textColor,0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,font28,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/exitbutton.png",0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,widthbutton1,heightbutton1);
     buttoncantclick("Highscore",textColor,0, .02*SCREEN_HEIGHT,font68);
     SDL_FreeSurface(highscoreSurface);
     SDL_DestroyTexture(highscoreTexture);
@@ -215,6 +217,9 @@ void Game::drawOptions(){
     for (int i = 0; i < 3; ++i) {
         buttoncantclick(a[i],textColor,0.1 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
     }
+    buttonclick(easyimage,0.07*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT,widhbutton2,heightbutton2);
+    buttonclick(mediumimage,0.37*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT,widthbutton3,heightbutton3);
+    buttonclick(hardimage,0.67*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT,widthbutton4,heightbutton4);
     SDL_Rect outermusicRect = {0.3 * SCREEN_WIDTH, 0.155 * SCREEN_HEIGHT + 50, 500, 25};
     SDL_Rect outersoundRect = {0.3 * SCREEN_WIDTH, 0.295 * SCREEN_HEIGHT + 50, 500, 25};
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -224,11 +229,20 @@ void Game::drawOptions(){
     SDL_RenderFillRect(renderer, &innerRect);
     SDL_Rect innersoundRect = {outersoundRect.x+3, outersoundRect.y+3, static_cast<float>(500 * (soundvolume+0.006)-3), outersoundRect.h-6};
     SDL_RenderFillRect(renderer, &innersoundRect);
-    buttonclick("Sources/image/exitbutton.png",textColor,0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,font28,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/exitbutton.png",0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,widthbutton1,heightbutton1);
     buttoncantclick("Options",textColor,0, .02*SCREEN_HEIGHT,font68);
     SDL_FreeSurface(optionSurface);
     SDL_DestroyTexture(optionTexture);
     SDL_RenderPresent(renderer);
+}
+bool Game::mousexy(SDL_Rect rect,int mousex,int mousey){
+    if (mousex >= rect.x &&
+        mousex <= rect.x + rect.w &&
+        mousey >= rect.y &&
+        mousey <= rect.y + rect.h) {
+        return true;
+    }
+    return false;
 }
 void Game::handleMenuInput(SDL_Event& e,bool& quit) {
 while (SDL_PollEvent(&e) != 0) {
@@ -241,35 +255,23 @@ while (SDL_PollEvent(&e) != 0) {
         SDL_Rect singerButtonRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 7 / 15, widthbutton1, heightbutton1};
         SDL_Rect highscoreButtonRect = {(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 11 / 15, widthbutton3, heightbutton3};
         SDL_Rect optionButtonRect = {(SCREEN_WIDTH - widthbutton4) / 2, SCREEN_HEIGHT * 13 / 15, widthbutton4, heightbutton4};
-        if (mouseX >= multiButtonRect.x &&
-            mouseX <= multiButtonRect.x + multiButtonRect.w &&
-            mouseY >= multiButtonRect.y &&
-            mouseY <= multiButtonRect.y + multiButtonRect.h) {
+        if (mousexy(multiButtonRect,mouseX,mouseY)) {
                 Mix_HaltChannel(-1);
                 Mix_PlayChannel(-1,sound_mouseclick,0);
                 Mix_PlayChannel(1,sound_bg[1],-1);
                 gameState = PLAYING;
                 startTime = SDL_GetTicks();
-        }else if(mouseX >= singerButtonRect.x &&
-            mouseX <= singerButtonRect.x + singerButtonRect.w &&
-            mouseY >= singerButtonRect.y &&
-            mouseY <= singerButtonRect.y + singerButtonRect.h) {
+        }else if(mousexy(singerButtonRect,mouseX,mouseY)) {
                 Mix_HaltChannel(-1);
                 Mix_PlayChannel(-1,sound_mouseclick,0);
                 Mix_PlayChannel(1,sound_bg[1],-1);
                 singerplayer();
                 gameState = PLAYING;
                 startTime = SDL_GetTicks();
-        }else if(mouseX >= highscoreButtonRect.x &&
-            mouseX <= highscoreButtonRect.x + highscoreButtonRect.w &&
-            mouseY >= highscoreButtonRect.y &&
-            mouseY <= highscoreButtonRect.y + highscoreButtonRect.h){
+        }else if(mousexy(highscoreButtonRect,mouseX,mouseY)){
                 Mix_PlayChannel(-1,sound_mouseclick,0);
                 gameState = HIGHSCORE;
-        }else if(mouseX >= optionButtonRect.x &&
-            mouseX <= optionButtonRect.x + optionButtonRect.w &&
-            mouseY >= optionButtonRect.y &&
-            mouseY <= optionButtonRect.y + optionButtonRect.h){
+        }else if(mousexy(optionButtonRect,mouseX,mouseY)){
                 Mix_PlayChannel(-1,sound_mouseclick,0);
                 gameState = OPTIONS;
         }
@@ -308,10 +310,7 @@ void Game::handleHighscore(SDL_Event& e,bool& quit){
           int mouseX, mouseY;
           SDL_GetMouseState(&mouseX, &mouseY);
           SDL_Rect exitButtonRect = {0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT, widthbutton1, heightbutton1};
-          if (mouseX >= exitButtonRect.x &&
-              mouseX <= exitButtonRect.x + exitButtonRect.w &&
-              mouseY >= exitButtonRect.y &&
-              mouseY <= exitButtonRect.y + exitButtonRect.h) {
+          if (mousexy(exitButtonRect,mouseX,mouseY)) {
                   Mix_PlayChannel(-1,sound_mouseclick,0);
                     gameState = MENU;
             }
@@ -321,29 +320,56 @@ void Game::handleHighscore(SDL_Event& e,bool& quit){
 void Game::handleOptions(SDL_Event& e,bool& quit){
   while (SDL_PollEvent(&e) != 0) {
       if (e.type == SDL_QUIT) {
-          quit = true;
+        quit = true;
       } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-              int mouseX, mouseY;
-              SDL_GetMouseState(&mouseX, &mouseY);
+            int mouseX, mouseY;
+            SDL_GetMouseState(&mouseX, &mouseY);
             SDL_Rect outermusicRect = {0.3 * SCREEN_WIDTH, 0.155 * SCREEN_HEIGHT + 50, 500, 25};
             SDL_Rect outersoundRect = {0.3 * SCREEN_WIDTH, 0.295 * SCREEN_HEIGHT + 50, 500, 25};
             SDL_Rect exitButtonRect = {0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT, widthbutton1, heightbutton1};
+            SDL_Rect easyButtonRect = {0.07*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT, widhbutton2, heightbutton2};
+            SDL_Rect mediumButtonRect = {0.37*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT, widthbutton3, heightbutton3};
+            SDL_Rect hardButtonRect = {0.67*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT, widthbutton4, heightbutton4};
             if (mouseX >= outermusicRect.x && mouseX <= outermusicRect.x + outermusicRect.w - 6 && mouseY >= outermusicRect.y && mouseY <= outermusicRect.y + outermusicRect.h){
                 isDraggingMusic = true;
                 float newmusicVolume = (mouseX - 0.3 * SCREEN_WIDTH) * 1 / 500;
                 musicvolume = newmusicVolume;
             }
-            if (mouseX >= outersoundRect.x && mouseX <= outersoundRect.x + outersoundRect.w - 6 && mouseY >= outersoundRect.y && mouseY <= outersoundRect.y + outersoundRect.h){
+            else if (mouseX >= outersoundRect.x && mouseX <= outersoundRect.x + outersoundRect.w - 6 && mouseY >= outersoundRect.y && mouseY <= outersoundRect.y + outersoundRect.h){
                 isDraggingSound = true;
                 float newsoundVolume = (mouseX - 0.3 * SCREEN_WIDTH) * 1 / 500;
                 soundvolume = newsoundVolume;
             }
-            if (mouseX >= exitButtonRect.x &&
-              mouseX <= exitButtonRect.x + exitButtonRect.w &&
-              mouseY >= exitButtonRect.y &&
-              mouseY <= exitButtonRect.y + exitButtonRect.h) {
-                  Mix_PlayChannel(-1,sound_mouseclick,0);
-                    gameState = MENU;
+            else if (mousexy(exitButtonRect,mouseX,mouseY)) {
+                Mix_PlayChannel(-1,sound_mouseclick,0);
+                gameState = MENU;
+            }
+            else if(mousexy(easyButtonRect,mouseX,mouseY)){
+                Mix_PlayChannel(-1,sound_mouseclick,0);
+                ENEMY_SPAWN_INTERVAL = 7000;
+                ITEM_SPAWN_INTERVAL = 8000;
+                BIGE_SPAWN_INTERVAL = 28000;
+                easyimage = "Sources/image/easyclicked.png";
+                mediumimage = "Sources/image/medium.png";
+                hardimage = "Sources/image/hard.png";
+            }
+            else if(mousexy(mediumButtonRect,mouseX,mouseY)){
+                Mix_PlayChannel(-1,sound_mouseclick,0);
+                ENEMY_SPAWN_INTERVAL = 5000;
+                ITEM_SPAWN_INTERVAL = 8000;
+                BIGE_SPAWN_INTERVAL = 25000;
+                easyimage = "Sources/image/easy.png";
+                mediumimage = "Sources/image/mediumclicked.png";
+                hardimage = "Sources/image/hard.png";
+            }
+            else if(mousexy(hardButtonRect,mouseX,mouseY)){
+                Mix_PlayChannel(-1,sound_mouseclick,0);
+                ENEMY_SPAWN_INTERVAL = 3000;
+                ITEM_SPAWN_INTERVAL = 7000;
+                BIGE_SPAWN_INTERVAL = 20000;
+                easyimage = "Sources/image/easy.png";
+                mediumimage = "Sources/image/medium.png";
+                hardimage = "Sources/image/hardclicked.png";
             }
         } else if (e.type == SDL_MOUSEBUTTONUP) {
             isDraggingMusic = false;
@@ -357,7 +383,6 @@ void Game::handleOptions(SDL_Event& e,bool& quit){
                     if(musicvolume > 0.988)musicvolume = 0.988;
                     else if(musicvolume <0)musicvolume = 0;
                 }
-
                 if (isDraggingSound) {
                     float newsoundVolume = (mouseX - 0.3 * SCREEN_WIDTH) * 1 / 500;
                     soundvolume = newsoundVolume;
@@ -377,19 +402,13 @@ void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
             SDL_GetMouseState(&mouseX, &mouseY);
             SDL_Rect restartButtonRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 3 / 5, widthbutton1, heightbutton1};
             SDL_Rect backmenuButtonRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 4, widhbutton2, heightbutton2};
-            if (mouseX >= restartButtonRect.x &&
-                mouseX <= restartButtonRect.x + restartButtonRect.w &&
-                mouseY >= restartButtonRect.y &&
-                mouseY <= restartButtonRect.y + restartButtonRect.h) {
+            if (mousexy(restartButtonRect,mouseX,mouseY)) {
                 Mix_PlayChannel(-1,sound_mouseclick,0);
                 Mix_PlayChannel(1,sound_bg[1],-1);
                 initElement();
                 gameState = PLAYING;
                 resultSaved = false;
-            }else if (mouseX >= backmenuButtonRect.x &&
-                mouseX <= backmenuButtonRect.x + backmenuButtonRect.w &&
-                mouseY >= backmenuButtonRect.y &&
-                mouseY <= backmenuButtonRect.y + backmenuButtonRect.h) {
+            }else if (mousexy(backmenuButtonRect,mouseX,mouseY)) {
                     Mix_PlayChannel(-1,sound_mouseclick,0);
                     ismulti = true;
                     initElement();
@@ -656,7 +675,6 @@ void Game::initElement() {
     player.velY = 0;
     player.isJumping = false;
     fill(begin(player.isKeyPressed),end(player.isKeyPressed), false);
-
     if(ismulti){
         player2.x = SCREEN_WIDTH / 2 + SQUARE_SIZE / 2;
         player2.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;

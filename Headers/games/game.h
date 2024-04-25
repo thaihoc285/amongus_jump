@@ -80,7 +80,9 @@ private:
     bool checkPlayerCharacterCollision( Character& player,  Character& player2);
     bool checkPlayerBigeCollision( Character& player,  BigE& bige);
     void buttoncantclick(const string& text, SDL_Color color, int x,int y, TTF_Font* font);
-    void buttonclick(const string& path, SDL_Color color, int x,int y, TTF_Font* font,int &widthtexture,int &heighttexture);
+    void buttonclick(const string& path, int x,int y,int &widthtexture,int &heighttexture);
+    string easyimage,hardimage,mediumimage;
+    bool mousexy(SDL_Rect rect,int mousex,int mousey);
 
     float frameTime;
 

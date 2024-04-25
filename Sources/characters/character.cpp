@@ -28,7 +28,6 @@ Character::Character(int startX, int startY, int startVelX, int startVelY,double
       }
 
 void Character::handleInput() {
-    cout<<soundvolume<<endl;
         Mix_VolumeChunk(sound_jump, MIX_MAX_VOLUME*soundvolume /6);
         Mix_VolumeChunk(sound_jump2, MIX_MAX_VOLUME*soundvolume /2);
     if (isKeyPressed[SDL_SCANCODE_UP] && !isJumping) {
