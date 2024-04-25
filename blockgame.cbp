@@ -36,6 +36,7 @@
 		<Unit filename="Headers/characters/enemy.h" />
 		<Unit filename="Headers/games/game.h" />
 		<Unit filename="Headers/games/gameconstants.h" />
+		<Unit filename="Headers/games/soundconstants.h" />
 		<Unit filename="Headers/items/explosion.h" />
 		<Unit filename="Headers/items/invisible.h" />
 		<Unit filename="Headers/items/monster.h" />

@@ -1,4 +1,6 @@
 #include "../../Headers/games/game.h"
+
+
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
@@ -26,7 +28,18 @@ void Game::run() {
     SDL_Event e;
     bool quit = false;
     while (!quit) {
-            frameStart = SDL_GetTicks();
+        frameStart = SDL_GetTicks();
+        Mix_VolumeChunk(sound_mouseclick, MIX_MAX_VOLUME*soundvolume /2);
+        Mix_VolumeChunk(sound_cls_item[0], MIX_MAX_VOLUME*soundvolume /3);
+        Mix_VolumeChunk(sound_cls_item[2], MIX_MAX_VOLUME*soundvolume *2/3);
+        Mix_VolumeChunk(sound_cls_item[1], MIX_MAX_VOLUME*soundvolume );
+        Mix_VolumeChunk(sound_cls_item[3], MIX_MAX_VOLUME*soundvolume );
+        Mix_VolumeChunk(sound_monstereat, MIX_MAX_VOLUME*soundvolume *2/3);
+        Mix_VolumeChunk(sound_bg[1], MIX_MAX_VOLUME*musicvolume /2);
+        Mix_VolumeChunk(sound_bg[0], MIX_MAX_VOLUME*musicvolume);
+        Mix_VolumeChunk(sound_enemy[0], MIX_MAX_VOLUME*soundvolume);
+        Mix_VolumeChunk(sound_enemy[1], MIX_MAX_VOLUME*soundvolume);
+        Mix_VolumeChunk(sound_gameover, MIX_MAX_VOLUME*soundvolume);
         if (gameState == MENU) {
             drawMenu();
             handleMenuInput(e,quit);
@@ -38,6 +51,9 @@ void Game::run() {
         }else if(gameState == HIGHSCORE && !quit){
             drawHighscore();
             handleHighscore(e,quit);
+        }else if(gameState == OPTIONS && !quit){
+            drawOptions();
+            handleOptions(e,quit);
         }
     }
 }
@@ -79,14 +95,6 @@ void Game::initSDL() {
     sound_bg[1] = Mix_LoadWAV("Sources/sound/bg_playing.wav");
     sound_enemy[1] = Mix_LoadWAV("Sources/sound/bigewarning.wav");
     sound_enemy[0] = Mix_LoadWAV("Sources/sound/enemyspawn.wav");
-    Mix_VolumeChunk(sound_mouseclick, MIX_MAX_VOLUME /4);
-    Mix_VolumeChunk(sound_cls_item[0], MIX_MAX_VOLUME /6);
-    Mix_VolumeChunk(sound_cls_item[2], MIX_MAX_VOLUME /3);
-    Mix_VolumeChunk(sound_cls_item[1], MIX_MAX_VOLUME /2);
-    Mix_VolumeChunk(sound_monstereat, MIX_MAX_VOLUME /3);
-    Mix_VolumeChunk(sound_bg[1], MIX_MAX_VOLUME /5);
-    Mix_VolumeChunk(sound_bg[0], MIX_MAX_VOLUME*2 /3);
-    Mix_VolumeChunk(sound_enemy[0], MIX_MAX_VOLUME /2);
     Mix_PlayChannel(1,sound_bg[0],-1);
 }
 void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
@@ -121,9 +129,10 @@ void Game::drawMenu() {
     SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
-    buttonclick("Sources/image/multiplayer.png",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3,font36,widhbutton2,heightbutton2);
-    buttonclick("Sources/image/singleplayer.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 8 / 15,font36,widthbutton1,heightbutton1);
-    buttonclick("Sources/image/highscore.png",textColor,(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5,font36,widthbutton3,heightbutton3);
+    buttonclick("Sources/image/multiplayer.png",textColor,(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 5,font36,widhbutton2,heightbutton2);
+    buttonclick("Sources/image/singleplayer.png",textColor,(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 7/15,font36,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/highscore.png",textColor,(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 11 /15,font36,widthbutton3,heightbutton3);
+    buttonclick("Sources/image/option.png",textColor,(SCREEN_WIDTH - widthbutton4) / 2, SCREEN_HEIGHT * 13 /15,font36,widthbutton4,heightbutton4);
     SDL_FreeSurface(menuSurface);
     SDL_DestroyTexture(menuTexture);
     // Present the renderer
@@ -176,9 +185,6 @@ void Game::drawHighscore(){
     SDL_Texture* highscoreTexture = SDL_CreateTextureFromSurface( renderer, highscoreSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, highscoreTexture, NULL, &menuRect);
-    if (!font28) {
-        logSDLError(cout, "TTF_OpenFont", true);
-    }
     ifstream file("score.txt");
     vector<string> scores;
     string score;
@@ -198,6 +204,32 @@ void Game::drawHighscore(){
     SDL_DestroyTexture(highscoreTexture);
     SDL_RenderPresent(renderer);
 }
+void Game::drawOptions(){
+    SDL_RenderClear(renderer);
+    string path = "Sources/image/playingbg2.png";
+    SDL_Surface* optionSurface = IMG_Load( path.c_str());
+    SDL_Texture* optionTexture = SDL_CreateTextureFromSurface( renderer, optionSurface );
+    SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_RenderCopy(renderer, optionTexture, NULL, &menuRect);
+    string a[3] = {"Music :","Sound :","Game mode :"};
+    for (int i = 0; i < 3; ++i) {
+        buttoncantclick(a[i],textColor,0.1 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
+    }
+    SDL_Rect outermusicRect = {0.3 * SCREEN_WIDTH, 0.155 * SCREEN_HEIGHT + 50, 500, 25};
+    SDL_Rect outersoundRect = {0.3 * SCREEN_WIDTH, 0.295 * SCREEN_HEIGHT + 50, 500, 25};
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &outermusicRect);
+    SDL_RenderDrawRect(renderer, &outersoundRect);
+    SDL_Rect innerRect = {outermusicRect.x+3, outermusicRect.y+3, static_cast<float>(500 * (musicvolume+0.006)-3), outermusicRect.h-6};
+    SDL_RenderFillRect(renderer, &innerRect);
+    SDL_Rect innersoundRect = {outersoundRect.x+3, outersoundRect.y+3, static_cast<float>(500 * (soundvolume+0.006)-3), outersoundRect.h-6};
+    SDL_RenderFillRect(renderer, &innersoundRect);
+    buttonclick("Sources/image/exitbutton.png",textColor,0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,font28,widthbutton1,heightbutton1);
+    buttoncantclick("Options",textColor,0, .02*SCREEN_HEIGHT,font68);
+    SDL_FreeSurface(optionSurface);
+    SDL_DestroyTexture(optionTexture);
+    SDL_RenderPresent(renderer);
+}
 void Game::handleMenuInput(SDL_Event& e,bool& quit) {
 while (SDL_PollEvent(&e) != 0) {
     if (e.type == SDL_QUIT) {
@@ -205,9 +237,10 @@ while (SDL_PollEvent(&e) != 0) {
     } else if (e.type == SDL_MOUSEBUTTONDOWN) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
-        SDL_Rect multiButtonRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 2 / 3, widhbutton2, heightbutton2};
-        SDL_Rect singerButtonRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 8 / 15, widthbutton1, heightbutton1};
-        SDL_Rect highscoreButtonRect = {(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 4 / 5, widthbutton3, heightbutton3};
+        SDL_Rect multiButtonRect = {(SCREEN_WIDTH - widhbutton2) / 2, SCREEN_HEIGHT * 3 / 5, widhbutton2, heightbutton2};
+        SDL_Rect singerButtonRect = {(SCREEN_WIDTH - widthbutton1) / 2, SCREEN_HEIGHT * 7 / 15, widthbutton1, heightbutton1};
+        SDL_Rect highscoreButtonRect = {(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 11 / 15, widthbutton3, heightbutton3};
+        SDL_Rect optionButtonRect = {(SCREEN_WIDTH - widthbutton4) / 2, SCREEN_HEIGHT * 13 / 15, widthbutton4, heightbutton4};
         if (mouseX >= multiButtonRect.x &&
             mouseX <= multiButtonRect.x + multiButtonRect.w &&
             mouseY >= multiButtonRect.y &&
@@ -233,6 +266,12 @@ while (SDL_PollEvent(&e) != 0) {
             mouseY <= highscoreButtonRect.y + highscoreButtonRect.h){
                 Mix_PlayChannel(-1,sound_mouseclick,0);
                 gameState = HIGHSCORE;
+        }else if(mouseX >= optionButtonRect.x &&
+            mouseX <= optionButtonRect.x + optionButtonRect.w &&
+            mouseY >= optionButtonRect.y &&
+            mouseY <= optionButtonRect.y + optionButtonRect.h){
+                Mix_PlayChannel(-1,sound_mouseclick,0);
+                gameState = OPTIONS;
         }
     }
 }
@@ -279,6 +318,55 @@ void Game::handleHighscore(SDL_Event& e,bool& quit){
       }
   }
 }
+void Game::handleOptions(SDL_Event& e,bool& quit){
+  while (SDL_PollEvent(&e) != 0) {
+      if (e.type == SDL_QUIT) {
+          quit = true;
+      } else if (e.type == SDL_MOUSEBUTTONDOWN) {
+              int mouseX, mouseY;
+              SDL_GetMouseState(&mouseX, &mouseY);
+            SDL_Rect outermusicRect = {0.3 * SCREEN_WIDTH, 0.155 * SCREEN_HEIGHT + 50, 500, 25};
+            SDL_Rect outersoundRect = {0.3 * SCREEN_WIDTH, 0.295 * SCREEN_HEIGHT + 50, 500, 25};
+            SDL_Rect exitButtonRect = {0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT, widthbutton1, heightbutton1};
+            if (mouseX >= outermusicRect.x && mouseX <= outermusicRect.x + outermusicRect.w - 6 && mouseY >= outermusicRect.y && mouseY <= outermusicRect.y + outermusicRect.h){
+                isDraggingMusic = true;
+                float newmusicVolume = (mouseX - 0.3 * SCREEN_WIDTH) * 1 / 500;
+                musicvolume = newmusicVolume;
+            }
+            if (mouseX >= outersoundRect.x && mouseX <= outersoundRect.x + outersoundRect.w - 6 && mouseY >= outersoundRect.y && mouseY <= outersoundRect.y + outersoundRect.h){
+                isDraggingSound = true;
+                float newsoundVolume = (mouseX - 0.3 * SCREEN_WIDTH) * 1 / 500;
+                soundvolume = newsoundVolume;
+            }
+            if (mouseX >= exitButtonRect.x &&
+              mouseX <= exitButtonRect.x + exitButtonRect.w &&
+              mouseY >= exitButtonRect.y &&
+              mouseY <= exitButtonRect.y + exitButtonRect.h) {
+                  Mix_PlayChannel(-1,sound_mouseclick,0);
+                    gameState = MENU;
+            }
+        } else if (e.type == SDL_MOUSEBUTTONUP) {
+            isDraggingMusic = false;
+            isDraggingSound = false;
+        } else if (e.type == SDL_MOUSEMOTION) {
+                int mouseX;
+                SDL_GetMouseState(&mouseX, nullptr);
+                if (isDraggingMusic) {
+                    float newmusicVolume = (mouseX - 0.3 * SCREEN_WIDTH) * 1 / 500;
+                    musicvolume = newmusicVolume;
+                    if(musicvolume > 0.988)musicvolume = 0.988;
+                    else if(musicvolume <0)musicvolume = 0;
+                }
+
+                if (isDraggingSound) {
+                    float newsoundVolume = (mouseX - 0.3 * SCREEN_WIDTH) * 1 / 500;
+                    soundvolume = newsoundVolume;
+                    if(soundvolume > 0.988)soundvolume = 0.988;
+                    else if(soundvolume <0)soundvolume = 0;
+                }
+        }
+      }
+  }
 
 void Game::handleGameoverInput(SDL_Event& e,bool& quit) {
     while (SDL_PollEvent(&e) != 0) {
@@ -595,7 +683,6 @@ void Game::spawnItem() {
     string itempic;
     string status;
     int random;
-    srand(time(0));
     random = rand() % 4;
     switch(random){
         case 0:
@@ -665,7 +752,6 @@ void Game::spawnBigE() {
             break;
         case 4:
             spawnX = (SCREEN_WIDTH - BIGE_SIZE)/2;
-            // spawnX = rand() % (SCREEN_WIDTH - 3*BIGE_SIZE)+BIGE_SIZE;
             spawnY = -BIGE_SIZE;
             color = "Sources/image/bigorangeball.png";
             spawnVelX = 2;

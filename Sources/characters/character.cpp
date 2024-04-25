@@ -20,16 +20,17 @@ Character::Character(int startX, int startY, int startVelX, int startVelY,double
       moveOx(startVelX),
       moveOy(startVelY),
       countghost(0),
-    countnogravity(0),
+        countnogravity(0),
       gravityx(grvt){
             Mix_OpenAudio(22050,MIX_DEFAULT_FORMAT,2,4096);
             sound_jump = Mix_LoadWAV("Sources/sound/jump2.wav");
             sound_jump2 = Mix_LoadWAV("Sources/sound/jump.wav");
-            Mix_VolumeChunk(sound_jump, MIX_MAX_VOLUME /6);
-            Mix_VolumeChunk(sound_jump2, MIX_MAX_VOLUME /2);
       }
 
 void Character::handleInput() {
+    cout<<soundvolume<<endl;
+        Mix_VolumeChunk(sound_jump, MIX_MAX_VOLUME*soundvolume /6);
+        Mix_VolumeChunk(sound_jump2, MIX_MAX_VOLUME*soundvolume /2);
     if (isKeyPressed[SDL_SCANCODE_UP] && !isJumping) {
         if(isgravity){
             Mix_PlayChannel(6,sound_jump,0);

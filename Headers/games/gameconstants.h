@@ -38,8 +38,12 @@ static int widhbutton2;
 static int heightbutton2;
 static int widthbutton3;
 static int heightbutton3;
+static int widthbutton4;
+static int heightbutton4;
 static int timeghost = 4000;
 static int timenogravity = 6000;
-
-
+// static float musicvolume = 0.5;
+// static float soundvolume = 0.5;
+static bool isDraggingMusic = false;
+static bool isDraggingSound = false;
 #endif // GAME_CONSTANTS_H

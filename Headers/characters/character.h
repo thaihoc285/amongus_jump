@@ -1,7 +1,9 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 #include "../games/gameconstants.h"
+#include "../games/soundconstants.h"
 using namespace std;
+extern float soundvolume;
 class Character {
 public:
     int x, y;

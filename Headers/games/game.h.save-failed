@@ -19,11 +19,10 @@ enum GameState {
         PLAYING,
         GAMEOVER,
         HIGHSCORE,
-        OPTIONS
+        OPTION
         // Add more states if needed
     };
-extern float soundvolume;
-extern float musicvolume;
+
 class Game {
 public:
     Game();
@@ -52,12 +51,10 @@ private:
     void logSDLError(std::ostream& os, const std::string &msg, bool fatal);
     void drawMenu();
     void drawGameover();
-    void drawOptions();
     void handleMenuInput(SDL_Event& e,bool& quit);
     void handlePlayingInput(SDL_Event& e,bool& quit);
     void handleGameoverInput(SDL_Event& e,bool& quit);
     void handleHighscore(SDL_Event& e,bool& quit);
-    void handleOptions(SDL_Event& e,bool& quit);
     void update();
     void render();
     void quitSDL();
@@ -75,6 +72,7 @@ private:
     Uint32 lastEnemySpawnTime;
     Uint32 lastItemSpawnTime;
     Uint32 lastBigeSpawnTime;
+
     bool checkPlayerEnemyCollision( Character& player,  Enemy& enemy);
     bool checkPlayerSkillCollision( Character& player,  Skill& skill);
     bool checkPlayerCharacterCollision( Character& player,  Character& player2);
