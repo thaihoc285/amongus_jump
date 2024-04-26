@@ -17,7 +17,18 @@ di chuyển để né những kẻ địch đang lao tới, và cố gắng thu 
 - [5. Về source code của game](#5-về-source-code-của-game)
 
 ## 0. Cách tải game
+### a. Cách 1 : không bao gồm code 
+**Tải game theo file .zip tại link sau : https://github.com/thaihoc285/amongus_jump/releases/tag/download**
+*(khoảng 40mb)*
+**Sau đó giải nén game vào một thư mục và bật amongus_jump.exe lên và chơi**
 
+### b. Cách 2: Bao gồm code (tải lâu và nặng hơn)
+* chọn **<> Code** màu xanh lá cây ở trên
+* Sau đó có thể clone repo này về bằng cách chọn thư mục muốn lưu, mở cmd lên và nhập : **git clone https://github.com/thaihoc285/amongus_jump.git**
+* Hoặc nhấn vào **Download Zip**
+
+![image](Sources/review/howdownload.png)
+* Bật amongus_jump.exe lên và chơi
 ## 1. Bắt đầu game
 - Màn hình chính:
 <div style="text-align: center;">
