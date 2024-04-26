@@ -1,6 +1,6 @@
 # Among us Jump
-- Cấu trúc code và thử nghiệm game: 
-- Gameplay: 
+- Thử nghiệm game: https://www.youtube.com/watch?v=wMEQ3bGmE-M
+- Cấu trúc code: https://www.youtube.com/watch?v=D7vINjFpcjw
 
 ## Giới thiệu 
 Among us Jump là game với lối chơi vui và hài hước. Nhập vai vào nhân vật Among us, bạn hãy cố gắng
@@ -20,10 +20,11 @@ di chuyển để né những kẻ địch đang lao tới, và cố gắng thu 
 ### a. Cách 1 : không bao gồm code 
 **Tải game theo file .zip tại link sau : https://github.com/thaihoc285/amongus_jump/releases/tag/download**
 *(khoảng 40mb)*
+
 **Sau đó giải nén game vào một thư mục và bật amongus_jump.exe lên và chơi**
 
 ### b. Cách 2: Bao gồm code (tải lâu và nặng hơn)
-* chọn **<> Code** màu xanh lá cây ở trên
+* Chọn **<> Code** màu xanh lá cây ở trên
 * Sau đó có thể clone repo này về bằng cách chọn thư mục muốn lưu, mở cmd lên và nhập : **git clone https://github.com/thaihoc285/amongus_jump.git**
 * Hoặc nhấn vào **Download Zip**
 
@@ -78,7 +79,7 @@ di chuyển để né những kẻ địch đang lao tới, và cố gắng thu 
 ### a. Người chơi
 - SPIDERMAN <img src="Sources/image/spiderright.png" width=50>: là nhân vật do người chơi 1 điều khiển, bị chết nếu va chạm vào các kẻ địch hoặc bị nhân vật khác tiêu diệt trong multiplayer
 - CAPTAIN <img src="Sources/image/captainright.png" width=50>: là nhân vật do người chơi 2 điều khiển, bị chết nếu va chạm vào các kẻ địch hoặc bị nhân vật khác tiêu diệt trong multiplayer
-- AI <img src="Sources/image/robot1.png" width=50>: là nhân vật tự di chuyển khi đến gần kẻ địch , bị chết nếu va chạm vào kẻ địch, xuất hiện trong chế độ PLAYER VS AI.
+- AI <img src="Sources/image/robot1.png" width=50>: là nhân vật tự di chuyển khi đến gần kẻ địch, bị chết nếu va chạm vào kẻ địch,khi đến gần kẻ địch sẽ tự tăng gấp đôi tốc độ, xuất hiện trong chế độ PLAYER VS AI.
 *Vẫn đang thử nghiệm nên AI di chuyển chưa được tối ưu*
 - MONSTER ![image](Sources/image/mtblackright.png): là nhân vật khi người chơi ăn kĩ năng monster , sẽ di chuyển chậm hơn nhưng sẽ ăn thịt được 1 kẻ địch (trừ boss) và có thể ăn người chơi khác trong chế độ TWO PLAYERS để chiến thắng luôn (bạn sẽ ở trạng thái này vĩnh viễn đến khi cắn 1 ai đó)
 - GHOST <img src="Sources/image/ghostright.png" width=50>: là nhân vât khi người chơi ăn kĩ năng ghost trong game , sẽ bất tử khỏi bất kỳ mối hiểm hoạ nào trong vòng 4s

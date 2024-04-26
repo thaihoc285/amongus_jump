@@ -117,7 +117,7 @@ void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
         exit(1);
     }
 }
-  void Game::buttonclick(const string& path, int x,int y,int &widthtexture,int &heighttexture) {
+void Game::buttonclick(const string& path, int x,int y,int &widthtexture,int &heighttexture) {
      SDL_Surface* surface = IMG_Load( path.c_str());
      SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
      SDL_QueryTexture(texture, NULL, NULL, &widthtexture, &heighttexture);
@@ -126,7 +126,7 @@ void Game::logSDLError(ostream& os, const string& msg, bool fatal) {
      SDL_FreeSurface(surface);
      SDL_DestroyTexture(texture);
  }
- void Game::buttoncantclick(const string& text, SDL_Color color, int x, int y, TTF_Font* font) {
+void Game::buttoncantclick(const string& text, SDL_Color color, int x, int y, TTF_Font* font) {
     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     int xPos = (x == 0) ? (SCREEN_WIDTH - surface->w) / 2 : x;
