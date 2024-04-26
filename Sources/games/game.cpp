@@ -77,6 +77,9 @@ void Game::initSDL() {
     if (renderer == nullptr) {
         logSDLError(cout, "CreateRenderer", true);
     }
+    SDL_Surface* iconSurface = IMG_Load("Sources/image/amongus.jpg");
+    SDL_SetWindowIcon(window, iconSurface);
+    SDL_FreeSurface(iconSurface);
     background1 = new Background(renderer, "Sources/image/playingbg2.png");
     background2 = new Background(renderer, "Sources/image/playingbg2.png");
     background2->destRect.x = SCREEN_WIDTH;
@@ -145,7 +148,7 @@ void Game::drawMenu() {
     buttonclick("Sources/image/option.png",(SCREEN_WIDTH - widthbutton4) / 2, SCREEN_HEIGHT * 13 /15,widthbutton4,heightbutton4);
     SDL_FreeSurface(menuSurface);
     SDL_DestroyTexture(menuTexture);
-    // Present the renderer
+
     SDL_RenderPresent(renderer);
 }
 
@@ -586,7 +589,7 @@ void Game::update() {
            player2.numlives-- ;
        }else if((checkPlayerEnemyCollision(ai, enemy)&&isai)){
               ai.numlives-- ;
-         
+
        }
    }
    for (auto& bige : biges) {
@@ -744,6 +747,7 @@ void Game::initElement() {
     lastPlayTime = 0;
     player.numlives = 1;
     player2.numlives = 1;
+    ai.numlives = 1;
     player1lose = false;
     lastEnemySpawnTime = 0;
     lastItemSpawnTime = 0;
