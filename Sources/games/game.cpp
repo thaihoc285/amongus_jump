@@ -156,16 +156,16 @@ void Game::drawGameover() {
     SDL_Rect gameoverRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, gameoverTexture, NULL, &gameoverRect);
     if(ismulti){
-        timeposition=SCREEN_HEIGHT * 1/10;
+        timeposition=SCREEN_HEIGHT ;
         string restartText = "Winner";
-        buttoncantclick("Winner",textColor,0, SCREEN_HEIGHT * 1/4,font36);
+        buttoncantclick("Winner",textColor,0, SCREEN_HEIGHT * 1/6,font36);
         string path ;
         if(player1lose){
         path = "Sources/image/captainright.png";
         }else path = "Sources/image/spiderright.png";
         SDL_Surface* playerwinSurface = IMG_Load( path.c_str());
         SDL_Texture* playerwinTexture = SDL_CreateTextureFromSurface( renderer, playerwinSurface );
-        SDL_Rect playerwinRect = {(SCREEN_WIDTH - 170) / 2, SCREEN_HEIGHT *7/20, 150, 150};
+        SDL_Rect playerwinRect = {(SCREEN_WIDTH - 170) / 2, SCREEN_HEIGHT *1/6 + 80, 150, 150};
         SDL_RenderCopy(renderer, playerwinTexture, NULL, &playerwinRect);
         SDL_FreeSurface( playerwinSurface );
         SDL_DestroyTexture(playerwinTexture);
@@ -248,8 +248,8 @@ void Game::drawMulti() {
     SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
     SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
-    buttonclick("Sources/image/pvprbutton.png",(SCREEN_WIDTH - widthbutton5) / 2, SCREEN_HEIGHT * 8 / 15,widthbutton5,heightbutton5);
-    buttonclick("Sources/image/pvabutton.png",(SCREEN_WIDTH - widthbutton6) / 2, SCREEN_HEIGHT * 2/3,widthbutton6,heightbutton6);
+    buttonclick("Sources/image/pvprbutton.png",(SCREEN_WIDTH - widthbutton5) / 2, SCREEN_HEIGHT * 3/5,widthbutton5,heightbutton5);
+    buttonclick("Sources/image/pvabutton.png",(SCREEN_WIDTH - widthbutton6) / 2, SCREEN_HEIGHT * 11/15,widthbutton6,heightbutton6);
     buttonclick("Sources/image/exitbutton.png",0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,widthbutton7,heightbutton7);
     SDL_FreeSurface(menuSurface);
     SDL_DestroyTexture(menuTexture);
@@ -303,8 +303,8 @@ while (SDL_PollEvent(&e) != 0) {
     } else if (e.type == SDL_MOUSEBUTTONDOWN) {
         int mouseX, mouseY;
         SDL_GetMouseState(&mouseX, &mouseY);
-        SDL_Rect pvpButtonRect = {(SCREEN_WIDTH - widthbutton5) / 2, SCREEN_HEIGHT * 8 / 15, widthbutton5, heightbutton5};
-        SDL_Rect aiButtonRect = {(SCREEN_WIDTH - widthbutton6) / 2, SCREEN_HEIGHT * 2/3, widthbutton6, heightbutton6};
+        SDL_Rect pvpButtonRect = {(SCREEN_WIDTH - widthbutton5) / 2, SCREEN_HEIGHT * 3 / 5, widthbutton5, heightbutton5};
+        SDL_Rect aiButtonRect = {(SCREEN_WIDTH - widthbutton6) / 2, SCREEN_HEIGHT * 11/15, widthbutton6, heightbutton6};
         SDL_Rect exitButtonRect = {0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT, widthbutton7, heightbutton7};
         if (mousexy(pvpButtonRect,mouseX,mouseY)) {
                 Mix_HaltChannel(-1);
@@ -587,10 +587,10 @@ void Game::update() {
            player2.numlives-- ;
        }
    }
-   if(player2.ismonster&&checkPlayerCharacterCollision(player, player2)){
+   if(player2.ismonster&&checkPlayerCharacterCollision(player, player2)&&!player.isghost){
         player1lose = true;
         player.numlives-- ;
-   }else if((player.ismonster&&checkPlayerCharacterCollision(player2,player))&&ismulti)player2.numlives--;
+   }else if((player.ismonster&&checkPlayerCharacterCollision(player2,player)&&!player2.isghost)&&ismulti)player2.numlives--;
    if (!(player.numlives&&player2.numlives)) {
             Mix_HaltChannel(-1);
             Mix_PlayChannel(1,sound_gameover,0);
