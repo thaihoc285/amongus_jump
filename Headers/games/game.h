@@ -14,13 +14,15 @@
 #include "../items/nogravity.h"
 #include "../characters/bigenemy.h"
 #include "../background/background.h"
+#include "../characters/ai.h"
 using namespace std;
 enum GameState {
         MENU,
         PLAYING,
         GAMEOVER,
         HIGHSCORE,
-        OPTIONS
+        OPTIONS,
+        MULTIPLAYER,
         // Add more states if needed
     };
 extern float soundvolume;
@@ -39,6 +41,7 @@ private:
     Background* background2;
     Character player;
     Character player2;
+    AI ai;
     vector<Enemy> enemies;
     vector<BigE> biges;
     vector<Skill> skills;
@@ -55,11 +58,13 @@ private:
     void drawMenu();
     void drawGameover();
     void drawOptions();
+    void drawMulti();
     void handleMenuInput(SDL_Event& e,bool& quit);
     void handlePlayingInput(SDL_Event& e,bool& quit);
     void handleGameoverInput(SDL_Event& e,bool& quit);
     void handleHighscore(SDL_Event& e,bool& quit);
     void handleOptions(SDL_Event& e,bool& quit);
+    void handleMulti(SDL_Event& e,bool& quit);
     void update();
     void render();
     void quitSDL();
@@ -71,8 +76,10 @@ private:
     void waitUntilKeyPressed();
     void initElement();
     bool isCollision( const SDL_Rect& rect1,const SDL_Rect& rect2);
-    bool ismulti,player1lose,resultSaved;
+    bool ismulti,player1lose,resultSaved,isai;
     void singerplayer();
+    void multiplayer();
+    void aiplayer();
     Uint32 frameStart;
     Uint32 lastEnemySpawnTime;
     Uint32 lastItemSpawnTime;

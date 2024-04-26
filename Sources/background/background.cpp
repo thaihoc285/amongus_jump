@@ -9,7 +9,6 @@ Background::Background(SDL_Renderer* renderer, const std::string& imagePath)
 
 void Background::scroll(){
     destRect.x -= scrollSpeed;
-    std::cout <<destRect.x<<std::endl;
     if (destRect.x + destRect.w <= 0) {
         destRect.x = SCREEN_WIDTH;
     }

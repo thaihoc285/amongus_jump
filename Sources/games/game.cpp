@@ -4,6 +4,7 @@ Game::Game()
       renderer(nullptr),
       player(SCREEN_WIDTH / 2 - SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.6,{50, 50, 50, 0},"Sources/image/spiderleft.png","Sources./image/spiderright.png",1,SQUARE_SIZE),
       player2(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.6,{250, 250, 250, 100},"Sources/image/captainleft.png","Sources/image/captainright.png",1,SQUARE_SIZE),
+      ai(SCREEN_WIDTH / 2 + SQUARE_SIZE / 2, SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2, 5, 0,0.5,{250, 250, 250, 100},"Sources/image/robot1.png","Sources/image/robot1.png",1,SQUARE_SIZE),
       startTime(0),
       lastPlayTime(0),
       resultSaved (false),
@@ -11,6 +12,7 @@ Game::Game()
       lastItemSpawnTime(0),
       lastBigeSpawnTime(0),
       ismulti(true),
+      isai(true),
       player1lose(false),
       frameStart(0),
       frameTime(0),
@@ -55,6 +57,9 @@ void Game::run() {
         }else if(gameState == OPTIONS && !quit){
             drawOptions();
             handleOptions(e,quit);
+        }else if(gameState == MULTIPLAYER && !quit){
+            drawMulti();
+            handleMulti(e,quit);
         }
     }
 }
@@ -166,7 +171,7 @@ void Game::drawGameover() {
         SDL_DestroyTexture(playerwinTexture);
     }
     string scoretime = formatTime(lastPlayTime / 1000);
-    if(!resultSaved&&!ismulti){
+    if(!resultSaved&&!ismulti&&!isai){
         ofstream file("score.txt",ios::app);
         file << scoretime<<endl;
         file.close();
@@ -201,7 +206,7 @@ void Game::drawHighscore(){
         buttoncantclick(to_string(i + 1),textColor,0.1 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
         buttoncantclick(scores[i],textColor,0.75 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
     }
-    buttonclick("Sources/image/exitbutton.png",0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/exitbutton.png",0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,widthbutton7,heightbutton7);
     buttoncantclick("Highscore",textColor,0, .02*SCREEN_HEIGHT,font68);
     SDL_FreeSurface(highscoreSurface);
     SDL_DestroyTexture(highscoreTexture);
@@ -218,9 +223,9 @@ void Game::drawOptions(){
     for (int i = 0; i < 3; ++i) {
         buttoncantclick(a[i],textColor,0.1 * SCREEN_WIDTH,(i + 1) * 0.14 * SCREEN_HEIGHT + 50,font32);
     }
-    buttonclick(easyimage,0.07*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT,widhbutton2,heightbutton2);
-    buttonclick(mediumimage,0.37*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT,widthbutton3,heightbutton3);
-    buttonclick(hardimage,0.67*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT,widthbutton4,heightbutton4);
+    buttonclick(easyimage,0.07*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT,widthbutton5,heightbutton5);
+    buttonclick(mediumimage,0.37*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT,widthbutton6,heightbutton6);
+    buttonclick(hardimage,0.67*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT,widthbutton8,heightbutton8);
     SDL_Rect outermusicRect = {0.3 * SCREEN_WIDTH, 0.155 * SCREEN_HEIGHT + 50, 500, 25};
     SDL_Rect outersoundRect = {0.3 * SCREEN_WIDTH, 0.295 * SCREEN_HEIGHT + 50, 500, 25};
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -230,10 +235,24 @@ void Game::drawOptions(){
     SDL_RenderFillRect(renderer, &innerRect);
     SDL_Rect innersoundRect = {outersoundRect.x+3, outersoundRect.y+3, static_cast<float>(500 * (soundvolume+0.006)-3), outersoundRect.h-6};
     SDL_RenderFillRect(renderer, &innersoundRect);
-    buttonclick("Sources/image/exitbutton.png",0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,widthbutton1,heightbutton1);
+    buttonclick("Sources/image/exitbutton.png",0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,widthbutton7,heightbutton7);
     buttoncantclick("Options",textColor,0, .02*SCREEN_HEIGHT,font68);
     SDL_FreeSurface(optionSurface);
     SDL_DestroyTexture(optionTexture);
+    SDL_RenderPresent(renderer);
+}
+void Game::drawMulti() {
+    SDL_RenderClear(renderer);
+    string path = "Sources/image/bg_with_text.png";
+    SDL_Surface* menuSurface = IMG_Load( path.c_str());
+    SDL_Texture* menuTexture = SDL_CreateTextureFromSurface( renderer, menuSurface );
+    SDL_Rect menuRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_RenderCopy(renderer, menuTexture, NULL, &menuRect);
+    buttonclick("Sources/image/pvprbutton.png",(SCREEN_WIDTH - widthbutton5) / 2, SCREEN_HEIGHT * 8 / 15,widthbutton5,heightbutton5);
+    buttonclick("Sources/image/pvabutton.png",(SCREEN_WIDTH - widthbutton6) / 2, SCREEN_HEIGHT * 2/3,widthbutton6,heightbutton6);
+    buttonclick("Sources/image/exitbutton.png",0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT,widthbutton7,heightbutton7);
+    SDL_FreeSurface(menuSurface);
+    SDL_DestroyTexture(menuTexture);
     SDL_RenderPresent(renderer);
 }
 bool Game::mousexy(SDL_Rect rect,int mousex,int mousey){
@@ -257,10 +276,8 @@ while (SDL_PollEvent(&e) != 0) {
         SDL_Rect highscoreButtonRect = {(SCREEN_WIDTH - widthbutton3) / 2, SCREEN_HEIGHT * 11 / 15, widthbutton3, heightbutton3};
         SDL_Rect optionButtonRect = {(SCREEN_WIDTH - widthbutton4) / 2, SCREEN_HEIGHT * 13 / 15, widthbutton4, heightbutton4};
         if (mousexy(multiButtonRect,mouseX,mouseY)) {
-                Mix_HaltChannel(-1);
                 Mix_PlayChannel(-1,sound_mouseclick,0);
-                Mix_PlayChannel(1,sound_bg[1],-1);
-                gameState = PLAYING;
+                gameState = MULTIPLAYER;
                 startTime = SDL_GetTicks();
         }else if(mousexy(singerButtonRect,mouseX,mouseY)) {
                 Mix_HaltChannel(-1);
@@ -279,7 +296,39 @@ while (SDL_PollEvent(&e) != 0) {
     }
 }
 }
-
+void Game::handleMulti(SDL_Event& e,bool& quit) {
+while (SDL_PollEvent(&e) != 0) {
+    if (e.type == SDL_QUIT) {
+        quit = true;
+    } else if (e.type == SDL_MOUSEBUTTONDOWN) {
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+        SDL_Rect pvpButtonRect = {(SCREEN_WIDTH - widthbutton5) / 2, SCREEN_HEIGHT * 8 / 15, widthbutton5, heightbutton5};
+        SDL_Rect aiButtonRect = {(SCREEN_WIDTH - widthbutton6) / 2, SCREEN_HEIGHT * 2/3, widthbutton6, heightbutton6};
+        SDL_Rect exitButtonRect = {0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT, widthbutton7, heightbutton7};
+        if (mousexy(pvpButtonRect,mouseX,mouseY)) {
+                Mix_HaltChannel(-1);
+                Mix_PlayChannel(-1,sound_mouseclick,0);
+                Mix_PlayChannel(1,sound_bg[1],-1);
+                multiplayer();
+                initElement();
+                gameState = PLAYING;
+                startTime = SDL_GetTicks();
+        }else if(mousexy(aiButtonRect,mouseX,mouseY)) {
+                Mix_HaltChannel(-1);
+                Mix_PlayChannel(-1,sound_mouseclick,0);
+                Mix_PlayChannel(1,sound_bg[1],-1);
+                aiplayer();
+                initElement();
+                gameState = PLAYING;
+                startTime = SDL_GetTicks();
+        }else if(mousexy(exitButtonRect,mouseX,mouseY)){
+                Mix_PlayChannel(-1,sound_mouseclick,0);
+                gameState = MENU;
+        }
+    }
+}
+}
 void Game::handlePlayingInput(SDL_Event& e,bool& quit) {
 Uint32 elapsedTime = getElapsedTime();
     while (SDL_PollEvent(&e) != 0) {
@@ -310,7 +359,7 @@ void Game::handleHighscore(SDL_Event& e,bool& quit){
       } else if (e.type == SDL_MOUSEBUTTONDOWN) {
           int mouseX, mouseY;
           SDL_GetMouseState(&mouseX, &mouseY);
-          SDL_Rect exitButtonRect = {0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT, widthbutton1, heightbutton1};
+          SDL_Rect exitButtonRect = {0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT, widthbutton7, heightbutton7};
           if (mousexy(exitButtonRect,mouseX,mouseY)) {
                   Mix_PlayChannel(-1,sound_mouseclick,0);
                     gameState = MENU;
@@ -327,10 +376,10 @@ void Game::handleOptions(SDL_Event& e,bool& quit){
             SDL_GetMouseState(&mouseX, &mouseY);
             SDL_Rect outermusicRect = {0.3 * SCREEN_WIDTH, 0.155 * SCREEN_HEIGHT + 50, 500, 25};
             SDL_Rect outersoundRect = {0.3 * SCREEN_WIDTH, 0.295 * SCREEN_HEIGHT + 50, 500, 25};
-            SDL_Rect exitButtonRect = {0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT, widthbutton1, heightbutton1};
-            SDL_Rect easyButtonRect = {0.07*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT, widhbutton2, heightbutton2};
-            SDL_Rect mediumButtonRect = {0.37*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT, widthbutton3, heightbutton3};
-            SDL_Rect hardButtonRect = {0.67*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT, widthbutton4, heightbutton4};
+            SDL_Rect exitButtonRect = {0.83*SCREEN_WIDTH, 0.885*SCREEN_HEIGHT, widthbutton7, heightbutton7};
+            SDL_Rect easyButtonRect = {0.07*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT, widthbutton5, heightbutton5};
+            SDL_Rect mediumButtonRect = {0.37*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT, widthbutton6, heightbutton6};
+            SDL_Rect hardButtonRect = {0.67*SCREEN_WIDTH, 0.65*SCREEN_HEIGHT, widthbutton8, heightbutton8};
             if (mouseX >= outermusicRect.x && mouseX <= outermusicRect.x + outermusicRect.w - 6 && mouseY >= outermusicRect.y && mouseY <= outermusicRect.y + outermusicRect.h){
                 isDraggingMusic = true;
                 float newmusicVolume = (mouseX - 0.3 * SCREEN_WIDTH) * 1 / 500;
@@ -440,13 +489,21 @@ void Game::update() {
     for (auto& enemy : enemies) {
         enemy.move();
     }
-    for (auto& bige : biges) {
-        bige.move();
+    if(!isai){
+        for (auto& bige : biges) {
+            bige.move();
+        }
     }
     player.GravityCalculation();
     player.VelocityCalculation();
     player.PositionCalculation();
     player.handleInput();
+    if(isai){
+        ai.GravityCalculation();
+        ai.VelocityCalculation();
+        ai.PositionCalculation();
+        ai.update(enemies,biges);
+    }
     if(ismulti){
         player2.GravityCalculation();
         player2.VelocityCalculation();
@@ -514,7 +571,7 @@ void Game::update() {
         }
     }
    for (auto& enemy : enemies) {
-       if((checkPlayerEnemyCollision(player, enemy)&&!player.ismonster)){
+       if((checkPlayerEnemyCollision(player,enemy)&&!player.ismonster)||(checkPlayerEnemyCollision(ai, enemy)&&isai)){
            player1lose = true;
            player.numlives-- ;
        }else if((checkPlayerEnemyCollision(player2, enemy)&&!player2.ismonster)&&ismulti){
@@ -603,6 +660,7 @@ void Game::render() {
     }
     player.render(renderer);
     player2.render(renderer);
+    ai.render(renderer);
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
     SDL_DestroyTexture(textTexture);
     SDL_FreeSurface(textSurface);
@@ -654,8 +712,22 @@ void Game::singerplayer() {
     player2.x = SCREEN_WIDTH + player2.playersize*2 ;
     player2.y = SCREEN_HEIGHT + player2.playersize*2 ;
     ismulti = false;
+    isai = false;
+    ai.x = SCREEN_WIDTH + ai.playersize*2 ;
+    ai.y = SCREEN_HEIGHT + ai.playersize*2 ;
 }
-
+void Game::multiplayer() {
+    ismulti = true;
+    isai = false;
+    ai.x = SCREEN_WIDTH + ai.playersize*2 ;
+    ai.y = SCREEN_HEIGHT + ai.playersize*2 ;
+}
+void Game::aiplayer() {
+    player2.x = SCREEN_WIDTH + player2.playersize*2 ;
+    player2.y = SCREEN_HEIGHT + player2.playersize*2 ;
+    ismulti = false;
+    isai = true;
+}
 void Game::initElement() {
     startTime = SDL_GetTicks();
     lastPlayTime = 0;
@@ -678,6 +750,13 @@ void Game::initElement() {
         player2.velY = 0;
         player2.isJumping2 = false;
         fill(begin(player2.isKeyPressed),end(player2.isKeyPressed), false);
+    }
+    if(isai){
+        ai.x = SCREEN_WIDTH / 2 + SQUARE_SIZE / 2;
+        ai.y = SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2;
+        ai.velX = 0;
+        ai.velY = 0;
+
     }
     enemies.clear();
     biges.clear();
