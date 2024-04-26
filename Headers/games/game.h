@@ -76,7 +76,7 @@ private:
     void waitUntilKeyPressed();
     void initElement();
     bool isCollision( const SDL_Rect& rect1,const SDL_Rect& rect2);
-    bool ismulti,player1lose,resultSaved,isai;
+    bool ismulti,player1lose,resultSaved,isai,player2win,aiwin;
     void singerplayer();
     void multiplayer();
     void aiplayer();

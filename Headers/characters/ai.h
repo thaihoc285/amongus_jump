@@ -15,6 +15,8 @@ public:
     int multiJump = 0;
     double calculateDistance(int x1, int y1, int x2, int y2);
     bool blockedLeft,blockedRight;
+    Uint32 timeleft,timeright,timejump;
+    bool isfast ;
 };
 
 #endif // AI_H

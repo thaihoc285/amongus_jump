@@ -65,8 +65,8 @@ di chuyển để né những kẻ địch đang lao tới, và cố gắng thu 
 
 ## 2. Các thành phần trong game
 ### a. Người chơi
-- SPIDERMAN <img src="Sources/image/spiderright.png" width=50>: là nhân vật do người chơi 1 điều khiển, bị chết nếu va chạm vào các kẻ địch hoặc bị nhân vật khác giết trong multiplayer
-- CAPTAIN <img src="Sources/image/captainright.png" width=50>: là nhân vật do người chơi 2 điều khiển, bị chết nếu va chạm vào các kẻ địch hoặc bị nhân vật khác giết trong multiplayer
+- SPIDERMAN <img src="Sources/image/spiderright.png" width=50>: là nhân vật do người chơi 1 điều khiển, bị chết nếu va chạm vào các kẻ địch hoặc bị nhân vật khác tiêu diệt trong multiplayer
+- CAPTAIN <img src="Sources/image/captainright.png" width=50>: là nhân vật do người chơi 2 điều khiển, bị chết nếu va chạm vào các kẻ địch hoặc bị nhân vật khác tiêu diệt trong multiplayer
 - AI <img src="Sources/image/robot1.png" width=50>: là nhân vật tự di chuyển khi đến gần kẻ địch , bị chết nếu va chạm vào kẻ địch, xuất hiện trong chế độ PLAYER VS AI.
 *Vẫn đang thử nghiệm nên AI di chuyển chưa được tối ưu*
 - MONSTER ![image](Sources/image/mtblackright.png): là nhân vật khi người chơi ăn kĩ năng monster , sẽ di chuyển chậm hơn nhưng sẽ ăn thịt được 1 kẻ địch (trừ boss) và có thể ăn người chơi khác trong chế độ TWO PLAYERS để chiến thắng luôn (bạn sẽ ở trạng thái này vĩnh viễn đến khi cắn 1 ai đó)
@@ -75,7 +75,7 @@ di chuyển để né những kẻ địch đang lao tới, và cố gắng thu 
 Trong game sẽ có 4 kĩ năng được random ra trong khoảng thời gian nhất định tuỳ vào độ khó :
 |                                                   | Tên kĩ năng  | Chức năng                                                                                                 | 
 |---------------------------------------------------|--------------|----------------------------------------------------------------------------------------------------------|
-| <img src="Sources/image/time-bomb.png" width=50>  | Bomb	       | Mỗi khi nhân vật ăn kĩ năng này thì sẽ tạo ra 1 vùng nổ nhỏ xung quanh để giết các enemy (ngoại trù boss) |
+| <img src="Sources/image/time-bomb.png" width=50>  | Bomb	       | Mỗi khi nhân vật ăn kĩ năng này thì sẽ tạo ra 1 vùng nổ nhỏ xung quanh để tiêu diệt các enemy (ngoại trù boss) |
 | <img src="Sources/image/monster.png" width=50>    | Monster	   | Khi nhân vật ăn sẽ biến thành nhân vật [MONSTER](#a-người-chơi) |
 | <img src="Sources/image/nogravity.png" width=50>  | Nogravity    | Mỗi khi nhân vật ăn kĩ năng này sẽ không bị tác động bởi trọng lực |
 | <img src="Sources/image/invisible.png" width=50>  | Ghost        | Khi nhân vật ăn sẽ biến thành nhân vật [GHOST](#a-người-chơi) |
@@ -106,8 +106,8 @@ Boss trong game là những kẻ địch nhưng to hơn rất nhiều và di chu
 ## 3. Điều khiển
 - NHÂN VẬT 1
  * nhảy : phím **↑** ,có thể nhảy nhiều lần nhưng không thể dí nút nhảy
- * sang trái , sang phải : các phím **←, →* , có thể dí 2 nút này 
- * xuống : phím **↓** , dủng khi nhân vật ở trên khoảng không và muốn xuống đất nhanh hơn trọng lực
+ * sang trái , sang phải : các phím **←, →** , có thể dí 2 nút này 
+ * xuống : phím **↓** , dùng khi nhân vật ở trên khoảng không và muốn xuống đất nhanh hơn trọng lực
 - NHÂN VẬT 2 (chế độ TWO PLAYERS)
  * nhảy : phím **W**
  * sang trái , sang phải : các phím **A, D**

@@ -13,6 +13,8 @@ Game::Game()
       lastBigeSpawnTime(0),
       ismulti(true),
       isai(true),
+      player2win(false),
+      aiwin(false),
       player1lose(false),
       frameStart(0),
       frameTime(0),
@@ -155,14 +157,17 @@ void Game::drawGameover() {
     SDL_Texture* gameoverTexture = SDL_CreateTextureFromSurface( renderer, gameoverSurface );
     SDL_Rect gameoverRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     SDL_RenderCopy(renderer, gameoverTexture, NULL, &gameoverRect);
-    if(ismulti){
+    if(ismulti || isai){
         timeposition=SCREEN_HEIGHT ;
         string restartText = "Winner";
         buttoncantclick("Winner",textColor,0, SCREEN_HEIGHT * 1/6,font36);
         string path ;
-        if(player1lose){
+        if(player1lose&&player2win){
         path = "Sources/image/captainright.png";
-        }else path = "Sources/image/spiderright.png";
+        }else if(player1lose&&aiwin){
+        path = "Sources/image/robot1.png";
+        }
+        else path = "Sources/image/spiderright.png";
         SDL_Surface* playerwinSurface = IMG_Load( path.c_str());
         SDL_Texture* playerwinTexture = SDL_CreateTextureFromSurface( renderer, playerwinSurface );
         SDL_Rect playerwinRect = {(SCREEN_WIDTH - 170) / 2, SCREEN_HEIGHT *1/6 + 80, 150, 150};
@@ -477,32 +482,32 @@ void Game::update() {
         Mix_PlayChannel(-1,sound_enemy[0],0);
         lastEnemySpawnTime = elapsedTime;
     }
-    if (elapsedTime - lastBigeSpawnTime >= BIGE_SPAWN_INTERVAL ) {
-        spawnBigE();
-        Mix_PlayChannel(-1,sound_enemy[1],0);
-        lastBigeSpawnTime = elapsedTime;
-    }
     if (elapsedTime - lastItemSpawnTime >= ITEM_SPAWN_INTERVAL ) {
         spawnItem();
         lastItemSpawnTime = elapsedTime;
     }
-    for (auto& enemy : enemies) {
-        enemy.move();
-    }
     if(!isai){
+        if (elapsedTime - lastBigeSpawnTime >= BIGE_SPAWN_INTERVAL ) {
+        spawnBigE();
+        Mix_PlayChannel(-1,sound_enemy[1],0);
+        lastBigeSpawnTime = elapsedTime;
+        }
         for (auto& bige : biges) {
             bige.move();
         }
+    }
+    for (auto& enemy : enemies) {
+        enemy.move();
     }
     player.GravityCalculation();
     player.VelocityCalculation();
     player.PositionCalculation();
     player.handleInput();
     if(isai){
+        ai.update(enemies,biges);
         ai.GravityCalculation();
         ai.VelocityCalculation();
         ai.PositionCalculation();
-        ai.update(enemies,biges);
     }
     if(ismulti){
         player2.GravityCalculation();
@@ -570,12 +575,18 @@ void Game::update() {
              ++it;
         }
     }
+    // ||(checkPlayerEnemyCollision(ai, enemy)&&isai)
    for (auto& enemy : enemies) {
-       if((checkPlayerEnemyCollision(player,enemy)&&!player.ismonster)||(checkPlayerEnemyCollision(ai, enemy)&&isai)){
+       if((checkPlayerEnemyCollision(player,enemy)&&!player.ismonster)){
            player1lose = true;
+           if(ismulti)player2win = true;
+           else if(isai)aiwin = true;
            player.numlives-- ;
        }else if((checkPlayerEnemyCollision(player2, enemy)&&!player2.ismonster)&&ismulti){
            player2.numlives-- ;
+       }else if((checkPlayerEnemyCollision(ai, enemy)&&isai)){
+              ai.numlives-- ;
+         
        }
    }
    for (auto& bige : biges) {
@@ -591,7 +602,7 @@ void Game::update() {
         player1lose = true;
         player.numlives-- ;
    }else if((player.ismonster&&checkPlayerCharacterCollision(player2,player)&&!player2.isghost)&&ismulti)player2.numlives--;
-   if (!(player.numlives&&player2.numlives)) {
+   if (!(player.numlives&&player2.numlives&&ai.numlives)) {
             Mix_HaltChannel(-1);
             Mix_PlayChannel(1,sound_gameover,0);
             gameState = GAMEOVER;
